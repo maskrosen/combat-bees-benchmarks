@@ -11,7 +11,7 @@ public static class Data
     public const float teamAttraction = 5;
     public const float teamRepulsion = 4;
     public const int beesPerBatch = 1023;
-    public const int beeStartCount = 4000;
+    public const int beeStartCount = 400;
     public const float minBeeSize = 0.25f;
     public const float maxBeeSize = 0.5f;
     public const float attackDistance = 4;
@@ -78,23 +78,23 @@ public static class Data
     public static readonly float[][] DeadTimers = new float[][] { Team1DeadTimers, Team2DeadTimers };
     public static readonly int[][] BeeTargets = new int[][] { Team1BeeTargets, Team2BeeTargets };
 
-    public static readonly List<int> Team1AliveBees = new List<int>();
-    public static readonly List<int> Team1DeadBees = new List<int>();
-    public static readonly List<int> Team1InactiveBees = new List<int>();
-    public static readonly List<int> Team1HasNoTarget = new List<int>();
-    public static readonly List<int> Team1HasEnemyTarget = new List<int>();
+    public static readonly StateList Team1AliveBees = new StateList(MaxNumberOfBeesPerTeam);
+    public static readonly StateList Team1DeadBees = new StateList(MaxNumberOfBeesPerTeam);
+    public static readonly StateList Team1InactiveBees = new StateList(MaxNumberOfBeesPerTeam);
+    public static readonly StateList Team1HasNoTarget = new StateList(MaxNumberOfBeesPerTeam);
+    public static readonly StateList Team1HasEnemyTarget = new StateList(MaxNumberOfBeesPerTeam);
 
-    public static readonly List<int> Team2AliveBees = new List<int>();
-    public static readonly List<int> Team2DeadBees = new List<int>();
-    public static readonly List<int> Team2InactiveBees = new List<int>();
-    public static readonly List<int> Team2HasNoTarget = new List<int>();
-    public static readonly List<int> Team2HasEnemyTarget = new List<int>();
+    public static readonly StateList Team2AliveBees = new StateList(MaxNumberOfBeesPerTeam);
+    public static readonly StateList Team2DeadBees = new StateList(MaxNumberOfBeesPerTeam);
+    public static readonly StateList Team2InactiveBees = new StateList(MaxNumberOfBeesPerTeam);
+    public static readonly StateList Team2HasNoTarget = new StateList(MaxNumberOfBeesPerTeam);
+    public static readonly StateList Team2HasEnemyTarget = new StateList(MaxNumberOfBeesPerTeam);
 
-    public static readonly List<int>[] AliveBees = { Team1AliveBees , Team2AliveBees };
-    public static readonly List<int>[] DeadBees = { Team1DeadBees , Team2DeadBees };
-    public static readonly List<int>[] InactiveBees = { Team1InactiveBees , Team2InactiveBees };
-    public static readonly List<int>[] HasNoTarget = { Team1HasNoTarget , Team2HasNoTarget };
-    public static readonly List<int>[] HasEnemyTarget = { Team1HasEnemyTarget , Team2HasEnemyTarget };
+    public static readonly StateList[] AliveBees = { Team1AliveBees , Team2AliveBees };
+    public static readonly StateList[] DeadBees = { Team1DeadBees , Team2DeadBees };
+    public static readonly StateList[] InactiveBees = { Team1InactiveBees , Team2InactiveBees };
+    public static readonly StateList[] HasNoTarget = { Team1HasNoTarget , Team2HasNoTarget };
+    public static readonly StateList[] HasEnemyTarget = { Team1HasEnemyTarget , Team2HasEnemyTarget };
 
     public static readonly Vector3 Team1BeeSpawnPos = Vector3.right * (-Field.size.x * .4f + Field.size.x * .8f * 0);
     public static readonly Vector3 Team2BeeSpawnPos = Vector3.right * (-Field.size.x * .4f + Field.size.x * .8f * 1);

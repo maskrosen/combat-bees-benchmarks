@@ -38,10 +38,12 @@ public static class AttackSystem
 					Utils.KillBee(enemyIndex, enemyTeamIndex);
 					targets[beeIndex] = -1;
 					Data.HasEnemyTarget[teamIndex].Remove(beeIndex);
-					Data.HasNoTarget[teamIndex].AddAndSort(beeIndex);
-					
+					Data.HasNoTarget[teamIndex].Add(beeIndex);
+
+					StateChecker.Run();
 				}
 			}
+			movements[beeIndex] = movement;
 
 		}
 	}

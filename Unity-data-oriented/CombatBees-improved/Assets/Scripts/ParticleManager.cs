@@ -25,6 +25,7 @@ public class ParticleManager : MonoBehaviour {
 	MaterialPropertyBlock matProps;
 
 	public static void SpawnParticle(Vector3 position,ParticleType type,Vector3 velocity,float velocityJitter=6f,int count=1) {
+		return;
 		for (int i = 0; i < count; i++) {
 			instance._SpawnParticle(position,type,velocity,velocityJitter);
 		}

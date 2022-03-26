@@ -14,7 +14,7 @@ public static class BeeMovementSystem
 
     }
 
-    static void UpdateMovements(List<int> aliveBees, Movement[] movements, float deltaTime)
+    static void UpdateMovements(StateList aliveBees, Movement[] movements, float deltaTime)
     {
         for (int i = 0; i < aliveBees.Count; i++)
         {
@@ -41,7 +41,7 @@ public static class BeeMovementSystem
             velocity -= delta * (Data.teamRepulsion * deltaTime / dist);
 
             //Move away from edges of box
-            var beePos = movement.Position;
+           /* var beePos = movement.Position;
             var posY = Mathf.Max(0, beePos.y);
             posY *= posY * posY;
             var negY = Mathf.Min(0, beePos.y);
@@ -69,7 +69,7 @@ public static class BeeMovementSystem
 
 
             velocity += push;
-            
+            */
             movement.Velocity = velocity;
             movements[beeIndex] = movement;
 

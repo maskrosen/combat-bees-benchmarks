@@ -30,12 +30,15 @@ public class GameHandler : MonoBehaviour
     private void Update()
     {
         float deltaTime = Time.deltaTime;
+        deltaTime = Mathf.Min(deltaTime, 0.033f);
         SpawnBeesSystem.Run();
         BeeMovementSystem.Run(deltaTime);
         BeePositionUpdateSystem.Run(deltaTime);
         EnemyTargetSystem.Run();
         AttackSystem.Run(deltaTime);
         DeadBeesSystem.Run(deltaTime);
+        BeeWallCollisionSystem.Run();
+        SortListsSystem.Run();
         RenderSystem.Run(beeMesh, beeMaterial, props, teamColors);
 
 #if DEBUG && UNITY_EDITOR

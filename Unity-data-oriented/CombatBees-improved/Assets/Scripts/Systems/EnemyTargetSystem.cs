@@ -20,15 +20,15 @@ public static class EnemyTargetSystem
 
     }
 
-    static void GetNewEnemyTargets(List<int> noTargets, List<int> enemyTeamAlive, int[] targets, List<int> hasEnemyTarget)
+    static void GetNewEnemyTargets(StateList noTargets, StateList enemyTeamAlive, int[] targets, StateList hasEnemyTarget)
     {
-
-        for (int i = 0; i < noTargets.Count; i++)
+        while (noTargets.Count > 0)
         {
-            int beeIndex = noTargets[i];
+            int beeIndex = noTargets[0];
             int newTarget = Random.Range(0, enemyTeamAlive.Count);
             targets[beeIndex] = newTarget;
             Utils.AddToTargetList(hasEnemyTarget, noTargets, beeIndex);
+            StateChecker.Run();
         }
     }
 }

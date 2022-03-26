@@ -25,6 +25,7 @@
                 Utils.DeleteBee(beeIndex, teamIndex);
             }
             deadTimers[beeIndex] = deadTimer;
+            movements[beeIndex] = m;
         }
     }
 }

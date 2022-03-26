@@ -305,7 +305,7 @@ MonoBehaviour:
   carryStiffness: 15
   spawnRate: 10
   beesPerResource: 8
-  startResourceCount: 500
+  startResourceCount: 0
 --- !u!4 &129398392
 Transform:
   m_ObjectHideFlags: 0
@@ -359,7 +359,7 @@ MonoBehaviour:
   maxBeeSize: 0.5
   speedStretch: 0.2
   rotationStiffness: 5
-  aggression: 0.5
+  aggression: 1
   flightJitter: 200
   teamAttraction: 5
   teamRepulsion: 4
@@ -371,7 +371,7 @@ MonoBehaviour:
   attackForce: 500
   hitDistance: 0.5
   maxSpawnSpeed: 75
-  startBeeCount: 4000
+  startBeeCount: 20000
 --- !u!4 &374635490
 Transform:
   m_ObjectHideFlags: 0

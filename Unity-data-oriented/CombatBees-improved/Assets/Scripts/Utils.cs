@@ -5,9 +5,9 @@ using UnityEngine;
 public static class Utils
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void AddToTargetList(List<int> hasEnemyTarget, List<int> hasNoTarget, int beeIndex)
+    public static void AddToTargetList(StateList hasEnemyTarget, StateList hasNoTarget, int beeIndex)
     {
-        hasEnemyTarget.AddAndSort(beeIndex);
+        hasEnemyTarget.Add(beeIndex);
         hasNoTarget.Remove(beeIndex);
     }
 
@@ -25,10 +25,11 @@ public static class Utils
         {
             //If we have dead bee we need to copy enough dead bees to make room for our new spawned bees in the alive segment
             int numberOfBeesToCopy = Mathf.Min(deadBees.Count, count);
-            int destIndex = deadBeesStartIndex + count;
+            int destIndex = deadBeesStartIndex + count + deadBees.Count; //We copy them to the after the end of dead bees
             CopyBeeData(deadBeesStartIndex, destIndex, numberOfBeesToCopy, teamIndex);
             InitBees(deadBeesStartIndex, count, teamIndex);
         }
+        
     }
 
     //Copies bee data in batch for the specified length starting at sourceIndex, overwriting the data in dest index and forward
@@ -41,11 +42,12 @@ public static class Utils
         var sizes = Data.BeeSize[teamIndex];
         var targets = Data.BeeTargets[teamIndex];
         var deadTimers = Data.DeadTimers[teamIndex];
+        var deadBees = Data.DeadBees[teamIndex];
 
         var hasTargets = Data.HasEnemyTarget[teamIndex];
         var hasNoTargets = Data.HasNoTarget[teamIndex];
 
-
+        /*
         for (int i = 0; i < length; i++)
         {
             int beeSourceIndex = sourceIndex + i;
@@ -53,13 +55,20 @@ public static class Utils
             if (hasTargets.Remove(beeSourceIndex) && !hasTargets.Contains(beeDestIndex))
             {
                 hasTargets.Add(beeDestIndex);
+                hasNoTargets.Remove(beeDestIndex);
             }
             if (hasNoTargets.Remove(beeSourceIndex) && !hasNoTargets.Contains(beeDestIndex))
             {
                 hasNoTargets.Add(beeDestIndex);
+                hasTargets.Remove(beeDestIndex);
             }
         }
-
+        */
+        for (int i = 0; i < length; i++)
+        {
+            int beeSourceIndex = sourceIndex + i;
+            deadBees.Remove(beeSourceIndex);
+        }
         for (int i = 0; i < length; i++)
         {
             int beeSourceIndex = sourceIndex + i;
@@ -101,7 +110,6 @@ public static class Utils
             int beeDestIndex = destIndex + i;
             deadTimers[beeDestIndex] = deadTimers[beeSourceIndex];
         }
-
     }
 
     //Assumes that beeIndex is free and not currently holds data of an active bee
@@ -112,6 +120,8 @@ public static class Utils
         var sizes = Data.BeeSize[teamIndex];
         var alive = Data.AliveBees[teamIndex];
         var noTarget = Data.HasNoTarget[teamIndex];
+        var hasEnemyTarget = Data.HasEnemyTarget[teamIndex];
+        var inActive = Data.InactiveBees[teamIndex];
         for (int i = 0; i < length; i++)
         {
             int beeIndex = beeStartIndex + i;
@@ -120,9 +130,12 @@ public static class Utils
             movements[beeIndex] = m;
             alive.Add(beeIndex);
             noTarget.Add(beeIndex);
+            hasEnemyTarget.Remove(beeIndex); //TODO should not bee needed here, we should have cleared this while the bee was set to dead
+            inActive.Remove(beeIndex);
         }
         alive.Sort();
         noTarget.Sort();
+        StateChecker.Run();
     }
 
     public static void KillBee(int beeIndex, int teamIndex)
@@ -141,9 +154,27 @@ public static class Utils
 
         int beeIndex1 = beeIndex;
         int beeIndex2 = alive[^1]; //Last alive bee
-        alive.RemoveAt(alive.Count - 1);
+        alive.Remove(beeIndex2);
         dead.Add(beeIndex2);
+        bool aliveBeeHasTarget = !hasNoTargets.Contains(beeIndex2);
+        if (aliveBeeHasTarget)
+        {
+            hasNoTargets.Remove(beeIndex1);
+            if (!hasTargets.Contains(beeIndex1))
+            {
+                hasTargets.Add(beeIndex1);
+            }
+        }
+        else
+        {
+            if (!hasNoTargets.Contains(beeIndex1))
+            {
+                hasNoTargets.Add(beeIndex1);
+            }
+            hasTargets.Remove(beeIndex1);
+        }
         hasTargets.Remove(beeIndex2);
+        hasNoTargets.Remove(beeIndex2);
 
         var tempM = movements[beeIndex1];
         tempM.Velocity *= .5f;
@@ -167,6 +198,7 @@ public static class Utils
 
         deadTimers[beeIndex1] = deadTimers[beeIndex2];
         deadTimers[beeIndex2] = 1;
+        StateChecker.Run();
     }
 
     public static void DeleteBee(int beeIndex, int teamIndex)
@@ -185,7 +217,7 @@ public static class Utils
 
         int beeIndex1 = beeIndex;
         int beeIndex2 = dead[^1]; //Last dead bee
-        dead.RemoveAt(dead.Count - 1);
+        dead.Remove(beeIndex2);
         inactive.Add(beeIndex2);
 
         movements[beeIndex1] = movements[beeIndex2];
@@ -202,6 +234,7 @@ public static class Utils
 
         deadTimers[beeIndex1] = deadTimers[beeIndex2];
         deadTimers[beeIndex2] = 0;
+        StateChecker.Run();
     }
 
 }
