@@ -3,11 +3,11 @@
     public static void Run(float deltaTime)
     {        
         var movements = Data.Team1BeeMovements;
-        int activeBeesCount = Data.Team1AliveBees.Count + Data.Team1DeadBees.Count;
+        int activeBeesCount = Data.AliveCount[0] + Data.DeadCount[0];
         UpdatePosition(movements, activeBeesCount, deltaTime);
 
         movements = Data.Team2BeeMovements;
-        activeBeesCount = Data.Team2AliveBees.Count + Data.Team2DeadBees.Count;
+        activeBeesCount = Data.AliveCount[1] + Data.DeadCount[1];
         UpdatePosition(movements, activeBeesCount, deltaTime);
     }
 

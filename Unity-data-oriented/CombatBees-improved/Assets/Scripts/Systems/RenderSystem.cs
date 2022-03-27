@@ -4,7 +4,7 @@ public static class RenderSystem
 {
     public static void Run(Mesh mesh, Material material, MaterialPropertyBlock matProps, Color[] beeColors)
     {
-        int team1ActiveBees = Data.Team1AliveBees.Count + Data.Team1DeadBees.Count;
+        int team1ActiveBees = Data.AliveCount[0] + Data.DeadCount[0];
         int numberOfBatches = team1ActiveBees / Data.beesPerBatch;
         int restNumber = team1ActiveBees % Data.beesPerBatch;
         var movements = Data.Team1BeeMovements;
@@ -12,7 +12,7 @@ public static class RenderSystem
         int teamIndex = 0;
         RenderTeam(numberOfBatches, restNumber, sizes, movements, matProps, beeColors, teamIndex, mesh, material);
 
-        int team2ActiveBees = Data.Team2AliveBees.Count + Data.Team2DeadBees.Count;
+        int team2ActiveBees = Data.AliveCount[1] + Data.DeadCount[1];
         numberOfBatches = team2ActiveBees / Data.beesPerBatch;
         restNumber = team2ActiveBees % Data.beesPerBatch;
         movements = Data.Team2BeeMovements;
@@ -29,6 +29,7 @@ public static class RenderSystem
         var restBatchColors = Data.RestBatchColors;
         restBatch.Clear();
         restBatchColors.Clear();
+        var directions = Data.BeeDirections[teamIndex];
 
         var color = beeColors[teamIndex]; 
 
@@ -37,7 +38,8 @@ public static class RenderSystem
         {
             for (int j = 0; j < fullBatch.Length; j++)
             {
-                var rotation = Quaternion.LookRotation(Vector3.forward);
+                var direction = directions[beeIndex];
+                var rotation = Quaternion.LookRotation(direction);
                 var size = sizes[beeIndex];
                 var scale = Vector3.one * size;
                 var movement = movements[beeIndex];
@@ -50,7 +52,8 @@ public static class RenderSystem
         }
         for (int i = 0; i < restNumber; i++)
         {
-            var rotation = Quaternion.LookRotation(Vector3.forward);
+            var direction = directions[beeIndex];
+            var rotation = Quaternion.LookRotation(direction);
             var size = sizes[beeIndex];
             var scale = Vector3.one * size;
             var movement = movements[beeIndex];

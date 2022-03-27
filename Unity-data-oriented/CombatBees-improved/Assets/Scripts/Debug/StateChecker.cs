@@ -5,7 +5,7 @@ public static class StateChecker
 {
     public static void Run()
     {
-       // return;
+        return;
         NotDeadAndAlive();
         NotDeadAndInactive();
         NotAliveAndInactive();
@@ -13,11 +13,12 @@ public static class StateChecker
         TargetNotValid();
         CheckForCopies();
         CheckBeeOrder();
+        CheckDeadHasTarget();
     }
 
     static void CheckBeeOrder()
     {
-        var alive1 = Data.Team1AliveBees;
+        /*var alive1 = Data.Team1AliveBees;
         var dead1 = Data.Team1DeadBees;
         for (int i = 0; i < alive1.Count; i++)
         {
@@ -27,7 +28,7 @@ public static class StateChecker
                 Debug.LogError("Alive bees team 1 are not sorted properly");
             }
         }
-        if(dead1.Count > 0 && dead1[0] != alive1.Count)
+        if(dead1.Count > 0 && !dead1.Contains(alive1.Count))
         {
             Debug.LogError("Dead bees team 1 are not sorted properly");
         }
@@ -42,15 +43,16 @@ public static class StateChecker
                 Debug.LogError("Alive bees team 2 are not sorted properly");
             }
         }
-        if (dead2.Count > 0 && dead2.Contains(alive2.Count))
+        if (dead2.Count > 0 && !dead2.Contains(alive2.Count))
         {
             Debug.LogError("Dead bees team 2 are not sorted properly");
-        }
+        }*/
+
     }
 
     public static void CheckForCopies()
     {
-        if (ContainsCopies(Data.Team1AliveBees))
+        /*if (ContainsCopies(Data.Team1AliveBees))
         {
             Debug.LogError("Team 1 alive bees contains copies");
         }
@@ -73,7 +75,7 @@ public static class StateChecker
         if (ContainsCopies(Data.Team2InactiveBees))
         {
             Debug.LogError("Team 2 inactive bees contains copies");
-        }
+        }*/
         if (ContainsCopies(Data.Team1HasEnemyTarget))
         {
             Debug.LogError("Team 1 has enemy target contains copies");
@@ -95,7 +97,7 @@ public static class StateChecker
 
     public static void NotDeadAndAlive()
     {
-        var alive1 = Data.Team1AliveBees;
+       /* var alive1 = Data.Team1AliveBees;
         var dead1 = Data.Team1DeadBees;
 
         for (int i = 0; i < alive1.Count; i++)
@@ -115,12 +117,12 @@ public static class StateChecker
             {
                 Debug.LogError("Beeindex " + i + " in team 2 is in both alive and dead lists. This is illegal");
             }
-        }
+        }*/
     }
 
     public static void NotDeadAndInactive()
     {
-        var inactive1 = Data.Team1InactiveBees;
+        /*var inactive1 = Data.Team1InactiveBees;
         var dead1 = Data.Team1DeadBees;
 
         for (int i = 0; i < inactive1.Count; i++)
@@ -140,12 +142,12 @@ public static class StateChecker
             {
                 Debug.LogError("Beeindex " + i + " in team 2 is in both inactive and dead lists. This is illegal");
             }
-        }
+        }*/
     }
 
     public static void NotAliveAndInactive()
     {
-        var inactive1 = Data.Team1InactiveBees;
+        /*var inactive1 = Data.Team1InactiveBees;
         var alive1 = Data.Team1AliveBees;
 
         for (int i = 0; i < inactive1.Count; i++)
@@ -165,6 +167,63 @@ public static class StateChecker
             {
                 Debug.LogError("Beeindex " + i + " in team 2 is in both inactive and alive lists. This is illegal");
             }
+        }*/
+    }
+
+
+    static void CheckDeadHasTarget()
+    {
+        var hasTarget1 = Data.Team1HasEnemyTarget;
+        var hasNotTarget1 = Data.Team1HasNoTarget;
+        var targets1 = Data.Team1BeeTargets;
+        for (int i = 0; i < hasTarget1.Count; i++)
+        {
+            int beeIndex = hasTarget1[i];
+            if(beeIndex >= Data.AliveCount[0])
+            {
+                Debug.LogError("Beeindex " + beeIndex + " in team 1 is dead and is in hasTarget list");
+            }
+            int target = targets1[beeIndex];
+            if(target >= Data.AliveCount[1])
+            {
+                //Debug.LogError("Beeindex " + beeIndex + " in team 1 is has a dead target");
+            }
+        }
+
+        for (int i = 0; i < hasNotTarget1.Count; i++)
+        {
+            int beeIndex = hasNotTarget1[i];
+            if (beeIndex >= Data.AliveCount[0])
+            {
+                Debug.LogError("Beeindex " + i + " in team 1 is dead and is in hasNotTarget list");
+            }           
+        } 
+        
+        var hasTarget2 = Data.Team2HasEnemyTarget;
+        var hasNotTarget2 = Data.Team2HasNoTarget;
+        var targets2 = Data.Team2BeeTargets;
+        for (int i = 0; i < hasTarget2.Count; i++)
+        {
+            int beeIndex = hasTarget2[i];
+            if(beeIndex >= Data.AliveCount[1])
+            {
+                Debug.LogError("Beeindex " + i + " in team 2 is dead and is in hasTarget list");
+            }
+            int target = targets2[beeIndex];
+            if (target >= Data.AliveCount[0])
+            {
+                //Debug.LogError("Beeindex " + beeIndex + " in team 2 is has a dead target");
+            }
+        }
+
+        for (int i = 0; i < hasNotTarget2.Count; i++)
+        {
+            int beeIndex = hasNotTarget2[i];
+            if (beeIndex >= Data.AliveCount[1])
+            {
+                Debug.LogError("Beeindex " + i + " in team 2 is dead and is in hasNotTarget list");
+            }
+
         }
     }
 

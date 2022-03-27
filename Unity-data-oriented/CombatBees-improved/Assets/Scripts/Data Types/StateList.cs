@@ -30,6 +30,7 @@ public class StateList
             idToIndex.Remove(value);
         }        
     }
+
     public bool Contains(int value)
     {
         return idToIndex.ContainsKey(value);
@@ -43,9 +44,39 @@ public class StateList
 
     public void Sort()
     {
-        ids.Sort();
+        return;
+        InsertionSort(ids);
+        for (int i = 0; i < ids.Count; i++)
+        {
+            int id = ids[i];
+            idToIndex[id] = i;
+        }
+    }
 
-        //TODO need to update dictionary when we are sorting!!!!!
+    static int InsertionSort(List<int> A)
+    {
+        int result = 0;
+        for (int i = 1; i < A.Count; i++)
+        {
+            int key = A[i];
+            int j = i - 1;
+
+            /* Move elements of A[0..i-1], that are
+            greater than key, to one position ahead
+            of their current position */
+            while (j >= 0 && A[j] > key)
+            {
+                A[j + 1] = A[j];
+                j = j - 1;
+            }
+            A[j + 1] = key;
+        }
+
+        for (int i = 0; i < A.Count; i++)
+        {
+            result += A[i];
+        }
+        return result;
     }
 
     public int this[int i] => ids[i];

@@ -41,7 +41,7 @@ public class Fps : MonoBehaviour
         }
         else
         {
-            return Data.Team1AliveBees.Count + Data.Team1DeadBees.Count + Data.Team2AliveBees.Count + Data.Team2DeadBees.Count;
+            return Data.AliveCount[0]+ Data.AliveCount[1]+ Data.DeadCount[0]+ Data.DeadCount[1];
         }
     }
 }

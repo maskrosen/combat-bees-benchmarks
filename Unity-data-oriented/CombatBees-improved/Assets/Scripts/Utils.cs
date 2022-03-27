@@ -13,10 +13,12 @@ public static class Utils
 
     public static void SpawnBees(int count, int teamIndex)
     {
-        var aliveBees = Data.AliveBees[teamIndex];
-        var deadBees = Data.DeadBees[teamIndex];
-        int deadBeesStartIndex = aliveBees.Count;
-        if(deadBees.Count == 0)
+        //var aliveBees = Data.AliveBees[teamIndex];
+        //var deadBees = Data.DeadBees[teamIndex];
+        int aliveBeesCount = Data.AliveCount[teamIndex];
+        int deadBeesStartIndex = aliveBeesCount;
+        int deadBeesCount = Data.DeadCount[teamIndex];
+        if(deadBeesCount == 0)
         {
             //fast spawns, we don't need to copy any data in this case, just init bees after last current alive bee
             InitBees(deadBeesStartIndex, count, teamIndex);
@@ -24,8 +26,8 @@ public static class Utils
         else
         {
             //If we have dead bee we need to copy enough dead bees to make room for our new spawned bees in the alive segment
-            int numberOfBeesToCopy = Mathf.Min(deadBees.Count, count);
-            int destIndex = deadBeesStartIndex + count + deadBees.Count; //We copy them to the after the end of dead bees
+            int numberOfBeesToCopy = Mathf.Min(deadBeesCount, count);
+            int destIndex = deadBeesStartIndex + count + deadBeesCount; //We copy them to the after the end of dead bees
             CopyBeeData(deadBeesStartIndex, destIndex, numberOfBeesToCopy, teamIndex);
             InitBees(deadBeesStartIndex, count, teamIndex);
         }
@@ -37,12 +39,11 @@ public static class Utils
     public static void CopyBeeData(int sourceIndex, int destIndex, int length, int teamIndex)
     {
         var movements = Data.BeeMovements[teamIndex];
-        var smoothPositions = Data.BeeSmoothPositions[teamIndex];
-        var smoothDirections = Data.BeeSmoothDirections[teamIndex];
+        var directions = Data.BeeDirections[teamIndex];
         var sizes = Data.BeeSize[teamIndex];
         var targets = Data.BeeTargets[teamIndex];
         var deadTimers = Data.DeadTimers[teamIndex];
-        var deadBees = Data.DeadBees[teamIndex];
+        //var deadBees = Data.DeadBees[teamIndex];
 
         var hasTargets = Data.HasEnemyTarget[teamIndex];
         var hasNoTargets = Data.HasNoTarget[teamIndex];
@@ -64,11 +65,12 @@ public static class Utils
             }
         }
         */
+        /*
         for (int i = 0; i < length; i++)
         {
             int beeSourceIndex = sourceIndex + i;
             deadBees.Remove(beeSourceIndex);
-        }
+        }*/
         for (int i = 0; i < length; i++)
         {
             int beeSourceIndex = sourceIndex + i;
@@ -80,14 +82,7 @@ public static class Utils
         {
             int beeSourceIndex = sourceIndex + i;
             int beeDestIndex = destIndex + i;
-            smoothPositions[beeDestIndex] = smoothPositions[beeSourceIndex];
-        }
-
-        for (int i = 0; i < length; i++)
-        {
-            int beeSourceIndex = sourceIndex + i;
-            int beeDestIndex = destIndex + i;
-            smoothDirections[beeDestIndex] = smoothDirections[beeSourceIndex];
+            directions[beeDestIndex] = directions[beeSourceIndex];
         }
         
         for (int i = 0; i < length; i++)
@@ -118,22 +113,23 @@ public static class Utils
         var spawnPos = Data.BeeSpawnPos[teamIndex];
         var movements = Data.BeeMovements[teamIndex];
         var sizes = Data.BeeSize[teamIndex];
-        var alive = Data.AliveBees[teamIndex];
+        //var alive = Data.AliveBees[teamIndex];
         var noTarget = Data.HasNoTarget[teamIndex];
         var hasEnemyTarget = Data.HasEnemyTarget[teamIndex];
-        var inActive = Data.InactiveBees[teamIndex];
+        //var inActive = Data.InactiveBees[teamIndex];
         for (int i = 0; i < length; i++)
         {
             int beeIndex = beeStartIndex + i;
             var m = new Movement { Position = spawnPos, Velocity = new() };
             sizes[beeIndex] = Random.Range(Data.minBeeSize, Data.maxBeeSize);
             movements[beeIndex] = m;
-            alive.Add(beeIndex);
+            Data.AliveCount[teamIndex]++;
+            //alive.Add(beeIndex);
             noTarget.Add(beeIndex);
             hasEnemyTarget.Remove(beeIndex); //TODO should not bee needed here, we should have cleared this while the bee was set to dead
-            inActive.Remove(beeIndex);
+            //inActive.Remove(beeIndex);
         }
-        alive.Sort();
+        //alive.Sort();
         noTarget.Sort();
         StateChecker.Run();
     }
@@ -141,21 +137,21 @@ public static class Utils
     public static void KillBee(int beeIndex, int teamIndex)
     {
         var movements = Data.BeeMovements[teamIndex];
-        var smoothPositions = Data.BeeSmoothPositions[teamIndex];
-        var smoothDirections = Data.BeeSmoothDirections[teamIndex];
+        var directions = Data.BeeDirections[teamIndex];
         var sizes = Data.BeeSize[teamIndex];
         var targets = Data.BeeTargets[teamIndex];
         var deadTimers = Data.DeadTimers[teamIndex];
 
         var hasTargets = Data.HasEnemyTarget[teamIndex];
         var hasNoTargets = Data.HasNoTarget[teamIndex];
-        var alive = Data.AliveBees[teamIndex];
-        var dead = Data.DeadBees[teamIndex];
+        //var alive = Data.AliveBees[teamIndex];
+        //var dead = Data.DeadBees[teamIndex];
+        int aliveCount = Data.AliveCount[teamIndex];
 
         int beeIndex1 = beeIndex;
-        int beeIndex2 = alive[^1]; //Last alive bee
-        alive.Remove(beeIndex2);
-        dead.Add(beeIndex2);
+        int beeIndex2 = aliveCount - 1; //Last alive bee
+        Data.AliveCount[teamIndex]--;
+        Data.DeadCount[teamIndex]++;
         bool aliveBeeHasTarget = !hasNoTargets.Contains(beeIndex2);
         if (aliveBeeHasTarget)
         {
@@ -181,13 +177,10 @@ public static class Utils
         movements[beeIndex1] = movements[beeIndex2];
         movements[beeIndex2] = tempM;
 
-        var tempSP = smoothPositions[beeIndex1];
-        smoothPositions[beeIndex1] = smoothPositions[beeIndex2];
-        smoothPositions[beeIndex2] = tempSP;
 
-        var tempSD = smoothDirections[beeIndex1];
-        smoothDirections[beeIndex1] = smoothDirections[beeIndex2];
-        smoothDirections[beeIndex2] = tempSD;
+        var tempSD = directions[beeIndex1];
+        directions[beeIndex1] = directions[beeIndex2];
+        directions[beeIndex2] = tempSD;
 
         var tempS = sizes[beeIndex1];
         sizes[beeIndex1] = sizes[beeIndex2];
@@ -204,30 +197,28 @@ public static class Utils
     public static void DeleteBee(int beeIndex, int teamIndex)
     {
         var movements = Data.BeeMovements[teamIndex];
-        var smoothPositions = Data.BeeSmoothPositions[teamIndex];
-        var smoothDirections = Data.BeeSmoothDirections[teamIndex];
+        var directions = Data.BeeDirections[teamIndex];
         var sizes = Data.BeeSize[teamIndex];
         var targets = Data.BeeTargets[teamIndex];
         var deadTimers = Data.DeadTimers[teamIndex];
 
         var hasTargets = Data.HasEnemyTarget[teamIndex];
         var hasNoTargets = Data.HasNoTarget[teamIndex];
-        var dead = Data.DeadBees[teamIndex];
-        var inactive = Data.InactiveBees[teamIndex];
+        //var dead = Data.DeadBees[teamIndex];
+        //var inactive = Data.InactiveBees[teamIndex];
+
 
         int beeIndex1 = beeIndex;
-        int beeIndex2 = dead[^1]; //Last dead bee
-        dead.Remove(beeIndex2);
-        inactive.Add(beeIndex2);
+        //dead.Sort(); //We do a sort here so we can take the last index, this should hopefully be quite fast since we usually don't have that many bees in the dead list.
+        int beeIndex2 = Data.AliveCount[teamIndex] + Data.DeadCount[teamIndex] - 1; //Last dead bee
+        Data.DeadCount[teamIndex]--;
 
         movements[beeIndex1] = movements[beeIndex2];
         movements[beeIndex2] = new();
 
-        smoothPositions[beeIndex1] = smoothPositions[beeIndex2];
-        smoothPositions[beeIndex2] = new();
 
-        smoothDirections[beeIndex1] = smoothDirections[beeIndex2];
-        smoothDirections[beeIndex2] = new();
+        directions[beeIndex1] = directions[beeIndex2];
+        directions[beeIndex2] = new();
 
         sizes[beeIndex1] = sizes[beeIndex2];
         sizes[beeIndex2] = new();

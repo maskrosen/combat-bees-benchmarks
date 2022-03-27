@@ -9,13 +9,17 @@
 
     static void UpdateDead(int teamIndex, float deltaTime)
     {
-        var deadBees = Data.DeadBees[teamIndex];
+        //var deadBees = Data.DeadBees[teamIndex];
+        int deadCount = Data.DeadCount[teamIndex];
+        int aliveCount = Data.AliveCount[teamIndex];
         var movements = Data.BeeMovements[teamIndex];
         var deadTimers = Data.DeadTimers[teamIndex];
 
-        for (int i = 0; i < deadBees.Count; i++)
+        bool deletedBee = false;
+
+        for (int i = aliveCount; i < aliveCount + deadCount; i++)
         {
-            int beeIndex = deadBees[i];
+            int beeIndex = i;
             var m = movements[beeIndex];
             m.Velocity.y += Field.gravity * deltaTime;
             float deadTimer = deadTimers[beeIndex];
@@ -23,9 +27,16 @@
             if (deadTimer < 0f)
             {
                 Utils.DeleteBee(beeIndex, teamIndex);
+                deletedBee = true;
+                continue;
             }
             deadTimers[beeIndex] = deadTimer;
             movements[beeIndex] = m;
+        }
+
+        if (deletedBee)
+        {
+            //Data.DeadBees[teamIndex].Sort();
         }
     }
 }

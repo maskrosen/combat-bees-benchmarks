@@ -5,21 +5,21 @@ public static class BeeWallCollisionSystem
 {
     public static void Run()
     {
-		var alive = Data.Team1AliveBees;
-		var dead = Data.Team1DeadBees;
+		//var alive = Data.Team1AliveBees;
+		//var dead = Data.Team1DeadBees;
 		var movements = Data.Team1BeeMovements;
-		CheckCollisions(alive, dead, movements);
+		CheckCollisions(Data.AliveCount[0], Data.DeadCount[0], movements);
 
-		alive = Data.Team2AliveBees;
-		dead = Data.Team2DeadBees;
+		//alive = Data.Team2AliveBees;
+		//dead = Data.Team2DeadBees;
 		movements = Data.Team2BeeMovements;
-		CheckCollisions(alive, dead, movements);
+		CheckCollisions(Data.AliveCount[1], Data.DeadCount[1], movements);
 		
 	}
 
-	static void CheckCollisions(StateList alive, StateList dead, Movement[] movements)
+	static void CheckCollisions(int aliveCount, int deadCount, Movement[] movements)
     {
-		int activeCount = alive.Count + dead.Count;
+		int activeCount = aliveCount + deadCount;
 
         for (int i = 0; i < activeCount; i++)
         {

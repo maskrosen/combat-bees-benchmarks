@@ -38,7 +38,6 @@ public class GameHandler : MonoBehaviour
         AttackSystem.Run(deltaTime);
         DeadBeesSystem.Run(deltaTime);
         BeeWallCollisionSystem.Run();
-        SortListsSystem.Run();
         RenderSystem.Run(beeMesh, beeMaterial, props, teamColors);
 
 #if DEBUG && UNITY_EDITOR

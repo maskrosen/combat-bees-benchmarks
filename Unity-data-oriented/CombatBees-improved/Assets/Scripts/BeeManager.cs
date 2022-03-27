@@ -237,6 +237,7 @@ public class BeeManager : MonoBehaviour {
 						bee.resourceTarget = null;
 					}
 				}
+				bee.direction = Vector3.Lerp(bee.direction, bee.velocity.normalized, deltaTime * 4);
 			}
 			else
 			{
@@ -282,8 +283,9 @@ public class BeeManager : MonoBehaviour {
 				bee.velocity.x *= .8f;
 			}
 
+
 			// only used for smooth rotation:
-			Vector3 oldSmoothPos = bee.smoothPosition;
+			/*Vector3 oldSmoothPos = bee.smoothPosition;
 			if (bee.isAttacking == false)
 			{
 				bee.smoothPosition = Vector3.Lerp(bee.smoothPosition, bee.position, deltaTime * rotationStiffness);
@@ -292,21 +294,21 @@ public class BeeManager : MonoBehaviour {
 			{
 				bee.smoothPosition = bee.position;
 			}
-			bee.smoothDirection = bee.smoothPosition - oldSmoothPos;
+			bee.smoothDirection = bee.smoothPosition - oldSmoothPos;*/
 		}
 
 		for (int i=0;i<bees.Count;i++) {
 			float size = bees[i].size;
 			Vector3 scale = new Vector3(size,size,size);
-			if (bees[i].dead == false) {
+			/*if (bees[i].dead == false) {
 				float stretch = Mathf.Max(1f,bees[i].velocity.magnitude * speedStretch);
 				scale.z *= stretch;
 				scale.x /= (stretch-1f)/5f+1f;
 				scale.y /= (stretch-1f)/5f+1f;
-			}
+			}*/
 			Quaternion rotation = Quaternion.identity;
-			if (bees[i].smoothDirection != Vector3.zero) {
-				rotation=Quaternion.LookRotation(bees[i].smoothDirection);
+			if (bees[i].direction != Vector3.zero) {
+				rotation=Quaternion.LookRotation(bees[i].direction);
 			}
 			Color color= teamColors[bees[i].team];
 			if (bees[i].dead) {

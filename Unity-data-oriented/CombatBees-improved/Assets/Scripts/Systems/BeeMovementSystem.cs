@@ -5,27 +5,27 @@ public static class BeeMovementSystem
 {
     public static void Run(float deltaTime)
     {
-        var aliveBees = Data.Team1AliveBees;
+        //var aliveBees = Data.Team1AliveBees;
         var movements = Data.Team1BeeMovements;
-        UpdateMovements(aliveBees, movements, deltaTime);
-        aliveBees = Data.Team2AliveBees;
+        UpdateMovements(Data.AliveCount[0], movements, Data.BeeDirections[0], deltaTime);
+        //aliveBees = Data.Team2AliveBees;
         movements = Data.Team2BeeMovements;
-        UpdateMovements(aliveBees, movements, deltaTime);
+        UpdateMovements(Data.AliveCount[1], movements, Data.BeeDirections[1], deltaTime);
 
     }
 
-    static void UpdateMovements(StateList aliveBees, Movement[] movements, float deltaTime)
+    static void UpdateMovements(int aliveBeesCount, Movement[] movements, Vector3[] directions, float deltaTime)
     {
-        for (int i = 0; i < aliveBees.Count; i++)
+        for (int i = 0; i < aliveBeesCount; i++)
         {
-            int beeIndex = aliveBees[i];
+            int beeIndex = i;
             var movement = movements[beeIndex];
             var velocity = movement.Velocity;
             velocity += Random.insideUnitSphere * (Data.flightJitter * deltaTime);
             velocity *= (1f - Data.damping * deltaTime);
 
             //Move towards random ally
-            int allyIndex = Random.Range(0, aliveBees.Count);
+            int allyIndex = Random.Range(0, aliveBeesCount);
             var allyMovement = movements[allyIndex];
             Vector3 delta = allyMovement.Position - movement.Position;
             float dist = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
@@ -33,7 +33,7 @@ public static class BeeMovementSystem
             velocity += delta * (Data.teamAttraction * deltaTime / dist);
 
             //Move away from random ally
-            allyIndex = Random.Range(0, aliveBees.Count);
+            allyIndex = Random.Range(0, aliveBeesCount);
             allyMovement = movements[allyIndex];
             delta = allyMovement.Position - movement.Position;
             dist = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
@@ -72,6 +72,10 @@ public static class BeeMovementSystem
             */
             movement.Velocity = velocity;
             movements[beeIndex] = movement;
+
+            var direction = directions[beeIndex];
+            direction = Vector3.Lerp(direction, movement.Velocity.normalized, deltaTime * 4);
+            directions[beeIndex] = direction;
 
         }
     }
