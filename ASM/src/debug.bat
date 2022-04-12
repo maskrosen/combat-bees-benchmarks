@@ -1,0 +1,1 @@
+C:\Users\Jakob\remedybg_0_3_0_6\remedybg.exe DXSample.exe
