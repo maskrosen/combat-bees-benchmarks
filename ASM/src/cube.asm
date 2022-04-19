@@ -450,3 +450,10 @@ basicCarIndexBufferData 						 label 				 d3d11_subresource_data
 basicCarIndexBufferDataE 						 label 				 byte
 basicCarIndexCount 				 equ 					 36
 basicCarVertexCount 				 equ 					 24
+basicCarIndexBufferDesc 				 label 					 d3d11_buffer_desc
+ 				 dword 					 sizeof(word) * basicCarIndexCount
+ 				 dword 					 D3D11_USAGE_DEFAULT
+ 				 dword 					 D3D11_BIND_INDEX_BUFFER
+ 				 dword 					 0
+ 				 dword 					 0
+ 				 dword 					 0

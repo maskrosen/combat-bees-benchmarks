@@ -461,18 +461,26 @@ Create_Back_Buffer:                              lea                 r9, BackBuf
 
 
                                                 
-                                                 ;-----[----------------------------------------------------------------
-
-                                                 ;-----> Error if RAX != 0
-
-
-                                                 ;-----[Create the input layout]----------------------------------------
+                                                  ;-----[Create the pixel shader object]---------------------------------
                                                  ;
-                                                 ; hr = d3d11Device->CreateInputLayout( layout, numElements,
-                                                 ;                                        VS_Buffer->GetBufferPointer(),
-                                                 ;                                        VS_Buffer->GetBufferSize(),
-                                                 ;                                        &vertLayout );
+                                                 ; hr = d3d11Device->CreatePixelShader(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), NULL, &PS);
 
+                                                 mov                 rcx, PS_Buffer                                    ; Set the interface pointer
+                                                 mov                 rbx, [ rcx ]                                      ; Set the interface pointer
+                                                 WinCall             ID3D10Blob_GetBufferPointer                       ; Get the buffer pointer
+                                                 push                rax                                               ; Save the buffer pointer
+
+                                                 mov                 rcx, PS_Buffer                                    ; Set the interface pointer
+                                                 mov                 rbx, [ rcx ]                                      ; Set the interface pointer
+                                                 WinCall             ID3D10Blob_GetBufferSize                          ; Get the buffer size
+
+                                                 lea                 r12, ps                                           ; Set **ppVertexShader
+                                                 xor                 r9, r9                                            ; Set *pClassLinkage
+                                                 mov                 r8, rax                                           ; Set BytecodeLength
+                                                 pop                 rdx                                               ; Set *pShaderBytecode
+                                                 mov                 rcx, d3d11Device                                  ; Set the interface pointer
+                                                 mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
+                                                 WinCall             ID3D11Device_CreatePixelShader, rcx, rdx, r8, r9, r12
                                                  lea                 r13, vertLayout                                   ; Set **ppInputLayout
                                                  mov                 r12, vBufferSize                                  ; set BytecodeLength
                                                  mov                 r9, vBufferPtr                                    ; Set *pShaderBytecode
@@ -955,7 +963,13 @@ Create_Back_Buffer:                              lea                 r9, BackBuf
                                                 ; mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
                                                 ; WinCall             ID3D11Device_CreateBuffer, rcx, rdx, r8, r9       ; Create the vertex buffer
  
-
+                                                 lea                 r9, basicCarIndexBuffer                               ; Set **ppBuffer
+                                                 lea                 r8, basicCarIndexBufferData                               ; Set *pInitialData
+                                                 lea                 rdx, basicCarIndexBufferDesc                              ; Set *pDesc
+                                                 mov                 rcx, d3d11Device                                  ; Set the interface pointer
+                                                 mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
+                                                 WinCall             ID3D11Device_CreateBuffer, rcx, rdx, r8, r9       ; Create the vertex buffer
+ 
 
                                                  lea                 r9, beeInstanceBuffer                           ; Set **ppBuffer
                                                  lea                 r8, instanceBufferData                               ; Set *pInitialData
@@ -2012,7 +2026,7 @@ Mouse_Middle_End:
 
 Camera_Not_Moved:                               
                                                 
-                                               
+          
 												;------[Update mousePosLastFrame]----------------------------------------------------
                                                 movss xmm0, mousePosX
                                                 movss mousePosXLastFrame, xmm0

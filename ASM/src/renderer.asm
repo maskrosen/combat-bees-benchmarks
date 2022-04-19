@@ -125,7 +125,7 @@ Copy_Index_Buffer_Bees_For_Continue:            inc rdi
                                                 jmp Copy_Index_Buffer_Bees_For
                                                  
 Copy_Index_Buffer_Bees_For_End:                 
-                                                mov numberOfBees, r12d
+                                                ;mov numberOfBees, r12d
 
                                                   ;-----[Unmap the vertex buffer]------------------------------------------
                                                  ;
@@ -251,7 +251,7 @@ Copy_Vertex_Buffer_Font_For_End:
                                                  mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
                                                  WinCall             ID3D11DeviceContext_OMSetBlendState, rcx, rdx, 0, 0FFFFFFFFh       ; Execute call
                                                  
-                                                ; LocalCall         RenderShadowMap 
+                                                 LocalCall         RenderShadowMap 
                                                  ;-----[Set primitive topology]-----------------------------------------
                                                  ;
                                                  ; d3d11DevCon->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );

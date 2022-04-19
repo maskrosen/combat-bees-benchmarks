@@ -11,7 +11,7 @@
 
 ;-----[B]---------------------------------------------------------------------------------------------------------------
 
-bgColor                                          real4               0.2,0.2,0.8,1.0                                   ; Background clear color: black
+bgColor                                          real4               0.8,0.2,0.8,1.0                                   ; Background clear color: black
 
 blendDesc                                        label               dxgi_blend_desc
                                                  dword               0                                                 ;AlphaToCoverageEnable  
@@ -1051,6 +1051,7 @@ timeStamp                                        large_integer       <>
                                                 align              16
 vPoints                                          point_vertex         number_of_points dup (<>)
 
+                                                align              16
 vQuads                                           quad_vertex         number_of_quad_vertices dup (<>)
 
 vTexture2d                                       quad_vertex         4 dup (<0.5, 0.5, 0.5, 0.5, 1.0, 1.0, 1.0,1.0, 0.5, 0.5>)

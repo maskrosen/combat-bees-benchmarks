@@ -57,6 +57,7 @@
                                                  ainclude            utils.asm
                                                  ainclude            math.asm
                                                  ainclude            textUtils.asm
+                                                 ainclude            beeLogic.asm
 
 ;-----------------------------------------------------------------------------------------------------------------------
 ;                                                                                                                      -
@@ -88,6 +89,10 @@ Startup                                          proc                           
 
                                                 LocalCall           SetupDirectX                                      ; Setup DirectX
                                                 LocalCall           InitText
+                                                
+
+                                                mov numberOfBees, 10
+                                                LocalCall           InitBees
 
                                                 ;Back quad
                                                 xorps xmm0, xmm0

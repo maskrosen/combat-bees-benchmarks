@@ -644,6 +644,7 @@ VS_OUTPUT VSCars(float4 inPos : VERTEXPOSITION, float4 inColor : COLOR, float4 n
 
     float4x4 composition = mul(rotation, translation);
 
+   
     inPos = mul(inPos, composition);
     output.Pos = mul(inPos, WVP);
     output.Color = inColor;
