@@ -30,7 +30,7 @@
                                                  ainclude            structures.asm                                    ; Data structures
                                                  ainclude            variables.asm                                     ; Data variables
                                                  ainclude            vtables.asm                                       ; COM vTable declarations
-                                                 ainclude            cube.asm
+                                                 ainclude            blueBee.asm
                                                  ainclude            font_characters.asm
                                                
 ;----- [Declare block starting symbol segment] ------------------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ Startup                                          proc                           
                                                 LocalCall           InitText
                                                 
 
-                                                mov numberOfBees, 10
+                                                mov numberOfBees, max_number_of_bees
                                                 LocalCall           InitBees
 
                                                 ;Back quad

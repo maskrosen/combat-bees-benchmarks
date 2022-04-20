@@ -67,10 +67,10 @@ lr_vgacolor                                      equ                 00000080h  
 ;------[M]--------------------------------------------------------------------------------------------------------------
 max_path                                         equ                 256    
 ;main_style                                       equ                 ws_visible or ws_popup or ws_maximize		; fullscreen mode
-main_style                                       equ                 ws_visible or ws_popup  or ws_caption  	; window mode
+main_style                                       equ                 ws_visible or ws_popup  or ws_caption or ws_sysmenu 	; window mode
 
 
-max_number_of_bees                               equ                 10000
+max_number_of_bees                               equ                 20000
 
 mem1_x                                           equ                 source_w - 18                                     ; x
 mem1_y                                           equ                 source_y                                          ; y

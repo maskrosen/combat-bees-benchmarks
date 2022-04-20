@@ -1,7 +1,7 @@
 
 section .bss                                                                 ; Declare bss segment
 
-max_number_of_bees                              equ                 10000
+max_number_of_bees                              equ                 20000
 
                                                 align               16
 global beeTransformDataArray, cbPerInst

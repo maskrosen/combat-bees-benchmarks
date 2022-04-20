@@ -66,7 +66,7 @@ circleNodeIndex                                 qword               0
 circleRadius                                    real4               0.0
 circleSides                                     qword               0
 
-basicCarIndexBuffer                              qword               ?
+blueBeeIndexBuffer                              qword               ?
 
 currentPathDepthTemp                            dword               0
 
@@ -101,6 +101,9 @@ fontTextureResouceView          			    qword				 ?
 fontTextureVertexBuffer                         qword               ?
 
 fwpr_index                                       qword               ?                                                 ; FixWinDbg internal index
+
+fpsMeasureTimePassed                            qword               ?
+fpsMeasureFrameCount                            dword               ?
 
 ;-----[G]---------------------------------------------------------------------------------------------------------------
 
@@ -195,7 +198,7 @@ numElementsFont                                 qword               ( layout_fon
 numElementsPoints                               qword               ( layout_points_E - layout_points ) / sizeof ( d3d11_input_element_desc ) ; Number of elements in layout array
 numElementsQuads                                qword               ( layout_quads_E - layout_quads ) / sizeof ( d3d11_input_element_desc ) ; Number of elements in layout array
 
-numberOfBees                                    dword               10
+numberOfBees                                    dword               max_number_of_bees
 
 
 ;-----[O]---------------------------------------------------------------------------------------------------------------

@@ -963,9 +963,9 @@ Create_Back_Buffer:                              lea                 r9, BackBuf
                                                 ; mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
                                                 ; WinCall             ID3D11Device_CreateBuffer, rcx, rdx, r8, r9       ; Create the vertex buffer
  
-                                                 lea                 r9, basicCarIndexBuffer                               ; Set **ppBuffer
-                                                 lea                 r8, basicCarIndexBufferData                               ; Set *pInitialData
-                                                 lea                 rdx, basicCarIndexBufferDesc                              ; Set *pDesc
+                                                 lea                 r9, blueBeeIndexBuffer                               ; Set **ppBuffer
+                                                 lea                 r8, blueBeeIndexBufferData                               ; Set *pInitialData
+                                                 lea                 rdx, blueBeeIndexBufferDesc                              ; Set *pDesc
                                                  mov                 rcx, d3d11Device                                  ; Set the interface pointer
                                                  mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
                                                  WinCall             ID3D11Device_CreateBuffer, rcx, rdx, r8, r9       ; Create the vertex buffer
@@ -2026,7 +2026,33 @@ Mouse_Middle_End:
 
 Camera_Not_Moved:                               
                                                 
-          
+
+                                                
+
+                                                ;Measure fps
+                                                inc fpsMeasureFrameCount
+                                                mov rax, fpsMeasureTimePassed
+                                                add rax, deltaTimeMicros
+                                                mov fpsMeasureTimePassed, rax
+                                                cmp rax, 1000000 ;1 second in microseconds
+                                                jl Skip_FPS_Update
+
+                                                mov fpsMeasureTimePassed, 0 ;reset time passed
+                                                cvtsi2ss xmm0, rax ;time passed
+                                                mov ebx, fpsMeasureFrameCount
+                                                cvtsi2ss xmm1, ebx ;frame count
+                                                divss xmm1, xmm0 ;frames per microsecond
+                                                movss xmm0, xmm1
+                                                mulss xmm0, r1000000
+                                                mov fpsMeasureFrameCount, 0 ;reset frame count
+
+                                                movss xmm1, textNextCharPosition       
+                                                movss xmm2, r08n
+                                                lea rcx, fps_str
+                                                mov rdx, 24
+                                                LocalCall AddReal4VariableToDebugText
+
+Skip_FPS_Update:
 												;------[Update mousePosLastFrame]----------------------------------------------------
                                                 movss xmm0, mousePosX
                                                 movss mousePosXLastFrame, xmm0

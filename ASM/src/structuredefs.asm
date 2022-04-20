@@ -583,12 +583,7 @@ ca                                               real4               ?          
 nx                                               real4               ?                                               ;
 ny                                               real4               ?                                               ;
 nz                                               real4               ?                                               ;
-nw                                               real4               ?                                               ;
-specularPower                                    real4               ?
-specularIntensity                                real4               ?
-u                                                real4               ?                                           
-v                                                real4               ? 
-vertexLength                                     real4               ?                                          
+nw                                               real4               ?                                               ;                                      
                                                 ;-----------------------------------------------------------------------
 vertex                                           ends                                                                  ; End structure declaration
 

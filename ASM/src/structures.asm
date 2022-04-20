@@ -97,7 +97,7 @@ cameraBufferDescription                         label               d3d11_buffer
 
 carIndexBufferDesc                              label               d3d11_buffer_desc                                 ; Declare structure label
                                                 ;-----------------------------------------------------------------------
-                                                 dword               sizeof ( word ) * basicCarIndexCount                 ; ByteWidth
+                                                 dword               sizeof ( word ) * blueBeeIndexCount                 ; ByteWidth
                                                  dword               D3D11_USAGE_DEFAULT                               ; Usage
                                                  dword               D3D11_BIND_INDEX_BUFFER                           ; BindFlags
                                                  dword               0                                                 ; CPUAccessFlags
@@ -1059,7 +1059,7 @@ vTexture2d                                       quad_vertex         4 dup (<0.5
 
 vertexBufferDataCars                             label               d3d11_subresource_data                            ; Declare structure label
                                                 ;-----------------------------------------------------------------------
-                                                 qword               basicCar                                                 ; pSysMem
+                                                 qword               blueBee                                                 ; pSysMem
                                                  dword               ?                                                 ; SysMemPitch
                                                  dword               ?                                                 ; SysMemSlicePitch
                                                 ;-----------------------------------------------------------------------
@@ -1067,7 +1067,7 @@ vertexBufferDataCarsE                           label               byte        
 
 vertexBufferDescCars                            label               d3d11_buffer_desc                                 ; Declare structure label
                                                 ;-----------------------------------------------------------------------
-                                                 dword               sizeof ( vertex ) * basicCarVertexCount  ; ByteWidth
+                                                 dword               sizeof ( vertex ) * blueBeeVertexCount  ; ByteWidth
                                                  dword               D3D11_USAGE_DYNAMIC                               ; Usage
                                                  dword               D3D11_BIND_VERTEX_BUFFER                          ; BindFlags
                                                  dword               D3D11_CPU_ACCESS_WRITE                            ; CPUAccessFlags

@@ -626,8 +626,7 @@ float4 PSRoad(VS_OUTPUT_ROAD input) : SV_TARGET
 
 
   
-VS_OUTPUT VSCars(float4 inPos : VERTEXPOSITION, float4 inColor : COLOR, float4 normal : NORMAL,
- float2 specularContribution : TEXCOORD0, float4 instancePosition : INSTANCEPOSITION, float4 instanceRotation : INSTANCEROTATION)
+VS_OUTPUT VSCars(float4 inPos : VERTEXPOSITION, float4 inColor : COLOR, float4 normal : NORMAL, float4 instancePosition : INSTANCEPOSITION, float4 instanceRotation : INSTANCEROTATION)
 {
     VS_OUTPUT output;
 
@@ -652,7 +651,7 @@ VS_OUTPUT VSCars(float4 inPos : VERTEXPOSITION, float4 inColor : COLOR, float4 n
     output.viewDirection = cameraPosition.xyz - inPos.xyz;
     output.viewDirection = normalize(output.viewDirection);
     output.WorldPos = inPos;
-    output.SpecularContribution = specularContribution;
+    output.SpecularContribution = 0;
 	output.LightSpacePosition = mul(inPos, directionalLightWVP);
     output.Type = 3;
     //output.UV = float2(0,0);

@@ -1090,7 +1090,7 @@ Copy_Vertex_Buffer_Font_For_End:
                                                  ; d3d11DevCon->IASetIndexBuffer( triangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
                                                  xor                 r9, r9                                            ; Set Offset
                                                  mov                 r8, dxgi_format_r16_uint                          ; Set Format
-                                                 mov                 rdx, basicCarIndexBuffer                              ; Set *pIndexBuffer
+                                                 mov                 rdx, blueBeeIndexBuffer                              ; Set *pIndexBuffer
                                                  mov                 rcx, d3d11DevCon                                  ; Set the interface pointer
                                                  mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
                                                  WinCall             ID3D11DeviceContext_IASetIndexBuffer, rcx, rdx, r8, r9
@@ -1104,7 +1104,7 @@ Copy_Vertex_Buffer_Font_For_End:
                                                  xor                 r12, r12                                          ; Set StartInstanceLocation
                                                  xor                 r9, r9                                            ; Set StartIndexLocation
                                                  mov                 r8d, numberOfBees                                ; Set InstanceCount
-                                                 mov                 rdx, basicCarIndexCount                               ; Set IndexCountPerInstance
+                                                 mov                 rdx, blueBeeIndexCount                               ; Set IndexCountPerInstance
                                                  mov                 rcx, d3d11DevCon                                  ; Set the interface pointer
                                                  mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
                                                  WinCall             ID3D11DeviceContext_DrawIndexedInstanced, rcx, rdx, r8, r9, r12, r13         ; Draw the scene
@@ -1681,7 +1681,7 @@ RenderShadowMap                                  proc                           
                                                  ; d3d11DevCon->IASetIndexBuffer( triangleIndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
                                                  xor                 r9, r9                                            ; Set Offset
                                                  mov                 r8, dxgi_format_r16_uint                          ; Set Format
-                                                 mov                 rdx, basicCarIndexBuffer                              ; Set *pIndexBuffer
+                                                 mov                 rdx, blueBeeIndexBuffer                              ; Set *pIndexBuffer
                                                  mov                 rcx, d3d11DevCon                                  ; Set the interface pointer
                                                  mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
                                                  WinCall             ID3D11DeviceContext_IASetIndexBuffer, rcx, rdx, r8, r9
@@ -1695,7 +1695,7 @@ RenderShadowMap                                  proc                           
                                                  xor                 r12, r12                                          ; Set StartInstanceLocation
                                                  xor                 r9, r9                                            ; Set StartIndexLocation
                                                  mov                 r8d, numberOfBees                                 ; Set InstanceCount
-                                                 mov                 rdx, basicCarIndexCount                               ; Set IndexCountPerInstance
+                                                 mov                 rdx, blueBeeIndexCount                               ; Set IndexCountPerInstance
                                                  mov                 rcx, d3d11DevCon                                  ; Set the interface pointer
                                                  mov                 rbx, [ rcx ]                                      ; Set the vTable pointer
                                                  WinCall             ID3D11DeviceContext_DrawIndexedInstanced, rcx, rdx, r8, r9, r12, r13         ; Draw the scene
