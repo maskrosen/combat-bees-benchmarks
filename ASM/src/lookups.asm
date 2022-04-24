@@ -1,8 +1,8 @@
 
 ;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; Lookup lists.                                                                                                        -
-;                                                                                                                      -
+;                                                                          											-
+; Lookup lists.                                                            											-
+;                                                                          											-
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;-----[A]---------------------------------------------------------------------------------------------------------------
@@ -31,23 +31,23 @@
 
 ;-----[M]---------------------------------------------------------------------------------------------------------------
 
-Main_CB_Lookup                                   qword               ( Main_CB_Lookup_E - Main_CB_Lookup_S ) / 8       ; Number of qwords in list
-                                                ;-----------------------------------------------------------------------
-Main_CB_Lookup_S                                 qword               wm_erasebkgnd                                     ; WM_EraseBkgnd
-                                                 qword               wm_paint                                          ; WM_Paint
-                                                 qword               wm_close                                          ; WM_Close
-                                                 qword               wm_destroy                                        ; WM_Destroy
-                                                 qword               wm_keydown                                        ; WM_KeyDown
-                                                 qword               wm_keyup                                          ; WM_KeyUp
-                                                 qword               wm_mousemove                                      ; WM_MouseMove
-                                                 qword               wm_mousewheel                                     ; WM_MouseWheel
-                                                 qword               wm_lbuttondown                                    ; WM_LButtonDown
-                                                 qword               wm_rbuttondown                                    ; WM_RButtonDown
-                                                 qword               wm_mbuttondown                                    ; WM_MButtonDown
-                                                 qword               wm_mbuttonup                                      ; WM_MButtonUp
-                                                 qword               wm_input                                          ; WM_Input
-                                                ;-----------------------------------------------------------------------
-Main_CB_Lookup_E                                 label               byte                                              ; End of list marker
+Main_CB_Lookup   								qword   			( Main_CB_Lookup_E - Main_CB_Lookup_S ) / 8   	; Number of qwords in list
+												;-----------------------------------------------------------------------
+Main_CB_Lookup_S 								qword   			wm_erasebkgnd 									; WM_EraseBkgnd
+												 qword   			wm_paint  										; WM_Paint
+												 qword   			wm_close  										; WM_Close
+												 qword   			wm_destroy										; WM_Destroy
+												 qword   			wm_keydown										; WM_KeyDown
+												 qword   			wm_keyup  										; WM_KeyUp
+												 qword   			wm_mousemove  									; WM_MouseMove
+												 qword   			wm_mousewheel 									; WM_MouseWheel
+												 qword   			wm_lbuttondown									; WM_LButtonDown
+												 qword   			wm_rbuttondown									; WM_RButtonDown
+												 qword   			wm_mbuttondown									; WM_MButtonDown
+												 qword   			wm_mbuttonup  									; WM_MButtonUp
+												 qword   			wm_input  										; WM_Input
+												;-----------------------------------------------------------------------
+Main_CB_Lookup_E 								label   			byte  											; End of list marker
 
 ;-----[N]---------------------------------------------------------------------------------------------------------------
 
@@ -69,14 +69,14 @@ Main_CB_Lookup_E                                 label               byte       
 
 ;-----[W]---------------------------------------------------------------------------------------------------------------
 
-win_list                                         qword               ( win_liste - win_lists ) / 8                     ;
-                                                ;-----------------------------------------------------------------------
-win_lists                                        qword               command_str                                       ;
-                                                 qword               memory_str                                        ;
-                                                 qword               reg_str                                           ;
-                                                 qword               watch_str                                         ;
-                                                ;-----------------------------------------------------------------------
-win_liste                                        label               byte                                              ;
+win_list 										qword   			( win_liste - win_lists ) / 8 					;
+												;-----------------------------------------------------------------------
+win_lists										qword   			command_str   									;
+												 qword   			memory_str										;
+												 qword   			reg_str   										;
+												 qword   			watch_str 										;
+												;-----------------------------------------------------------------------
+win_liste										label   			byte  											;
 
 ;-----[X]---------------------------------------------------------------------------------------------------------------
 

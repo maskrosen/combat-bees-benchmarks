@@ -1,21 +1,21 @@
 ;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; InitText                                                                                                        -
-;                                                                                                                      -
+;                                                      																-
+; InitText                                        																-
+;                                                      																-
 ; Inits buffers for text
 ;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; In:  nothing                                                                                                         -
-; Out: nothing                                                                                                                        -
+;                                                      																-
+; In:  nothing                                         																-
+; Out: nothing                                                        																-
 ; 
 ;-----------------------------------------------------------------------------------------------------------------------
 
-InitText										proc                                                                  ; Declare function
+InitText										proc  																; Declare function
 ;------[Local Data]-----------------------------------------------------------------------------------------------------
-												local               holder:qword                                      ;
+												local   			holder:qword  									;
 
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
-												Save_Registers                                                        ; Save incoming registers
+												Save_Registers														; Save incoming registers
 
 												
 												xor rdi, rdi
@@ -45,44 +45,44 @@ For_Loop_End:
 												
 ;-----[Zero final return]----------------------------------------------
 
-												xor                 rax, rax                                          ; Zero final return
+												xor 				rax, rax  										; Zero final return
 
 ;------[Restore incoming registers]-------------------------------------------------------------------------------------
 
-												align               qword                                             ; Set qword alignment
-												Restore_Registers                                                     ; Restore incoming registers
+												align   			qword 											; Set qword alignment
+												Restore_Registers 													; Restore incoming registers
 
 ;------[Return to caller]-----------------------------------------------------------------------------------------------
 
-ret                                                                   ; Return to caller
+ret   																; Return to caller
 
-InitText										endp                                                                  ; End function
+InitText										endp  																; End function
 
 
 
 ;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; AddReal4VariableToDebugText                                                                                                        -
-;                                                                                                                      -
+;                                                      																-
+; AddReal4VariableToDebugText                                        																-
+;                                                      																-
 ; Adds a variable value to a debug text
 ;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
+;                                                      																-
 ; In:  
 ;	xmm0, the value. 
 ;	xmm1, the xPos start
 ;	xmm2, the yPos 
 ;	rcx, the string to show before the value. 
-;	rdx, the position in the textbuffer                                                                  -
-; Out: nothing                                                                                                                        -
+;	rdx, the position in the textbuffer  																-
+; Out: nothing                                                        																-
 ; 
 ;-----------------------------------------------------------------------------------------------------------------------
 
-AddReal4VariableToDebugText						proc                                                                  ; Declare function
+AddReal4VariableToDebugText						proc  																; Declare function
 ;------[Local Data]-----------------------------------------------------------------------------------------------------
-												local               holder:qword                                      ;
+												local   			holder:qword  									;
 
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
-												Save_Registers                                                        ; Save incoming registers
+												Save_Registers														; Save incoming registers
 												Save_SIMD_registers
 
 												xor rdi, rdi
@@ -156,40 +156,40 @@ For_Loop_Value_End:
 												
 ;-----[Zero final return]----------------------------------------------
 
-												xor                 rax, rax                                          ; Zero final return
+												xor 				rax, rax  										; Zero final return
 
 ;------[Restore incoming registers]-------------------------------------------------------------------------------------
 
-												align               qword                                             ; Set qword alignment
+												align   			qword 											; Set qword alignment
 												Restore_SIMD_registers
-												Restore_Registers                                                     ; Restore incoming registers
+												Restore_Registers 													; Restore incoming registers
 
 ;------[Return to caller]-----------------------------------------------------------------------------------------------
 
-ret                                                                   ; Return to caller
+ret   																; Return to caller
 
-AddReal4VariableToDebugText									endp                                                                  ; End function
+AddReal4VariableToDebugText									endp  																; End function
 
 
 ;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; WriteCharacterInfoToBuffer                                                                                                        -
-;                                                                                                                      -
+;                                                      																-
+; WriteCharacterInfoToBuffer                                        																-
+;                                                      																-
 ; Writes character info for a character to a textVertexbuffer at the specified index
 ;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; In:  rcx, textVertexbuffer. rdx, characterId. r8, index in buffer. xmm3, Screen x position. xmm4, screen y position                                                                                                         -
-; Out: xmm0, next xPos                                                                                                                        -
+;                                                      																-
+; In:  rcx, textVertexbuffer. rdx, characterId. r8, index in buffer. xmm3, Screen x position. xmm4, screen y position                                         																-
+; Out: xmm0, next xPos                                                        																-
 ; 
 ;-----------------------------------------------------------------------------------------------------------------------
 
-WriteCharacterInfoToBuffer						proc                                                                  ; Declare function
+WriteCharacterInfoToBuffer						proc  																; Declare function
 ;------[Local Data]-----------------------------------------------------------------------------------------------------
-												local               holder:qword                                      ;
+												local   			holder:qword  									;
 
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 												Save_Registers
-												Save_SIMD_registers                                                        ; Save incoming registers
+												Save_SIMD_registers														; Save incoming registers
 
 												mov r10, rcx
 												mov r11, rdx										
@@ -312,16 +312,16 @@ WriteCharacterInfoToBuffer						proc                                            
 
 ;-----[Zero final return]----------------------------------------------
 
-												xor                 rax, rax                                          ; Zero final return
+												xor 				rax, rax  										; Zero final return
 
 ;------[Restore incoming registers]-------------------------------------------------------------------------------------
 
-												align               qword                                             ; Set qword alignment
+												align   			qword 											; Set qword alignment
 												Restore_SIMD_registers
-												Restore_Registers                                                     ; Restore incoming registers
+												Restore_Registers 													; Restore incoming registers
 
 ;------[Return to caller]-----------------------------------------------------------------------------------------------
 
-ret                                                                   ; Return to caller
+ret   																; Return to caller
 
-WriteCharacterInfoToBuffer						endp                                                                  ; End function
+WriteCharacterInfoToBuffer						endp  																; End function

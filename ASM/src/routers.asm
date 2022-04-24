@@ -1,8 +1,8 @@
 
 ;-----------------------------------------------------------------------------------------------------------------------
-;                                                                                                                      -
-; Router lists.                                                                                                        -
-;                                                                                                                      -
+;                                                                              										-
+; Router lists.                                                                										-
+;                                                                              										-
 ;-----------------------------------------------------------------------------------------------------------------------
 
 ;----- [A] -------------------------------------------------------------------------------------------------------------
@@ -17,11 +17,11 @@
 
 ;----- [F] -------------------------------------------------------------------------------------------------------------
 
-fwpr_rte                                         qword               fwpr_00100                                        ; 0: command
-                                                 qword               fwpr_00200                                        ; 1: memory
-                                                 qword               fwpr_00300                                        ; 2: registers
-                                                 qword               fwpr_00400                                        ; 3: watch
-                                                 qword               fwpr_00500                                        ; 4: source
+fwpr_rte 										qword   			fwpr_00100										; 0: command
+												qword   			fwpr_00200										; 1: memory
+												qword   			fwpr_00300										; 2: registers
+												qword   			fwpr_00400										; 3: watch
+												qword   			fwpr_00500										; 4: source
 
 ;----- [G] -------------------------------------------------------------------------------------------------------------
 
@@ -37,19 +37,19 @@ fwpr_rte                                         qword               fwpr_00100 
 
 ;----- [M] -------------------------------------------------------------------------------------------------------------
 
-Main_CB_Rte                                      qword               Main_CB_EraseBkgnd                                ; WM_EraseBkgnd
-                                                 qword               Main_CB_Paint                                     ; WM_Paint
-                                                 qword               Main_CB_Close                                     ; WM_Close
-                                                 qword               Main_CB_Destroy                                   ; WM_Destroy
-                                                 qword               Main_CB_KeyDown                                   ; WM_KeyDown
-                                                 qword               Main_CB_KeyUp                                     ; WM_KeyUp
-                                                 qword               Main_CB_MouseMove                                 ; WM_MouseMove
-                                                 qword               Main_CB_MouseWheel                                ; WM_MouseWheel
-                                                 qword               Main_CB_LButtonDown                               ; WM_LButtonDown
-                                                 qword               Main_CB_RButtonDown                               ; WM_RButtonDown
-                                                 qword               Main_CB_MButtonDown                               ; WM_MButtonDown
-                                                 qword               Main_CB_MButtonUp                                 ; WM_LButtonUp
-                                                 qword               Main_CB_Input                                     ; WM_Input
+Main_CB_Rte  									qword   			Main_CB_EraseBkgnd								; WM_EraseBkgnd
+												qword   			Main_CB_Paint 									; WM_Paint
+												qword   			Main_CB_Close 									; WM_Close
+												qword   			Main_CB_Destroy   								; WM_Destroy
+												qword   			Main_CB_KeyDown   								; WM_KeyDown
+												qword   			Main_CB_KeyUp 									; WM_KeyUp
+												qword   			Main_CB_MouseMove 								; WM_MouseMove
+												qword   			Main_CB_MouseWheel								; WM_MouseWheel
+												qword   			Main_CB_LButtonDown   							; WM_LButtonDown
+												qword   			Main_CB_RButtonDown   							; WM_RButtonDown
+												qword   			Main_CB_MButtonDown   							; WM_MButtonDown
+												qword   			Main_CB_MButtonUp 								; WM_LButtonUp
+												qword   			Main_CB_Input 									; WM_Input
 
 ;----- [N] -------------------------------------------------------------------------------------------------------------
 
