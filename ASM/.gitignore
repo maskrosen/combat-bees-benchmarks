@@ -370,3 +370,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# We need this file and I am not sure how it was built
+!SymbolRC.DEF
