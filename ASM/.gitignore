@@ -371,7 +371,8 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-# We need this file and I am not sure how it was built
+# We need these files and I am not sure how it was built
 !SymbolRC.DEF
+!DXSample.def
 # We want to have this manifest file and not have to build it
 !DXSample.exe.manifest
