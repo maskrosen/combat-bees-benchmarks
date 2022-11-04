@@ -240,21 +240,24 @@ LR0p00001 											dword					03727C5ACh                      ;float 9.99999974
 GetRandomInsideUnitSphere							macro  
 													
 													xorps xmm0, xmm0
-													mov rax, 100000
+													mov rax, 200000
 													GetRandomNumberMacro
+													sub rax, 100000
 													cvtsi2ss xmm1, rax
 													mulss xmm1, LR0p00001
 													movss xmm0, xmm1
 
-													mov rax, 100000
+													mov rax, 200000
 													GetRandomNumberMacro
+													sub rax, 100000
 													cvtsi2ss xmm1, rax
 													mulss xmm1, LR0p00001
 													shufps xmm0, xmm0, 93h ; rotate one step so x becomes y
 													movss xmm0, xmm1
 
-													mov rax, 100000
+													mov rax, 200000
 													GetRandomNumberMacro
+													sub rax, 100000
 													cvtsi2ss xmm1, rax
 													mulss xmm1, LR0p00001
 													shufps xmm0, xmm0, 93h 
