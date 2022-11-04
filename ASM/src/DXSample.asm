@@ -397,9 +397,10 @@ Startup  										proc  																; Declare function
 
 												;-----[Terminate the application]--------------------------------------
 
-												xor 				rcx, rcx  										; Set final return code
-												call				ExitProcess   									; Exit this process
-
+												; xor 				rcx, rcx  										; Set final return code
+												; call				ExitProcess   									; Exit this process
+												xor					rax, rax
+												ret
 Startup  										endp  																; End startup function
 
 												end   																; End module

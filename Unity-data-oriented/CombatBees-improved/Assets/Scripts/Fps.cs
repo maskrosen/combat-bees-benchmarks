@@ -11,7 +11,9 @@ public class Fps : MonoBehaviour
                                 "R Key: <i>Restart</i>\n" +
                                 "H Key: <i>Show/hide this info</i>\n";
     float timePassed = 0;
+    float totalTimePassed = 0;
     int frameCount = 0;
+    int framesAfter60Seconds = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,15 +24,20 @@ public class Fps : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(timePassed > 1)
+        if (timePassed > 1)
         {
             var fps = frameCount / timePassed;
-            text.text = instructions + "Fps: " + fps + "\n Number of bees: " + GetBeeCount();
+            text.text = instructions + "Fps: " + fps + "\n Number of bees: " + GetBeeCount() + "\nTotal frame count after 60 seconds: " + framesAfter60Seconds;
             frameCount = 0;
             timePassed = 0;
         }
+        if (totalTimePassed <= 60.0f)       
+        {
+            framesAfter60Seconds++;
+        }
         timePassed += Time.unscaledDeltaTime;
-        frameCount++;
+        totalTimePassed += Time.unscaledDeltaTime;
+        frameCount++;     
     }
 
     int GetBeeCount()

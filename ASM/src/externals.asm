@@ -6,6 +6,8 @@
 
 extrn											team1BeeMovementArray:movement
 extrn											team2BeeMovementArray:movement
+extrn											team1BeeTargetsArray:dword
+extrn											team2BeeTargetsArray:dword
 extrn											beeTransformDataArray:meshInstanceData
 extrn											cbPerInst:real4
 extrn											 fontData:byte

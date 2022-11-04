@@ -62,9 +62,9 @@ bitmapInfoHeaderHeightMap						label				bitmap_info_header
 ;-----[C]---------------------------------------------------------------------------------------------------------------
 
 												align				16												; Set xmm word alignment
-camPosition										real4				0.0, 350.0, -10.0, 1.0							; Eye
-camTarget										real4				0.0, 0.0,  0.0, 0.0								; LookAt
-camLookTo										real4				0.0, 0.0, 1.0, 0.0								; Direction
+camPosition										real4				0.0, 32.0, -160.0, 1.0							; Eye
+camTarget										real4				0.0, -290.0,  0.0, 0.0								; LookAt
+camLookTo										real4				0.0, -0.35, 0.93675, 0.0								; Direction
 camLookToSkyQuad								real4				0.0, 0.0, 1.0, 0.0								; Direction
 camUp											real4				0.0, 1.0,  0.0, 0.0								; Up
 camForward										real4				0.0, 0.0, 1.0, 0.0

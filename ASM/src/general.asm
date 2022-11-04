@@ -1506,7 +1506,31 @@ Shutdown										proc																; Declare function
 												;
 												; vertLayout->Release();
 
-												mov				rcx, vertLayout								; Get the interface pointer
+												mov				rcx, vertLayoutCars								; Get the interface pointer
+												mov				rbx, [ rcx ]									; Set the vTable pointer
+												WinCall			ID3D11InputLayout_Release						; Execute call
+												
+												;------[Release the layout]--------------------------------------------
+												;
+												; vertLayout->Release();
+
+												mov				rcx, vertLayoutPoints								; Get the interface pointer
+												mov				rbx, [ rcx ]									; Set the vTable pointer
+												WinCall			ID3D11InputLayout_Release						; Execute call
+												
+												;------[Release the layout]--------------------------------------------
+												;
+												; vertLayout->Release();
+
+												mov				rcx, vertLayoutQuads								; Get the interface pointer
+												mov				rbx, [ rcx ]									; Set the vTable pointer
+												WinCall			ID3D11InputLayout_Release						; Execute call
+												
+												;------[Release the layout]--------------------------------------------
+												;
+												; vertLayout->Release();
+
+												mov				rcx, vertLayoutFont								; Get the interface pointer
 												mov				rbx, [ rcx ]									; Set the vTable pointer
 												WinCall			ID3D11InputLayout_Release						; Execute call
 												
@@ -2066,7 +2090,14 @@ R_Not_Pressed:
 												mov rcx, 0
 												LocalCall UpdatePositions
 												mov rcx, 1
-												LocalCall UpdatePositions												
+												LocalCall UpdatePositions		
+
+												mov rcx, 0
+												mov rdx, 1
+												LocalCall GetNewEnemyTargets
+												mov rcx, 1
+												mov rdx, 0
+												LocalCall GetNewEnemyTargets										
 
 												mov eax, team1AliveBees
 												add eax, team1DeadBees

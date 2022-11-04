@@ -542,3 +542,206 @@ Position_Loop_End:
 ret																	; Return to caller
 
 UpdatePositions									endp																 ; End function
+
+
+;***** GetArrayOffset *********************************************************************************************************
+;
+; Return the offset to an array in rax
+; 
+; 
+
+GetArrayOffset									macro index:req, entrySize:req  
+
+												mov rax, index
+												mov rbx, entrySize
+												mul rbx												
+
+												endm
+
+;***** SetBit *********************************************************************************************************
+;
+; Sets bit in bit mask array
+; cannot use rax or rbx or rdx as parameters
+;
+; 
+
+SetBit 											macro dest:req, index:req 
+
+												;calculate array index
+												xor rdx, rdx
+												mov rax, index
+												mov rbx, 64
+												div rbx
+												;Quotient in rax
+												;Remainder in rdx		
+												push rdx							
+												GetArrayOffset rax, sizeof(qword)
+												pop rdx
+												mov rbx, qword ptr [dest + rax]
+												push rax
+												mov rax, 1
+												push rcx												
+												mov cl, dl
+												shl rax, cl ;we now have our bit to set 
+												pop rcx
+												or rbx, rax
+												pop rax
+												mov qword ptr[dest + rax], rbx
+
+												endm
+
+;***** ClearBit *********************************************************************************************************
+;
+; Clears bit in bit mask array
+; cannot use rax or rbx or rdx as parameters
+;
+; 
+
+ClearBit 										macro dest:req, index:req 
+
+												;calculate array index
+												xor rdx, rdx
+												mov rax, index
+												mov rbx, 64
+												div rbx
+												;Quotient in rax
+												;Remainder in rdx				
+												push rdx								
+												GetArrayOffset rax, sizeof(qword)
+												pop rdx
+												mov rbx, qword ptr [dest + rax]
+												push rax
+												mov rax, 1
+												push rcx
+												mov cl, dl
+												shl rax, cl ;we now have our bit to set 
+												pop rcx
+												not rax ; now all bits are set to 1 exept the one that should be cleared
+												and rbx, rax
+												pop rax
+												mov qword ptr[dest + rax], rbx
+
+												endm
+
+
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; GetNewEnemyTargets                                                                                                        -
+;                                                                                                                      -
+; Gets new enemy targets for any bee that needs it
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; In:  rcx, teamIndex    rdx, enemy teamIndex                                                                                                     -
+; Out: nothing                                                                                                                        -
+; 
+;-----------------------------------------------------------------------------------------------------------------------
+
+GetNewEnemyTargets								proc                                                                  ; Declare function
+;------[Local Data]-----------------------------------------------------------------------------------------------------
+												local               holder:qword                                      ;
+
+;------[Save incoming registers]----------------------------------------------------------------------------------------
+												Save_Registers                                                        ; Save incoming registers
+
+												
+												mov r8, rcx ;team index
+												mov r12, rdx ;enemy team index
+												mov r15d, randSeed
+												;calc pointer offset to team
+												mov rax, r8
+												mov rbx, sizeof(dword)
+												mul rbx
+												lea rcx, team1AliveBees
+												mov esi, dword ptr [rcx + rax] ;alive bees for team
+												sar esi, 6 ;divide by 64
+												inc esi ;we add by one to catch the rest part when not evenly divisible by 64	
+
+												mov rax, r8
+												mov rbx, sizeof(qword)
+												mul rbx
+												lea rcx, teamNoTargets
+												mov r9, qword ptr [rcx + rax] ;no target array for team index
+												lea rcx, beeTargets
+												mov r10, qword ptr [rcx + rax] ;targets array for team index
+												lea rcx, teamHasTargets
+												mov r8, qword ptr [rcx + rax] ;has target array for team index
+												
+												;calc pointer offset to enemy team
+												mov rax, r12
+												mov rbx, sizeof(dword)
+												mul rbx
+												lea rcx, team1AliveBees
+												mov r12d, dword ptr [rcx + rax] ;alive bees for enemy team														
+												
+												;rcx reserved for mask
+												;r8 hasTarget
+												;r9 noTarget
+												;r10 targets
+												;r12 enemyAliveCount
+												;r14 bitmask array offset
+												;r15 randSeed
+									
+
+												xor r14, r14
+												xor rdi, rdi
+GetTarget_Mask_Loop:												
+												cmp rdi, rsi
+												jge GetTarget_Loop_Mask_End
+
+												mov rcx, qword ptr[r9 + r14]
+												
+												test rcx, rcx
+												jz GetTarget_Continue ;no bits are set in this qword
+GetTarget_Bit_Loop:												
+												tzcnt rbx, rcx
+												mov r11, rbx ;hold our bit index
+
+												;get random enemy target index 
+												push rcx
+												mov rcx, r15 ;random seed
+												mov rax, r12 ;alive enemy bees
+												GetRandomNumberMacro
+												mov r15, rcx ;keep random seed here
+												pop rcx
+
+												;write target to target array
+												mov r13, rax ;save target index
+												mov rax, rdi
+												mov rbx, 64 ;bits per qword
+												mul rbx
+												add rax, r11 ;bee index
+												mov r11, rax
+												mov rbx, sizeof(dword)
+												mul rbx 
+												mov dword ptr [r10 + rax], r13d
+												;update bit masks
+												SetBit r8, r11
+												ClearBit r9, r11
+												blsi rax, rcx ;leaves only the least significant bit turned on
+												xor rcx, rax ;flip the bit we just handled
+
+												jnz GetTarget_Bit_Loop
+
+
+GetTarget_Continue:									
+												inc rdi
+												add r14, sizeof(qword)
+												jmp GetTarget_Mask_Loop
+GetTarget_Loop_Mask_End:
+
+												mov randSeed, r15d ;store random seed that was kept in r15
+
+;-----[Zero final return]----------------------------------------------
+
+												xor                 rax, rax                                          ; Zero final return
+
+;------[Restore incoming registers]-------------------------------------------------------------------------------------
+
+												align               qword                                             ; Set qword alignment
+												Restore_Registers                                                     ; Restore incoming registers
+
+;------[Return to caller]-----------------------------------------------------------------------------------------------
+
+ret                                                                   ; Return to caller
+
+GetNewEnemyTargets								endp                                                                  ; End function

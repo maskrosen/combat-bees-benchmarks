@@ -71,6 +71,7 @@ main_style   									equ 				ws_visible or ws_popup  or ws_caption or ws_sysmen
 
 
 max_number_of_bees   							equ 				15000 ;per team
+max_number_of_bits								equ					max_number_of_bees / 64 + 1
 
 mem1_x   										equ 				source_w - 18 									; x
 mem1_y   										equ 				source_y  										; y

@@ -47,6 +47,14 @@ public static class Data
         FullBatch.Clear();
         RestBatch.Clear();
 
+       /* Team1HasTarget = new(MaxNumberOfBeesPerTeam);
+        Team2HasTarget = new(MaxNumberOfBeesPerTeam);
+        Team1NoTarget = new(MaxNumberOfBeesPerTeam);
+        Team2NoTarget = new(MaxNumberOfBeesPerTeam);
+        Team1Dead = new(MaxNumberOfBeesPerTeam);
+        Team2Dead = new(MaxNumberOfBeesPerTeam);*/
+
+
     }
 
     //public static readonly Vector3[] BeePositions = new Vector3[MaxNumberOfBees];
@@ -98,6 +106,17 @@ public static class Data
     public static readonly Vector3 Team2BeeSpawnPos = Vector3.right * (-Field.size.x * .4f + Field.size.x * .8f * 1);
 
     public static readonly Vector3[] BeeSpawnPos = { Team1BeeSpawnPos, Team2BeeSpawnPos };
+    /*
+    public static AliveHasTarget Team1HasTarget;
+    public static AliveHasTarget Team2HasTarget;
+    public static AliveNoTarget Team1NoTarget;
+    public static AliveNoTarget Team2NoTarget;
+    public static Dead Team1Dead;
+    public static Dead Team2Dead;
+
+    public static readonly AliveHasTarget[] AliveHasTargets = { Team1HasTarget, Team2HasTarget};
+    public static readonly AliveNoTarget[] AliveNoTargets = { Team1NoTarget, Team2NoTarget};
+    public static readonly Dead[] Deads = { Team1Dead, Team2Dead};*/
 
     //Render data
 
