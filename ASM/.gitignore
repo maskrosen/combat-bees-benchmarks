@@ -373,3 +373,5 @@ MigrationBackup/
 
 # We need this file and I am not sure how it was built
 !SymbolRC.DEF
+# We want to have this manifest file and not have to build it
+!DXSample.exe.manifest
