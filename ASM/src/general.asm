@@ -2099,10 +2099,16 @@ R_Not_Pressed:
 												mov rdx, 0
 												LocalCall GetNewEnemyTargets										
 
+												mov rcx, 0
+												mov rdx, 1
+												LocalCall Attack
+												mov rcx, 1
+												mov rdx, 0
+												LocalCall Attack										
+
 												mov eax, team1AliveBees
 												add eax, team1DeadBees
 												mov team1NumberOfBees, eax
-												LocalCall SpawnBees
 
 												mov eax, team2AliveBees
 												add eax, team2DeadBees

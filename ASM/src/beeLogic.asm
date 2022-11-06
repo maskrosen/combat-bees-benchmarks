@@ -80,6 +80,92 @@ ret   																; Return to caller
 ClearBees										endp  																; End function
 
 
+;***** SetBit *********************************************************************************************************
+;
+; Sets bit in bit mask array
+; cannot use rax or rbx or rdx as parameters
+;
+; 
+
+SetBit 											macro dest:req, index:req 
+
+												;calculate array index
+												mov rax, index
+												shr rax, 6
+												mov rdx, index
+												and rdx, 63
+												;Quotient in rax
+												;Remainder in rdx	
+												mov rbx, qword ptr [dest + rax * 8]
+												push rax
+												mov rax, 1
+												push rcx												
+												mov cl, dl
+												shl rax, cl ;we now have our bit to set 
+												pop rcx
+												or rbx, rax
+												pop rax
+												mov qword ptr[dest + rax * 8], rbx
+
+												endm
+
+;***** ClearBit *********************************************************************************************************
+;
+; Clears bit in bit mask array
+; cannot use rax or rbx or rdx as parameters
+;
+; 
+
+ClearBit 										macro dest:req, index:req 
+
+												;calculate array index
+												mov rax, index
+												shr rax, 6
+												mov rdx, index
+												and rdx, 63
+												;Quotient in rax
+												;Remainder in rdx		
+												mov rbx, qword ptr [dest + rax * 8]
+												push rax
+												mov rax, 1
+												push rcx
+												mov cl, dl
+												shl rax, cl ;we now have our bit to set 
+												pop rcx
+												not rax ; now all bits are set to 1 exept the one that should be cleared
+												and rbx, rax
+												pop rax
+												mov qword ptr[dest + rax * 8], rbx
+
+												endm
+
+;***** GetBit *********************************************************************************************************
+;
+; Returns the bit at given index
+; cannot use rax or rbx or rdx as parameters
+; result in rax
+; 
+
+GetBit 											macro dest:req, index:req 
+
+												;calculate array index
+												mov rax, index
+												shr rax, 6
+												mov rdx, index
+												and rdx, 63
+												;Quotient in rax
+												;Remainder in rdx				
+												mov rbx, qword ptr [dest + rax * 8] 												
+												mov rax, 1
+												push rcx
+												mov cl, dl
+												shr rbx, cl ;we now have our bit to set 
+												pop rcx
+												and rax, rbx
+
+												endm
+
+
 ;***** InitBee *********************************************************************************************************
 ;
 ; Does not restore registers!
@@ -121,12 +207,18 @@ InitBees										macro
 												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team
 
 												
+												lea r12, teamNoTargets
+												mov r12, qword ptr [r12 + rax] ;no target array for team index
+												lea r14, teamHasTargets
+												mov r14, qword ptr [r14 + rax] ;has target array for team index
+
+												;We don't clear the target array here since it should not be read if no target bit is set to 1
+
+												;TODO add sizes
 												
-												;TODO add sizes, targets and noTargets here
-												
-												mov rdi, r10
-												mov rsi, rdi
-												add rsi, r11
+												mov rdi, r10 ;first bee index
+												mov rsi, rdi 
+												add rsi, r11 ;end index 
 												xor rax, rax
 Init_Bees_Loop:
 
@@ -140,7 +232,10 @@ Init_Bees_Loop:
 												;set velocity to 0
 												movsd qword ptr [rcx + rax + movement.velocity], xmm2 ;x, y
 												movss real4 ptr [rcx + rax + movement.velocity + 8], xmm2 ; z
-
+												push rax
+												SetBit r12, rdi ;set no target bit to 1
+												ClearBit r14, rdi ;set has taget bit to 0												
+												pop rax
 												inc dword ptr [r9] ;add 1 to alivebees of the current team
 
 												inc rdi
@@ -510,15 +605,15 @@ Position_Loop:
 												cmp rdi, rsi
 												jge Position_Loop_End
 
-												movups xmm5, xmmword ptr [rcx + r10] ;position of current bee
-												movups xmm6, xmmword ptr [rcx + r10 + movement.velocity] ; velocity of current bee
+												movups xmm5, xmmword ptr [rcx + r10] ;position of current bee, w is garbage
+												movups xmm6, xmmword ptr [rcx + r10 + movement.velocity] ; velocity of current bee, w is garbage
 
 												mulps xmm6, xmm10
 												addps xmm6, xmm5
 												movsd qword ptr [rcx + r10], xmm6 ;write back pos to array x and y
 												shufps xmm6, xmm6, 39h
 												shufps xmm6, xmm6, 39h
-												movss real4 ptr [rcx + r10 + sizeof(qword)], xmm6 ;write back pos to array x and y
+												movss real4 ptr [rcx + r10 + sizeof(qword)], xmm6 ;write back pos to array z
 
 
 												inc rdi
@@ -555,71 +650,6 @@ GetArrayOffset									macro index:req, entrySize:req
 												mov rax, index
 												mov rbx, entrySize
 												mul rbx												
-
-												endm
-
-;***** SetBit *********************************************************************************************************
-;
-; Sets bit in bit mask array
-; cannot use rax or rbx or rdx as parameters
-;
-; 
-
-SetBit 											macro dest:req, index:req 
-
-												;calculate array index
-												xor rdx, rdx
-												mov rax, index
-												mov rbx, 64
-												div rbx
-												;Quotient in rax
-												;Remainder in rdx		
-												push rdx							
-												GetArrayOffset rax, sizeof(qword)
-												pop rdx
-												mov rbx, qword ptr [dest + rax]
-												push rax
-												mov rax, 1
-												push rcx												
-												mov cl, dl
-												shl rax, cl ;we now have our bit to set 
-												pop rcx
-												or rbx, rax
-												pop rax
-												mov qword ptr[dest + rax], rbx
-
-												endm
-
-;***** ClearBit *********************************************************************************************************
-;
-; Clears bit in bit mask array
-; cannot use rax or rbx or rdx as parameters
-;
-; 
-
-ClearBit 										macro dest:req, index:req 
-
-												;calculate array index
-												xor rdx, rdx
-												mov rax, index
-												mov rbx, 64
-												div rbx
-												;Quotient in rax
-												;Remainder in rdx				
-												push rdx								
-												GetArrayOffset rax, sizeof(qword)
-												pop rdx
-												mov rbx, qword ptr [dest + rax]
-												push rax
-												mov rax, 1
-												push rcx
-												mov cl, dl
-												shl rax, cl ;we now have our bit to set 
-												pop rcx
-												not rax ; now all bits are set to 1 exept the one that should be cleared
-												and rbx, rax
-												pop rax
-												mov qword ptr[dest + rax], rbx
 
 												endm
 
@@ -688,7 +718,7 @@ GetTarget_Mask_Loop:
 												cmp rdi, rsi
 												jge GetTarget_Loop_Mask_End
 
-												mov rcx, qword ptr[r9 + r14]
+												mov rcx, qword ptr[r9 + r14] ;no target
 												
 												test rcx, rcx
 												jz GetTarget_Continue ;no bits are set in this qword
@@ -715,8 +745,8 @@ GetTarget_Bit_Loop:
 												mul rbx 
 												mov dword ptr [r10 + rax], r13d
 												;update bit masks
-												SetBit r8, r11
-												ClearBit r9, r11
+												SetBit r8, r11 ;has target
+												ClearBit r9, r11 ;no target
 												blsi rax, rcx ;leaves only the least significant bit turned on
 												xor rcx, rax ;flip the bit we just handled
 
@@ -745,3 +775,294 @@ GetTarget_Loop_Mask_End:
 ret                                                                   ; Return to caller
 
 GetNewEnemyTargets								endp                                                                  ; End function
+
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; Attack                                                                                                        -
+;                                                                                                                      -
+; Handles attacks of bees of the selected team
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; In:  rcx, teamIndex rdx, enemyTeamIndex                                                                                                         -
+; Out: nothing                                                                                                                        -
+; 
+;-----------------------------------------------------------------------------------------------------------------------
+
+Attack											proc                                                                  ; Declare function
+;------[Local Data]-----------------------------------------------------------------------------------------------------
+												local               holder:qword                                      ;
+
+;------[Save incoming registers]----------------------------------------------------------------------------------------
+												Save_Registers                                                        ; Save incoming registers
+
+												mov r8, rcx ;team index
+												movq xmm15, r8
+												mov r12, rdx ;enemy team index
+												;calc pointer offset to team
+												mov rax, r8
+												mov rbx, sizeof(dword)
+												mul rbx
+												lea rcx, team1AliveBees
+												mov esi, dword ptr [rcx + rax] ;alive bees for team
+												sar esi, 6 ;divide by 64
+												inc esi ;we add by one to catch the rest part when not evenly divisible by 64	
+
+												mov rax, r8
+												mov rbx, sizeof(qword)
+												mul rbx
+												lea rcx, beeMovements
+												mov r15, qword ptr [rcx + rax] ;team1 bee movements ptr
+												lea rcx, teamNoTargets
+												mov r9, qword ptr [rcx + rax] ;no target array for team index
+												lea rcx, beeTargets
+												mov r10, qword ptr [rcx + rax] ;targets array for team index
+												lea rcx, teamHasTargets
+												mov r8, qword ptr [rcx + rax] ;has target array for team index
+												
+												;calc pointer offset to enemy team
+												mov rax, r12
+												mov rbx, sizeof(qword)
+												mul rbx
+												lea rcx, beeMovements
+												mov r13, qword ptr [rcx + rax] ;team2 bee movements ptr
+
+												mov rax, r12
+												mov rbx, sizeof(dword)
+												mul rbx
+												lea rcx, team1AliveBees
+												mov r12d, dword ptr [rcx + rax] ;alive bees for enemy team		
+												
+												;rcx reserved for mask
+												;r8 hasTarget
+												;r9 noTarget
+												;r10 targets
+												;r11 beeIndex
+												;r12 enemyAliveCount
+												;r13 enemyMovements
+												;r14 bitmask array offset
+												;r15 movements
+												;xmm15 teamIndex
+
+												;setup some local "variables" with registers 
+												mov rax, deltaTimeMicros
+												cvtsi2ss xmm10, rax
+												movss xmm0, r0000001
+												mulss xmm10, xmm0 ;delta time in seconds												
+												movaps xmm11, xmmword ptr XMMask3
+									
+
+												xor r14, r14
+												xor rdi, rdi
+AttackTarget_Mask_Loop:												
+												cmp rdi, rsi
+												jge AttackTarget_Loop_Mask_End
+
+												mov rcx, qword ptr[r8 + r14] ;hasTarget
+												
+												test rcx, rcx
+												jz AttackTarget_Continue ;no bits are set in this qword
+AttackTarget_Bit_Loop:												
+												tzcnt rbx, rcx
+												mov r11, rbx ;hold our bit index
+
+												;check if target bee is dead
+												mov rax, rdi
+												mov rbx, 64 ;bits per qword
+												mul rbx
+												add rax, r11 ;bee index
+												mov r11, rax
+												mov rbx, sizeof(dword)
+												mul rbx 
+												mov edx, dword ptr [r10 + rax]
+
+												cmp rbx, r12
+												jl Target_Alive 
+																								
+												;set target index to 0 and set no target and clear has target
+												
+												xor ebx, ebx ;set target index to 0
+												mov dword ptr [r10 + rax], ebx
+												
+												SetBit r9, r11 ;no target
+												ClearBit r8, r11 ;has target
+												jmp AttackTarget_Bit_Loop_Continue
+Target_Alive:												
+												
+												;Target is alive, try to attack it
+												;rdx holds attack target
+												push rdx ;save enemy target
+												mov rax, sizeof(movement)
+												mul rdx
+
+												movups xmm7, xmmword ptr [r13 + rax] ;position of target bee, w is garbage
+												
+												mov rbx, sizeof(movement)
+												mov rax, r11
+												mul rbx
+												pop rdx ;restore target index
+												
+												movups xmm5, xmmword ptr [r15 + rax] ;position of current bee, w is garbage
+												movups xmm6, xmmword ptr [r15 + rax + movement.velocity] ; velocity of current bee, w is garbage
+												push rax ;save movement array offset
+
+												;calc diff between current bee and target
+												subps xmm7, xmm5
+												movaps xmm0, xmm7
+												andps xmm0, xmm11 ;clear w since that hold data outside out vector3
+												movaps xmm4, xmm0 ;save diff here 
+
+												LengthOfVectorFromRegisterSquared	;leaves length in xmm1
+												comiss xmm1, attackDistanceSqr 	
+												mov rax, attackForce
+												mov rbx, chaseForce
+												cmova rax, rbx ;if we are not in range we use chase force	
+
+												;move bee towards target with selected force
+												movss xmm0, xmm10 ;delta time
+												movss xmm2, xmm1
+												sqrtss xmm2, xmm2
+												divss xmm0, xmm2 ;delta time / distance
+												cvtsi2ss xmm2, rax ;get force as float
+												mulss xmm0, xmm2
+												shufps xmm0, xmm0, 00h ;move our value to all spots
+												mulps xmm0, xmm4 ;this now holds vel diff this frame
+												addps xmm6, xmm0 ;new velocity
+
+												pop rax ;restore movement array offset 
+												movsd qword ptr [r15 + rax + movement.velocity], xmm6 ;write back vel to array x and y
+												shufps xmm6, xmm6, 39h
+												shufps xmm6, xmm6, 39h
+												movss real4 ptr [r15 + rax + movement.velocity + sizeof(qword)], xmm6 ;write back vel to array z
+												
+												comiss xmm1, hitDistanceSqr
+												ja Not_In_Range
+												;we are in hit range, kill enemy bee
+												push rcx
+												push rdx
+												mov rcx, r11
+												movq rax, xmm15 ;team index
+												mov rdx, rax
+												LocalCall KillBee
+												pop rdx
+												pop rcx
+
+Not_In_Range:												
+
+
+AttackTarget_Bit_Loop_Continue:
+												blsi rax, rcx ;leaves only the least significant bit turned on
+												xor rcx, rax ;flip the bit we just handled
+
+												jnz AttackTarget_Bit_Loop
+
+
+AttackTarget_Continue:									
+												inc rdi
+												add r14, sizeof(qword)
+												jmp AttackTarget_Mask_Loop
+AttackTarget_Loop_Mask_End:
+
+												
+;-----[Zero final return]----------------------------------------------
+
+												xor                 rax, rax                                          ; Zero final return
+
+;------[Restore incoming registers]-------------------------------------------------------------------------------------
+
+												align               qword                                             ; Set qword alignment
+												Restore_Registers                                                     ; Restore incoming registers
+
+;------[Return to caller]-----------------------------------------------------------------------------------------------
+
+ret                                                                   ; Return to caller
+
+Attack									endp                                                                  ; End function
+
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; KillBee                                                                                                        -
+;                                                                                                                      -
+; Kills a bee
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; In:  rcx, beeIndex rdx, teamIndex                                                                                                         -
+; Out: nothing                                                                                                                        -
+; 
+;-----------------------------------------------------------------------------------------------------------------------
+
+KillBee											proc                                                                  ; Declare function
+;------[Local Data]-----------------------------------------------------------------------------------------------------
+												local               holder:qword                                      ;
+
+;------[Save incoming registers]----------------------------------------------------------------------------------------
+												Save_Registers                                                        ; Save incoming registers
+
+												;Need to copy over movement, no target bit, has target bit and more later
+
+												mov r8, rdx ;team index
+												mov rdi, rcx ; bee index
+
+												lea rcx, beeMovements
+												mov rax, r8
+												mov rbx, sizeof(qword)
+												mul rbx
+												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team
+
+												
+												lea r12, teamNoTargets
+												mov r12, qword ptr [r12 + rax] ;no target array for team index
+												lea r14, teamHasTargets
+												mov r14, qword ptr [r14 + rax] ;has target array for team index
+
+												mov rax, r8
+												mov rbx, sizeof(dword)
+												mul rbx
+												
+												lea r9, team1AliveBees
+												add r9, rax
+												
+												lea r11, team1DeadBees
+												add r11, rax
+												inc dword ptr [r11]
+
+												mov esi, dword ptr[r9]
+												dec esi
+												mov dword ptr[r9], esi
+
+												GetArrayOffset rsi, sizeof(movement)
+												movups xmm5, xmmword ptr [rcx + rax] ;position, and x of velocity
+												mov r10, qword ptr [rcx + rax + sizeof(xmmword)] ; y and z of velocity 
+												
+												GetArrayOffset rdi, sizeof(movement)
+												movups xmmword ptr [rcx + rax], xmm5
+												mov qword ptr [rcx + rax], r10
+
+												GetBit r14, rsi ;has target
+												cmp rax, 1
+												jne No_Target
+
+												SetBit r14, rdi ;has target
+												ClearBit r12, rdi ;no target
+												jmp	Return											
+No_Target:
+												SetBit r12, rdi ;no target
+												ClearBit r14, rdi ;has target
+
+
+
+
+Return:
+;-----[Zero final return]----------------------------------------------
+
+												xor                 rax, rax                                          ; Zero final return
+
+;------[Restore incoming registers]-------------------------------------------------------------------------------------
+
+												align               qword                                             ; Set qword alignment
+												Restore_Registers                                                     ; Restore incoming registers
+
+;------[Return to caller]-----------------------------------------------------------------------------------------------
+
+ret                                                                   ; Return to caller
+
+KillBee									endp                                                                  ; End function
