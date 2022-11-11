@@ -248,6 +248,7 @@ SystemParametersInfo 							textequ 			<__imp_SystemParametersInfoA> 					;
 
 TranslateMessage 								textequ 			<__imp_TranslateMessage>  						;
 TimeGetTime  									textequ 			<__imp_timeGetTime>
+TerminateProcess								textequ				<__imp_TerminateProcess>
 
 ;------[U]--------------------------------------------------------------------------------------------------------------
 

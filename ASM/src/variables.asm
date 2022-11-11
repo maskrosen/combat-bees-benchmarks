@@ -230,6 +230,7 @@ PS_Buffer									qword			?												; ID3D10Blob: pixel shader
 quadVertexBuffer							qword			?
 ;-----[R]---------------------------------------------------------------------------------------------------------------
 
+r0n											real4			-0.0											; Fixed float -0.0
 r0											real4			0.0											; Fixed float 0.0
 r0000001									real4			0.000001										; Fixed float 0.0000001
 r1											real4			1.0											; Fixed float 1.0

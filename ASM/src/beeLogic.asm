@@ -875,7 +875,7 @@ AttackTarget_Bit_Loop:
 												mul rbx 
 												mov edx, dword ptr [r10 + rax]
 
-												cmp rbx, r12
+												cmp rdx, r12
 												jl Target_Alive 
 																								
 												;set target index to 0 and set no target and clear has target
@@ -1066,3 +1066,142 @@ Return:
 ret                                                                   ; Return to caller
 
 KillBee									endp                                                                  ; End function
+
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; CheckCollisionsWall                                                                                                        -
+;                                                                                                                      -
+; Checks and handles collisions with walls
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; In:  rcx teamindex                                                                                                         -
+; Out: nothing                                                                                                                        -
+; 
+;-----------------------------------------------------------------------------------------------------------------------
+
+CheckCollisionsWall								proc                                                                  ; Declare function
+;------[Local Data]-----------------------------------------------------------------------------------------------------
+												local               holder:qword                                      ;
+
+;------[Save incoming registers]----------------------------------------------------------------------------------------
+												Save_Registers                                                        ; Save incoming registers
+												
+												mov r8, rcx ;team index
+												lea rcx, beeMovements
+												mov rax, r8
+												mov rbx, sizeof(qword)
+												mul rbx
+												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team
+
+												mov rax, r8
+												mov rbx, sizeof(dword)
+												mul rbx
+												
+												lea r9, team1AliveBees
+												add r9, rax
+												
+												lea r11, team1DeadBees
+												add r11, rax
+
+												mov esi, dword ptr [r9]
+												add esi, dword ptr [r11] ;alive + dead
+
+												movss xmm8, r1
+												shufps xmm8, xmm8, 00h 	;1
+												movaps xmm9, xmmword ptr [XMMaskAbs]
+												movaps xmm10, xmmword ptr [XMMask3]
+												movss xmm11, r05
+												shufps xmm11, xmm11, 00h
+												movss xmm12, r08
+												shufps xmm12, xmm12, 00h
+												movss xmm13, r05n
+												shufps xmm13, xmm13, 00h
+												movss xmm14, r0n
+												shufps xmm14, xmm14, 00h
+
+												xor rdi, rdi
+												xor rbx, rbx ;movement offset
+For_Loop:
+												cmp rdi, rsi
+												jge For_Loop_End
+
+												movups xmm5, xmmword ptr [rcx + rbx] ;position of current bee, w is garbage
+												movups xmm7, xmmword ptr [rcx + rbx + movement.velocity] ;velocity of current bee, w is garbage
+												andps xmm5, xmm10 ;clear w part
+												andps xmm7, xmm10 ;clear w part
+												movaps xmm4, xmmword ptr [fieldSizeHalf]
+
+												;check if less than field size
+												;get absolute value of all dimensions
+												movaps xmm6, xmm5
+												andps xmm5, xmm9												
+												vcmpps xmm0, xmm5, xmm4, 0EH ;position greater than half fieldsize 
+												
+												;check if bee is outside or not
+												pmovmskb rax, xmm0
+												test rax, rax
+												jz For_Loop_Continue ;if all bits are zero bee is inside field
+
+												movaps xmm3, xmm0 ;save mask here
+
+												;get inverted mask
+												BitwiseVectorNot
+												movaps xmm2, xmm0
+
+												;calc new position
+												;first get the sign of the position
+												movaps xmm0, xmm6
+												xorps   xmm1, xmm1
+												cmpneqps xmm1, xmm0		; mask for non zero values
+												andps   xmm0, xmm14    	; x_signbit for all values
+												andps   xmm1, xmm8		; 1.0, holds 1 in the spots that had non zero values
+												orps    xmm0, xmm1		; apply signbit to all non-zero values
+
+												;multiply sign with fieldsize half
+												mulps xmm0, xmm4 	;values clamped inside field
+												;mask for the values outside the field
+												andps xmm0, xmm3
+												movaps xmm1, xmm6 	;position of bee
+												andps xmm6, xmm2 	;0 positions that are outside field
+												addps xmm6, xmm0	;add new values 
+												
+												movsd qword ptr [rcx + rbx], xmm6 ;write back pos to array x and y
+												shufps xmm6, xmm6, 39h
+												shufps xmm6, xmm6, 39h
+												movss real4 ptr [rcx + rbx + sizeof(qword)], xmm6 ;write back pos to array z
+
+												;now switch velocity direction and dampen												
+												movaps xmm0, xmm13 	;-0.5 
+												andps xmm0, xmm3	;any values that were outside field
+												mulps xmm0, xmm7
+												;dampen the rest
+												movaps xmm1, xmm12 	;0.8
+												andps xmm1, xmm2
+												mulps xmm1, xmm7
+												addps xmm0, xmm1
+
+												movsd qword ptr [rcx + rbx + movement.velocity], xmm0 ;write back vel to array x and y
+												shufps xmm0, xmm0, 39h
+												shufps xmm0, xmm0, 39h
+												movss real4 ptr [rcx + rbx + movement.velocity + sizeof(qword)], xmm0 ;write back vel to array z												
+
+For_Loop_Continue:
+												inc rdi
+												add rbx, sizeof(movement)
+												jmp For_Loop
+For_Loop_End:
+												
+;-----[Zero final return]----------------------------------------------
+
+												xor                 rax, rax                                          ; Zero final return
+
+;------[Restore incoming registers]-------------------------------------------------------------------------------------
+
+												align               qword                                             ; Set qword alignment
+												Restore_Registers                                                     ; Restore incoming registers
+
+;------[Return to caller]-----------------------------------------------------------------------------------------------
+
+ret                                                                   ; Return to caller
+
+CheckCollisionsWall									endp                                                                  ; End function

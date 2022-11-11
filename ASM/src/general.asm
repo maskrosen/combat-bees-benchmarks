@@ -2097,14 +2097,19 @@ R_Not_Pressed:
 												LocalCall GetNewEnemyTargets
 												mov rcx, 1
 												mov rdx, 0
-												LocalCall GetNewEnemyTargets										
+												LocalCall GetNewEnemyTargets													
 
 												mov rcx, 0
 												mov rdx, 1
 												LocalCall Attack
 												mov rcx, 1
 												mov rdx, 0
-												LocalCall Attack										
+												LocalCall Attack	
+													
+												mov rcx, 0								
+												LocalCall CheckCollisionsWall
+												mov rcx, 1
+												LocalCall CheckCollisionsWall								
 
 												mov eax, team1AliveBees
 												add eax, team1DeadBees

@@ -47,6 +47,33 @@ LoopN											macro   			destination   									; Declare macro
 												endm  																; End macro declaration
 
 
+;***** BitwiseVectorNot *********************************************************************************************************
+;
+; Flips all bits in xmm0
+; uses xmm1 for mask generation
+; 
+
+BitwiseVectorNot																				macro  
+																								
+												vpcmpeqd	xmm1, xmm1, xmm1
+        										vpxor   	xmm0, xmm0, xmm1
+																								endm
+
+;***** AbsNoMemoryAccess *********************************************************************************************************
+;
+; Calcualtes the absolute calue of all the slots of xmm0
+; Uses xmm1 to generate mask
+; 
+
+AbsNoMemoryAccess																				macro  
+
+												;generate mask
+												pcmpeqd xmm1, xmm1      
+        										psrld 	xmm1, 1      
+												andps 	xmm0, xmm1																							
+
+																								endm
+
 ;***** Abs *********************************************************************************************************
 ;
 ; Calcualtes the absolute calue of all the slots of xmm0
@@ -55,7 +82,8 @@ LoopN											macro   			destination   									; Declare macro
 
 Abs																						macro  
 												
-												andps xmm0, xmmword ptr [XMMaskAbs]
+												
+												andps 	xmm0, xmmword ptr [XMMaskAbs]
 
 												endm
 
