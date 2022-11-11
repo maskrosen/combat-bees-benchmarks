@@ -99,10 +99,10 @@ Copy_Vertex_Buffer_Points_For_End:
 											WinCall			ID3D11DeviceContext_Map, rcx, rdx, r8, r9, r12, r13          
 
 
-											;Copy the data for only active cars into vertexMappedResource.pData 
-											mov r8, max_number_of_bees
+											;Copy the data for only active bees into vertexMappedResource.pData 
+											mov r8d, team1NumberOfBees
 											xor rdi, rdi ;Set rdi to 0
-											xor r12, r12 ;keep active car index here 
+											xor r12, r12 ;keep active bee index here 
 
 Copy_Index_Buffer_Bees_For:				    cmp rdi, r8
 											jz Copy_Index_Buffer_Bees_For_End
@@ -126,7 +126,7 @@ Copy_Index_Buffer_Bees_For:				    cmp rdi, r8
 											movss xmm2, r1
 											
 											mov rax, sizeof(meshInstanceData)
-											mul r12 ;active car index
+											mul r12 ;active bee index
 											add rax, vertexMappedResource.pData ; set rax to point to address of current index of vertexdata
 								
 											movsd qword ptr [rax], xmm0
@@ -135,7 +135,7 @@ Copy_Index_Buffer_Bees_For:				    cmp rdi, r8
 											xorps xmm2, xmm2
 											movss real4 ptr [rax + 20], xmm2 
 											inc r12
-Copy_Index_Buffer_Bees_For_Continue:            inc rdi
+Copy_Index_Buffer_Bees_For_Continue:        inc rdi
 											jmp Copy_Index_Buffer_Bees_For
 											
 Copy_Index_Buffer_Bees_For_End:				
@@ -170,12 +170,12 @@ Copy_Index_Buffer_Bees_For_End:
 											WinCall			ID3D11DeviceContext_Map, rcx, rdx, r8, r9, r12, r13          
 
 
-											;Copy the data for only active cars into vertexMappedResource.pData 
-											mov r8, max_number_of_bees
+											;Copy the data for only active bees into vertexMappedResource.pData 
+											mov r8d, team2NumberOfBees
 											xor rdi, rdi ;Set rdi to 0
-											xor r12, r12 ;keep active car index here 
+											xor r12, r12 ;keep active bee index here 
 
-Copy_Index_Buffer_Bees_Team2_For:				    cmp rdi, r8
+Copy_Index_Buffer_Bees_Team2_For:			cmp rdi, r8
 											jz Copy_Index_Buffer_Bees_Team2_For_End
 
 											mov eax, sizeof(byte)
@@ -197,7 +197,7 @@ Copy_Index_Buffer_Bees_Team2_For:				    cmp rdi, r8
 											movss xmm2, r1
 											
 											mov rax, sizeof(meshInstanceData)
-											mul r12 ;active car index
+											mul r12 ;active bee index
 											add rax, vertexMappedResource.pData ; set rax to point to address of current index of vertexdata
 								
 											movsd qword ptr [rax], xmm0
@@ -206,7 +206,7 @@ Copy_Index_Buffer_Bees_Team2_For:				    cmp rdi, r8
 											xorps xmm2, xmm2
 											movss real4 ptr [rax + 20], xmm2 
 											inc r12
-Copy_Index_Buffer_Bees_Team2_For_Continue:      inc rdi
+Copy_Index_Buffer_Bees_Team2_For_Continue:  inc rdi
 											jmp Copy_Index_Buffer_Bees_Team2_For
 											
 Copy_Index_Buffer_Bees_Team2_For_End:				
@@ -245,7 +245,7 @@ Copy_Index_Buffer_Bees_Team2_For_End:
 											mov r8, sizeof(quad_vertex) * number_of_quad_vertices / 16
 											xor rdi, rdi ;Set rdi to 0
 
-Copy_Vertex_Buffer_Quads_For:				   cmp rdi, r8
+Copy_Vertex_Buffer_Quads_For:				cmp rdi, r8
 											jz Copy_Vertex_Buffer_Quads_For_End
 
 											mov rax, 16
