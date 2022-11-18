@@ -205,6 +205,66 @@ ExtractXYZ  									macro
 												endm
 
 
+
+;***** GetRandomNumberMacro *********************************************************************************************************
+;
+; Macro version of get random number for better speed
+; in rax max range, rcx seed
+; out rax random number, rcx new seed
+;
+; 
+
+GetRandomNumberMacro								macro  
+
+													imul  edx, ecx, 08088405H  	; EDX = RandSeed * 0x08088405 (decimal 134775813)
+													inc   edx
+													mov   ecx, edx 				; New RandSeed
+													mul   edx   						; EDX:EAX = EAX * EDX
+													mov   eax, edx  					; Return the EDX from the multiplication
+													
+
+													endm
+
+;***** GetRandomInsideUnitSphere *********************************************************************************************************
+;
+; Returns a random vector inside a unit spehere
+; Out: xmm0, the vector
+; 
+
+;We put the value here so it will probably always be in cache when we use it here
+LR0p00001 											dword					03727C5ACh                      ;float 9.99999974E-6
+
+GetRandomInsideUnitSphere							macro  
+													
+													xorps xmm0, xmm0
+													mov rax, 200000
+													GetRandomNumberMacro
+													sub rax, 100000
+													cvtsi2ss xmm1, rax
+													mulss xmm1, LR0p00001
+													movss xmm0, xmm1
+
+													mov rax, 200000
+													GetRandomNumberMacro
+													sub rax, 100000
+													cvtsi2ss xmm1, rax
+													mulss xmm1, LR0p00001
+													shufps xmm0, xmm0, 93h ; rotate one step so x becomes y
+													movss xmm0, xmm1
+
+													mov rax, 200000
+													GetRandomNumberMacro
+													sub rax, 100000
+													cvtsi2ss xmm1, rax
+													mulss xmm1, LR0p00001
+													shufps xmm0, xmm0, 93h 
+													movss xmm0, xmm1
+
+
+													endm
+
+
+
 ;***** Calc2DArrayIndex *********************************************************************************************************
 ;
 ; Calculates the 1d index for a 2D array given 2 indices

@@ -102,13 +102,10 @@ Copy_Vertex_Buffer_Points_For_End:
 											;Copy the data for only active bees into vertexMappedResource.pData 
 											mov r8d, team1NumberOfBees
 											xor rdi, rdi ;Set rdi to 0
-											xor r12, r12 ;keep active bee index here 
+											xor rsi, rsi
 
 Copy_Index_Buffer_Bees_For:				    cmp rdi, r8
 											jz Copy_Index_Buffer_Bees_For_End
-
-											mov eax, sizeof(byte)
-											mul edi
 
 											mov rax, sizeof(movement)
 											mul rdi
@@ -120,13 +117,15 @@ Copy_Index_Buffer_Bees_For:				    cmp rdi, r8
 											;z
 											movss xmm1, real4 ptr[rbx + 8]
 
+											lea rbx, team1BeeSizesArray
+											movss xmm3, real4 ptr[rbx + rdi * 4]
+
 											;set rotation
 											;We just set it to 1,0,0 for now
 											xorps xmm2, xmm2
 											movss xmm2, r1
 											
-											mov rax, sizeof(meshInstanceData)
-											mul r12 ;active bee index
+											mov rax, rsi
 											add rax, vertexMappedResource.pData ; set rax to point to address of current index of vertexdata
 								
 											movsd qword ptr [rax], xmm0
@@ -134,8 +133,9 @@ Copy_Index_Buffer_Bees_For:				    cmp rdi, r8
 											movsd qword ptr [rax + 12], xmm2
 											xorps xmm2, xmm2
 											movss real4 ptr [rax + 20], xmm2 
-											inc r12
+											movss real4 ptr [rax + 24], xmm3 
 Copy_Index_Buffer_Bees_For_Continue:        inc rdi
+											add rsi, sizeof(movement) + sizeof(real4) 
 											jmp Copy_Index_Buffer_Bees_For
 											
 Copy_Index_Buffer_Bees_For_End:				
@@ -173,13 +173,10 @@ Copy_Index_Buffer_Bees_For_End:
 											;Copy the data for only active bees into vertexMappedResource.pData 
 											mov r8d, team2NumberOfBees
 											xor rdi, rdi ;Set rdi to 0
-											xor r12, r12 ;keep active bee index here 
+											xor rsi, rsi ; hold offset in buffer here
 
 Copy_Index_Buffer_Bees_Team2_For:			cmp rdi, r8
 											jz Copy_Index_Buffer_Bees_Team2_For_End
-
-											mov eax, sizeof(byte)
-											mul edi
 
 											mov rax, sizeof(movement)
 											mul rdi
@@ -190,14 +187,15 @@ Copy_Index_Buffer_Bees_Team2_For:			cmp rdi, r8
 											movsd xmm0, qword ptr[rbx]
 											;z
 											movss xmm1, real4 ptr[rbx + 8]
+											lea rbx, team2BeeSizesArray
+											movss xmm3, real4 ptr[rbx + rdi * 4]
 
 											;set rotation
 											;We just set it to 1,0,0 for now
 											xorps xmm2, xmm2
 											movss xmm2, r1
 											
-											mov rax, sizeof(meshInstanceData)
-											mul r12 ;active bee index
+											mov rax, rsi
 											add rax, vertexMappedResource.pData ; set rax to point to address of current index of vertexdata
 								
 											movsd qword ptr [rax], xmm0
@@ -205,8 +203,9 @@ Copy_Index_Buffer_Bees_Team2_For:			cmp rdi, r8
 											movsd qword ptr [rax + 12], xmm2
 											xorps xmm2, xmm2
 											movss real4 ptr [rax + 20], xmm2 
-											inc r12
+											movss real4 ptr [rax + 24], xmm3 
 Copy_Index_Buffer_Bees_Team2_For_Continue:  inc rdi
+											add rsi, sizeof(movement) + sizeof(real4) 
 											jmp Copy_Index_Buffer_Bees_Team2_For
 											
 Copy_Index_Buffer_Bees_Team2_For_End:				

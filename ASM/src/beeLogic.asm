@@ -198,6 +198,10 @@ InitBees										macro
 												shufps xmm1, xmm1, 39h
 												xorps xmm2, xmm2
 												;xmm1 now holds z in first positon
+												movss xmm5, beeMaxSize
+												subss xmm5, beeMinSize
+												movss xmm4, LR0p00001
+												movss xmm6, beeMinSize
 												
 
 												lea rcx, beeMovements
@@ -206,7 +210,9 @@ InitBees										macro
 												mul rbx
 												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team
 
-												
+												lea r15, beeSizes
+												mov r15, qword ptr [r15 + rax]
+
 												lea r12, teamNoTargets
 												mov r12, qword ptr [r12 + rax] ;no target array for team index
 												lea r14, teamHasTargets
@@ -234,7 +240,19 @@ Init_Bees_Loop:
 												movss real4 ptr [rcx + rax + movement.velocity + 8], xmm2 ; z
 												push rax
 												SetBit r12, rdi ;set no target bit to 1
-												ClearBit r14, rdi ;set has taget bit to 0												
+												ClearBit r14, rdi ;set has taget bit to 0	
+
+												xorps xmm3, xmm3
+												mov rax, 100000
+												push rcx
+												GetRandomNumberMacro
+												pop rcx
+												cvtsi2ss xmm3, rax
+												mulss xmm3, xmm4 ;0.0 to 1.0
+												mulss xmm3, xmm5 
+												addss xmm3, xmm6												
+												movss real4 ptr [r15 + rdi * 4], xmm3 ;write to size array
+
 												pop rax
 												inc dword ptr [r9] ;add 1 to alivebees of the current team
 
@@ -303,63 +321,6 @@ ret   																; Return to caller
 
 SpawnBees										endp  																; End function
 
-
-;***** GetRandomNumberMacro *********************************************************************************************************
-;
-; Macro version of get random number for better speed
-; in rax max range, rcx seed
-; out rax random number, rcx new seed
-;
-; 
-
-GetRandomNumberMacro								macro  
-
-													imul  edx, ecx, 08088405H  	; EDX = RandSeed * 0x08088405 (decimal 134775813)
-													inc   edx
-													mov   ecx, edx 				; New RandSeed
-													mul   edx   						; EDX:EAX = EAX * EDX
-													mov   eax, edx  					; Return the EDX from the multiplication
-													
-
-													endm
-
-;***** GetRandomInsideUnitSphere *********************************************************************************************************
-;
-; Returns a random vector inside a unit spehere
-; Out: xmm0, the vector
-; 
-
-;We put the value here so it will probably always be in cache when we use it here
-LR0p00001 											dword					03727C5ACh                      ;float 9.99999974E-6
-
-GetRandomInsideUnitSphere							macro  
-													
-													xorps xmm0, xmm0
-													mov rax, 200000
-													GetRandomNumberMacro
-													sub rax, 100000
-													cvtsi2ss xmm1, rax
-													mulss xmm1, LR0p00001
-													movss xmm0, xmm1
-
-													mov rax, 200000
-													GetRandomNumberMacro
-													sub rax, 100000
-													cvtsi2ss xmm1, rax
-													mulss xmm1, LR0p00001
-													shufps xmm0, xmm0, 93h ; rotate one step so x becomes y
-													movss xmm0, xmm1
-
-													mov rax, 200000
-													GetRandomNumberMacro
-													sub rax, 100000
-													cvtsi2ss xmm1, rax
-													mulss xmm1, LR0p00001
-													shufps xmm0, xmm0, 93h 
-													movss xmm0, xmm1
-
-
-													endm
 
 ;-----------------------------------------------------------------------------------------------------------------------
 ;																													-

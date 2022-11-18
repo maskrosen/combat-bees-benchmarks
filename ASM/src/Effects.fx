@@ -318,6 +318,22 @@ float4x4 MakeRotationMatrix(float4 eye, float4 lookAt)
 	return result;
 }
 
+// Get scaling matrix
+float4x4 MakeScaleMatrix(float x, float y, float z)
+{	
+	float4x4 result = float4x4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+
+	result[0][0] = x; 
+
+	result[1][1] = y; 
+
+	result[2][2] = z; 
+
+	result[3][3] = 1;
+
+    return result;
+}
+
 [maxvertexcount(3)]
 void GS_TerrainNormals(triangle VS_OUTPUT input[3], inout TriangleStream<VS_OUTPUT> OutputStream)
 {
@@ -437,9 +453,6 @@ uint roadType: TYPE)
 float4 PS(VS_OUTPUT input) : SV_TARGET
 {
 	
-	if(input.Type == 2){
-		return input.Color;
-	}
 	float4 result = CalculateLighting(input);
 	//specular.x = 0;
 	//if(lightDirection.y == lightDirection2.y)
@@ -454,9 +467,12 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
 	//return float4(nLightDirection, 1.0f);
 }
 
-VS_OUTPUT VSCars(float4 inPos : VERTEXPOSITION, float4 inColor : COLOR, float4 normal : NORMAL, float3 instancePosition : INSTANCEPOSITION, float3 instanceRotation : INSTANCEROTATION)
+VS_OUTPUT VSCars(float4 inPos : VERTEXPOSITION, float4 inColor : COLOR, float4 normal : NORMAL, 
+float3 instancePosition : INSTANCEPOSITION, float3 instanceRotation : INSTANCEROTATION, float instanceSize : INSTANCESIZE)
 {
 	VS_OUTPUT output;
+
+	float4x4 size = MakeScaleMatrix(instanceSize, instanceSize, instanceSize);
 
 	float4x4 rotation = MakeRotationMatrix(float4(0,0,0,0), float4(instanceRotation,0));
 
@@ -469,7 +485,7 @@ VS_OUTPUT VSCars(float4 inPos : VERTEXPOSITION, float4 inColor : COLOR, float4 n
 
 	};
 
-	float4x4 composition = mul(rotation, translation);
+	float4x4 composition = mul(mul(size, rotation), translation);
 
 	inPos *= 0.5f;
 

@@ -41,6 +41,7 @@ heightmap_file   								byte				'heightmap.bmp', 0
 i16_name 										byte				'I16_RESOURCE', 0 								;
 instance_position_string 						byte				'INSTANCEPOSITION', 0
 instance_rotation_string 						byte				'INSTANCEROTATION', 0
+instance_size_string 							byte				'INSTANCESIZE', 0
 instance_light_state_string  					byte				'INSTANCELIGHTSTATE', 0
 
 ;-----[J]---------------------------------------------------------------------------------------------------------------

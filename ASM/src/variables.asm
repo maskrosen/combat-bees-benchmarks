@@ -359,7 +359,7 @@ stride										qword			sizeof ( vertex )								; Vertex buffer stride
 strideFont									qword			sizeof ( font_vertex )								; Vertex buffer stride
 stridePoints								qword			sizeof ( point_vertex )								; Vertex buffer stride
 strideQuads									qword			sizeof ( quad_vertex )								; Vertex buffer stride
-stride1										qword			sizeof ( meshInstanceData )						; Vertex buffer stride
+stride1										qword			sizeof ( meshInstanceData )	+ sizeof(real4)					; Vertex buffer stride
 sunAngle									real4			0.6
 sunAnglePerS								real4			0.000
 sunOrbitRadius								real4			200000.0

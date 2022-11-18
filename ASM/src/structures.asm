@@ -237,7 +237,7 @@ fontTextureSubResourceDataE					label				byte												; End marker
 
 instanceBufferDesc								label				d3d11_buffer_desc								; Declare structure label
 												;-----------------------------------------------------------------------
-												dword				sizeof ( meshInstanceData ) * max_number_of_bees   	; ByteWidth
+												dword				(sizeof ( meshInstanceData ) + sizeof(real4)) * max_number_of_bees   	; ByteWidth
 												dword				D3D11_USAGE_DYNAMIC								; Usage
 												dword				D3D11_BIND_VERTEX_BUFFER						; BindFlags
 												dword				D3D11_CPU_ACCESS_WRITE							; CPUAccessFlags
@@ -439,166 +439,17 @@ layout_cars										label				d3d11_input_element_desc						;
 												dword				12												; AlignedByteOffset
 												dword				D3D11_INPUT_PER_INSTANCE_DATA					; InputSlotClass
 												dword				1												; InstanceDataStepRate
+													;-----------------------------------------------------------------------
+												qword				instance_size_string						; SemanticName
+												dword				0												; SemanticIndex
+												dword				DXGI_FORMAT_R32_FLOAT					; Format
+												dword				1												; InputSlot
+												dword				24												; AlignedByteOffset
+												dword				D3D11_INPUT_PER_INSTANCE_DATA					; InputSlotClass
+												dword				1												; InstanceDataStepRate
 												;-----------------------------------------------------------------------
 layout_cars_E									label				byte												; End of array marker
 												align				16
-layout_traffic_lights							label				d3d11_input_element_desc						;
-												;-----------------------------------------------------------------------
-												qword				position_string									; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				0												; InputSlot
-												dword				0												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate
-												;-----------------------------------------------------------------------
-												qword				color_string									; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				0												; InputSlot
-												dword				16												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate												
-												;-----------------------------------------------------------------------
-												qword				normal_string									; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				0												; InputSlot
-												dword				32												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate
-												;-----------------------------------------------------------------------
-												qword				textcoord0_string								; SemanticName
-												dword				0												; SemanticIndex
-												dword				dxgi_format_r32g32_float						; Format
-												dword				0												; InputSlot
-												dword				48												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate												
-												;-----------------------------------------------------------------------
-												qword				instance_position_string						; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				1												; InputSlot
-												dword				0												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_INSTANCE_DATA					; InputSlotClass
-												dword				1												; InstanceDataStepRate
-													;-----------------------------------------------------------------------
-												qword				instance_rotation_string						; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				1												; InputSlot
-												dword				16												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_INSTANCE_DATA					; InputSlotClass
-												dword				1												; InstanceDataStepRate
-													;-----------------------------------------------------------------------
-												qword				instance_light_state_string						; SemanticName
-												dword				0												; SemanticIndex
-												dword				dxgi_format_r32_uint					; Format
-												dword				1												; InputSlot
-												dword				32												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_INSTANCE_DATA					; InputSlotClass
-												dword				1												; InstanceDataStepRate
-												;-----------------------------------------------------------------------
-layout_traffic_lights_E							label				byte												; End of array marker
-												align				16
-
-
-layout_malls									label				d3d11_input_element_desc						;
-												;-----------------------------------------------------------------------
-												qword				position_string									; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				0												; InputSlot
-												dword				0												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate
-												;-----------------------------------------------------------------------
-												qword				color_string									; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				0												; InputSlot
-												dword				16												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate												
-												;-----------------------------------------------------------------------
-												qword				normal_string									; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				0												; InputSlot
-												dword				32												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate
-												;-----------------------------------------------------------------------
-												qword				textcoord0_string								; SemanticName
-												dword				0												; SemanticIndex
-												dword				dxgi_format_r32g32_float						; Format
-												dword				0												; InputSlot
-												dword				48												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate												
-												;-----------------------------------------------------------------------
-												qword				instance_position_string						; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				1												; InputSlot
-												dword				0												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_INSTANCE_DATA					; InputSlotClass
-												dword				1												; InstanceDataStepRate
-												;-----------------------------------------------------------------------
-												qword				instance_rotation_string						; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				1												; InputSlot
-												dword				16												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_INSTANCE_DATA					; InputSlotClass
-												dword				1												; InstanceDataStepRate
-													;-----------------------------------------------------------------------
-																						
-												;-----------------------------------------------------------------------
-layout_malls_E									label				byte												; End of array marker
-
-
-layout_mall_preview								label				d3d11_input_element_desc						;
-												;-----------------------------------------------------------------------
-												qword				position_string									; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				0												; InputSlot
-												dword				0												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate
-												;-----------------------------------------------------------------------
-												qword				color_string									; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				0												; InputSlot
-												dword				16												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate												
-												;-----------------------------------------------------------------------
-												qword				normal_string									; SemanticName
-												dword				0												; SemanticIndex
-												dword				DXGI_FORMAT_R32G32B32A32_FLOAT					; Format
-												dword				0												; InputSlot
-												dword				32												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate
-												;-----------------------------------------------------------------------
-												qword				textcoord0_string								; SemanticName
-												dword				0												; SemanticIndex
-												dword				dxgi_format_r32g32_float						; Format
-												dword				0												; InputSlot
-												dword				48												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate												
-																							
-																						
-												;-----------------------------------------------------------------------
-layout_mall_preview_E							label				byte												; End of array marker
-												align				16
-
-
 layout_lines									label				d3d11_input_element_desc						;
 												;-----------------------------------------------------------------------
 												qword				position_string									; SemanticName
