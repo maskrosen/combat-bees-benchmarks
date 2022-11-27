@@ -20,6 +20,7 @@ team2DeadBees					dword				0
 beeMovements					qword team1BeeMovementArray, team2BeeMovementArray
 beeTargets						qword team1BeeTargetsArray, team2BeeTargetsArray
 beeSizes						qword team1BeeSizesArray, team2BeeSizesArray
+beeRotations					qword team1BeeRotationArray, team2BeeRotationArray
 
 team1HasTargets					qword				max_number_of_bits dup (0)
 team2HasTargets					qword				max_number_of_bits dup (0)

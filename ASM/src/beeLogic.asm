@@ -358,7 +358,8 @@ UpdateMovements									proc																 ; Declare function
 												mul rbx
 												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team
 
-												;TODO add directions
+												lea r12, beeRotations
+												mov r12, qword ptr [r12 + rax] ;now hold pointer to the rotations array for the current team
 
 												;setup some local "variables" with registers 
 												mov rax, deltaTimeMicros
@@ -369,10 +370,14 @@ UpdateMovements									proc																 ; Declare function
 												movss xmm12, r1
 												movaps xmm13, xmmword ptr XMMask3
 												movss xmm14, r01 
+												movss xmm15, r4
+												mulss xmm15, xmm10
+												shufps xmm15, xmm15, 00h
 
 												mov r11d, randSeed
 												xor rdi, rdi ;bee index
 												xor r10, r10 ;movement array offset
+												xor r13, r13 ;rotation array offset
 
 Movement_Loop:
 
@@ -486,10 +491,22 @@ Movement_Loop:
 												shufps xmm6, xmm6, 39h
 												movss real4 ptr [rcx + r10 + movement.velocity + sizeof(qword)], xmm6 ;write back vel to array x and y
 
-												;Todo calc direction												
+												movaps xmm0, xmm6
+												andps xmm0, XMMask3
+												NormalizeVectorFromRegister
+												movups xmm2, xmmword ptr [r12 + r13]
+												subps xmm0, xmm2
+												mulps xmm0, xmm15 ;mul by delta time * 4
+												addps xmm0, xmm2
+
+												movsd qword ptr [r12 + r13], xmm0
+												shufps xmm0, xmm0, 39h
+												shufps xmm0, xmm0, 39h
+												movss real4 ptr [rcx + r13 + Vector3.z], xmm0
 
 												inc rdi
 												add r10, sizeof(movement)
+												add r13, sizeof(Vector3)
 												jmp Movement_Loop
 
 Movement_Loop_End:

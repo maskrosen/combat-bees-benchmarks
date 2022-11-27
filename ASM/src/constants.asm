@@ -16,8 +16,8 @@ buffer_size 									equ 				1024  											;
 
 classStyle  									equ 				CS_VREDRAW OR CS_HREDRAW OR CS_DBLCLKS OR CS_OWNDC OR CS_PARENTDC
 
-client_height   								equ 				1080   											;
-client_width									equ 				1920  											;
+client_height   								equ 				720   											;
+client_width									equ 				1280  											;
 
 cmnd_x  										equ 				source_x  										; x
 cmnd_y  										equ 				( source_h + source_y ) - 5   					; y
