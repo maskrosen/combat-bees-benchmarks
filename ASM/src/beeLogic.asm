@@ -1183,3 +1183,88 @@ For_Loop_End:
 ret                                                                   ; Return to caller
 
 CheckCollisionsWall									endp                                                                  ; End function
+
+;-----------------------------------------------------------------------------------------------------------------------
+;																													-
+; UpdateDead																										-
+;																													-
+; Updates dead bees
+;-----------------------------------------------------------------------------------------------------------------------
+;																													-
+; In:  rcx, team index																												-
+; Out: nothing																														-
+; 
+;-----------------------------------------------------------------------------------------------------------------------
+
+UpdateDead										proc																 ; Declare function
+;------[Local Data]-----------------------------------------------------------------------------------------------------
+												local				holder:qword									;
+
+;------[Save incoming registers]----------------------------------------------------------------------------------------
+												Save_Registers														; Save incoming registers
+
+												;keep teamIndex in r8
+												mov r8, rcx
+												lea rcx, team1AliveBees
+												;calc pointer offset to team
+												mov rax, r8
+												mov rbx, sizeof(dword)
+												mul rbx
+												mov edi, dword ptr [rcx + rax] ;alive bees for team, used as start index
+												lea rcx, team1DeadBees
+												add esi, dword ptr [rcx + rax] ;dead bees for team
+
+												mov rax, r8
+												mov rbx, sizeof(qword)
+												mul rbx
+												lea r9, beeDeadTimers
+												mov r9, qword ptr [r9 + rax]
+
+												lea rcx, beeMovements
+												mov rax, r8
+												mov rbx, sizeof(qword)
+												mul rbx
+												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team
+
+												mov rax, deltaTimeMicros
+												cvtsi2ss xmm10, rax
+												movss xmm0, r0000001
+												mulss xmm10, xmm0 ;delta time in seconds
+												shufps xmm10, xmm10, 00h
+												movaps xmm13, xmmword ptr XMMask3
+												xorps xmm14, xmm14
+												movss xmm0, gravity
+												mulss xmm0, xmm10 ;scale with delta time
+												movss xmm14, xmm0 ;gravity in x pos
+												shufps xmm14, xmm14, 93h ;move gravity to y, rest contains 0
+
+												xor r10, r10 ;movement array offset
+
+For_Loop:
+												cmp rdi, rsi
+												jge For_Loop_End
+											
+												movups xmm6, xmmword ptr [rcx + r10 + movement.velocity] ;velocity of bee
+												addps xmm6, xmm14 ;add gravity to y part of velocity
+												;todo modify dead timer here
+												movsd qword ptr [rcx + r10 + movement.velocity], xmm6 ;write back vel to array x and y
+
+												inc rdi
+												add r10, sizeof(movement)
+												jmp For_Loop
+For_Loop_End:
+
+;-----[Zero final return]----------------------------------------------
+
+												xor					rax, rax										; Zero final return
+
+;------[Restore incoming registers]-------------------------------------------------------------------------------------
+
+												align				qword											; Set qword alignment
+												Restore_Registers													; Restore incoming registers
+
+;------[Return to caller]-----------------------------------------------------------------------------------------------
+
+ret																	; Return to caller
+
+UpdateDead									endp																 ; End function

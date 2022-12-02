@@ -10,6 +10,8 @@ extrn											team1BeeTargetsArray:dword
 extrn											team2BeeTargetsArray:dword
 extrn											team1BeeSizesArray:real4
 extrn											team2BeeSizesArray:real4
+extrn											team1DeadTimers:real4
+extrn											team2DeadTimers:real4
 extrn											team1BeeRotationArray:Vector3
 extrn											team2BeeRotationArray:Vector3
 extrn											beeTransformDataArray:meshInstanceData

@@ -21,6 +21,7 @@ beeMovements					qword team1BeeMovementArray, team2BeeMovementArray
 beeTargets						qword team1BeeTargetsArray, team2BeeTargetsArray
 beeSizes						qword team1BeeSizesArray, team2BeeSizesArray
 beeRotations					qword team1BeeRotationArray, team2BeeRotationArray
+beeDeadTimers					qword team1DeadTimers, team2DeadTimers
 
 team1HasTargets					qword				max_number_of_bits dup (0)
 team2HasTargets					qword				max_number_of_bits dup (0)
@@ -41,3 +42,5 @@ hitDistanceSqr					real4				0.25
 
 beeMinSize						real4				0.25
 beeMaxSize						real4				0.5
+
+gravity							real4				-20.0
