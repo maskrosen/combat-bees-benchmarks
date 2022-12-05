@@ -992,6 +992,10 @@ KillBee											proc                                                          
 												lea r14, teamHasTargets
 												mov r14, qword ptr [r14 + rax] ;has target array for team index
 
+												lea r13, beeSizes
+												mov r13, qword ptr [r13 + rax]
+												lea r15, beeRotation
+
 												mov rax, r8
 												mov rbx, sizeof(dword)
 												mul rbx
@@ -1014,6 +1018,10 @@ KillBee											proc                                                          
 												GetArrayOffset rdi, sizeof(movement)
 												movups xmmword ptr [rcx + rax], xmm5
 												mov qword ptr [rcx + rax], r10
+
+												;todo add rotation, size and clear death timer here
+
+												
 
 												GetBit r14, rsi ;has target
 												cmp rax, 1
@@ -1044,6 +1052,75 @@ Return:
 ret                                                                   ; Return to caller
 
 KillBee									endp                                                                  ; End function
+
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; DeleteBee                                                                                                        -
+;                                                                                                                      -
+; Deletes a bee
+;-----------------------------------------------------------------------------------------------------------------------
+;                                                                                                                      -
+; In:  rcx, beeIndex rdx, teamIndex                                                                                                         -
+; Out: nothing                                                                                                                        -
+; 
+;-----------------------------------------------------------------------------------------------------------------------
+
+DeleteBee										proc                                                                  ; Declare function
+;------[Local Data]-----------------------------------------------------------------------------------------------------
+												local               holder:qword                                      ;
+
+;------[Save incoming registers]----------------------------------------------------------------------------------------
+												Save_Registers                                                        ; Save incoming registers
+
+												;Need to copy over movement, no target bit, has target bit and more later
+
+												mov r8, rdx ;team index
+												mov rdi, rcx ; bee index
+
+												lea rcx, beeMovements
+												mov rax, r8
+												mov rbx, sizeof(qword)
+												mul rbx
+												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team
+
+
+												mov rax, r8
+												mov rbx, sizeof(dword)
+												mul rbx
+												
+												lea r9, team1AliveBees
+												add r9, rax
+												
+												lea r11, team1DeadBees
+												add r11, rax
+												dec dword ptr [r11]
+
+												mov esi, dword ptr[r9]
+												add esi, dword ptr[r11]
+
+												GetArrayOffset rsi, sizeof(movement)
+												movups xmm5, xmmword ptr [rcx + rax] ;position, and x of velocity
+												mov r10, qword ptr [rcx + rax + sizeof(xmmword)] ; y and z of velocity 
+												
+												GetArrayOffset rdi, sizeof(movement)
+												movups xmmword ptr [rcx + rax], xmm5
+												mov qword ptr [rcx + rax], r10
+
+Return:
+;-----[Zero final return]----------------------------------------------
+
+												xor                 rax, rax                                          ; Zero final return
+
+;------[Restore incoming registers]-------------------------------------------------------------------------------------
+
+												align               qword                                             ; Set qword alignment
+												Restore_Registers                                                     ; Restore incoming registers
+
+;------[Return to caller]-----------------------------------------------------------------------------------------------
+
+ret                                                                   ; Return to caller
+
+DeleteBee									endp                                                                  ; End function
 
 ;-----------------------------------------------------------------------------------------------------------------------
 ;                                                                                                                      -
@@ -1230,6 +1307,8 @@ UpdateDead										proc																 ; Declare function
 												cvtsi2ss xmm10, rax
 												movss xmm0, r0000001
 												mulss xmm10, xmm0 ;delta time in seconds
+												movss xmm11, xmm10
+												mulss xmm11, r01
 												shufps xmm10, xmm10, 00h
 												movaps xmm13, xmmword ptr XMMask3
 												xorps xmm14, xmm14
@@ -1247,7 +1326,16 @@ For_Loop:
 												movups xmm6, xmmword ptr [rcx + r10 + movement.velocity] ;velocity of bee
 												addps xmm6, xmm14 ;add gravity to y part of velocity
 												;todo modify dead timer here
+												movss xmm0, real4 ptr [r9 + rdi * 4]
+												subss xmm0, xmm11
+												xorps xmm1, xmm1
+												comiss xmm0, xmm1
+												ja Not_Dead
+
+
+Not_Dead:
 												movsd qword ptr [rcx + r10 + movement.velocity], xmm6 ;write back vel to array x and y
+												movss real4 ptr [r9 + rdi * 4], xmm0
 
 												inc rdi
 												add r10, sizeof(movement)
