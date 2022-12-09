@@ -2109,7 +2109,12 @@ R_Not_Pressed:
 												mov rcx, 0								
 												LocalCall CheckCollisionsWall
 												mov rcx, 1
-												LocalCall CheckCollisionsWall								
+												LocalCall CheckCollisionsWall		
+
+												mov rcx, 0
+												LocalCall UpdateDead
+												mov rcx, 1
+												LocalCall UpdateDead						
 
 												mov eax, team1AliveBees
 												add eax, team1DeadBees

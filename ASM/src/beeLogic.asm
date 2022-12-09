@@ -220,7 +220,6 @@ InitBees										macro
 
 												;We don't clear the target array here since it should not be read if no target bit is set to 1
 
-												;TODO add sizes
 												
 												mov rdi, r10 ;first bee index
 												mov rsi, rdi 
@@ -297,6 +296,8 @@ SpawnBees										proc  																; Declare function
 												;r10 now holds number of active bees
 												mov rdi, starting_bees_per_team
 												sub rdi, r10 ;number of bees to spawn
+
+												;TODO move data from the start of the dead bees to make room for the new bees that should be spawned
 
 												mov rcx, r9 ;start index (alive count)
 												mov rdx, rdi ;number of bees
@@ -994,7 +995,7 @@ KillBee											proc                                                          
 
 												lea r13, beeSizes
 												mov r13, qword ptr [r13 + rax]
-												lea r15, beeRotation
+												;lea r15, beeRotation
 
 												mov rax, r8
 												mov rbx, sizeof(dword)
@@ -1011,16 +1012,40 @@ KillBee											proc                                                          
 												dec esi
 												mov dword ptr[r9], esi
 
+												;save position of current bee
+												GetArrayOffset rdi, sizeof(movement)
+												movups xmm0, xmmword ptr [rcx + rax]
+												mov r11, qword ptr [rcx + rax]
+												;save size 
+												movss xmm1, real4 ptr [r13 + rdi * 4]												
+
+												;get data from last alive bee to copy
 												GetArrayOffset rsi, sizeof(movement)
 												movups xmm5, xmmword ptr [rcx + rax] ;position, and x of velocity
 												mov r10, qword ptr [rcx + rax + sizeof(xmmword)] ; y and z of velocity 
+												movss xmm2, real4 ptr [r13 + rsi * 4]
+
+												;write data to new dead bee
+												movups xmmword ptr [rcx + rax], xmm0
+												mov qword ptr[rcx + rax + sizeof(xmmword)], r11
+												movss real4 ptr[r13 + rsi * 4], xmm1
 												
+												;write data of last alive bee to old bees index
 												GetArrayOffset rdi, sizeof(movement)
 												movups xmmword ptr [rcx + rax], xmm5
 												mov qword ptr [rcx + rax], r10
+												movss real4 ptr[r13 + rdi * 4], xmm2
 
-												;todo add rotation, size and clear death timer here
-
+												;todo add rotation here
+												
+												;set dead timer of dead bee
+												mov rax, r8
+												mov rbx, sizeof(qword)
+												mul rbx
+												lea r9, beeDeadTimers
+												mov r9, qword ptr [r9 + rax]
+												movss xmm0, r1
+												movss real4 ptr [r9 + rsi * 4], xmm0
 												
 
 												GetBit r14, rsi ;has target
@@ -1072,7 +1097,7 @@ DeleteBee										proc                                                         
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 												Save_Registers                                                        ; Save incoming registers
 
-												;Need to copy over movement, no target bit, has target bit and more later
+												;TODO Need to copy over movement, no target bit, has target bit and more later
 
 												mov r8, rdx ;team index
 												mov rdi, rcx ; bee index
@@ -1289,7 +1314,8 @@ UpdateDead										proc																 ; Declare function
 												mul rbx
 												mov edi, dword ptr [rcx + rax] ;alive bees for team, used as start index
 												lea rcx, team1DeadBees
-												add esi, dword ptr [rcx + rax] ;dead bees for team
+												mov esi, dword ptr [rcx + rax] ;dead bees for team
+												add esi, edi
 
 												mov rax, r8
 												mov rbx, sizeof(qword)
@@ -1325,18 +1351,23 @@ For_Loop:
 											
 												movups xmm6, xmmword ptr [rcx + r10 + movement.velocity] ;velocity of bee
 												addps xmm6, xmm14 ;add gravity to y part of velocity
-												;todo modify dead timer here
+												;reduce dead timer
 												movss xmm0, real4 ptr [r9 + rdi * 4]
 												subss xmm0, xmm11
 												xorps xmm1, xmm1
 												comiss xmm0, xmm1
 												ja Not_Dead
 
-
+												push rcx
+												mov rcx, rdi
+												mov rdx, r8
+												LocalCall DeleteBee
+												pop rcx
+												jmp Continue
 Not_Dead:
 												movsd qword ptr [rcx + r10 + movement.velocity], xmm6 ;write back vel to array x and y
 												movss real4 ptr [r9 + rdi * 4], xmm0
-
+Continue:
 												inc rdi
 												add r10, sizeof(movement)
 												jmp For_Loop
