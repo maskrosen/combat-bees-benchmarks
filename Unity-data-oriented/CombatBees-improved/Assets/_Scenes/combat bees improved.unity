@@ -304,7 +304,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 5.669922, y: -5.529999}
+  m_AnchoredPosition: {x: 5.669922, y: -5.5300293}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &669731901
@@ -498,7 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86fe89e433538d945bf4511fb1e4098c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beeMesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  beeMesh: {fileID: -462981019419857548, guid: e18d0888f4a88a44993716daa97978f9, type: 3}
   beeMaterial: {fileID: 2100000, guid: 618ad2bcfdace9e4aae0954675106cd3, type: 2}
   teamColors:
   - {r: 0.30882353, g: 0.4279919, b: 1, a: 1}

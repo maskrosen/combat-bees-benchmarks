@@ -27,7 +27,7 @@ public static class Utils
         {
             //If we have dead bee we need to copy enough dead bees to make room for our new spawned bees in the alive segment
             int numberOfBeesToCopy = Mathf.Min(deadBeesCount, count);
-            int destIndex = deadBeesStartIndex + count + deadBeesCount; //We copy them to the after the end of dead bees
+            int destIndex = deadBeesStartIndex + deadBeesCount; //We copy them to the after the end of dead bees
             CopyBeeData(deadBeesStartIndex, destIndex, numberOfBeesToCopy, teamIndex);
             InitBees(deadBeesStartIndex, count, teamIndex);
         }

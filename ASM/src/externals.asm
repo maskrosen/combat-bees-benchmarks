@@ -32,6 +32,7 @@ extrn											__imp_AdjustWindowRect:qword  										;
 
 ;------[C]--------------------------------------------------------------------------------------------------------------
 
+extrn											__imp_cbrtf:qword  											;
 extrn											__imp_cosf:qword  											;
 extrn											__imp_CreateWindowExA:qword   										;
 
@@ -168,6 +169,7 @@ AdjustWindowRect 								textequ 			<__imp_AdjustWindowRect>  						;
 
 ;------[C]--------------------------------------------------------------------------------------------------------------
 
+cbrtf 											textequ 			<__imp_cbrtf>  							;
 cosf 											textequ 			<__imp_cosf>  							;
 CreateWindowEx   								textequ 			<__imp_CreateWindowExA>   						;
 

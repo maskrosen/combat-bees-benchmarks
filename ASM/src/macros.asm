@@ -236,6 +236,7 @@ LR0p00001 											dword					03727C5ACh                      ;float 9.99999974
 
 GetRandomInsideUnitSphere							macro  
 													
+												
 													xorps xmm0, xmm0
 													mov rax, 200000
 													GetRandomNumberMacro
@@ -259,8 +260,7 @@ GetRandomInsideUnitSphere							macro
 													mulss xmm1, LR0p00001
 													shufps xmm0, xmm0, 93h 
 													movss xmm0, xmm1
-
-
+													;NormalizeVectorFromRegister
 													endm
 
 
@@ -343,6 +343,22 @@ LengthOfVectorFromRegisterSquared   			macro
 												shufps xmm0, xmm0, 39h ;move each element one final step
 												addps xmm1, xmm0 							
 																							
+												endm
+
+;***** FastNormalizeVectorFromRegister *********************************************************************************************************
+;
+; uses a reciprocal estimate and
+; returns QNaN on zero and infinite vectors.
+;
+; 
+
+FastNormalizeVectorFromRegister					macro  
+																								
+												movaps xmm1, xmm0
+												dpps xmm0, xmm0, 0ffh
+												rsqrtps xmm0, xmm0
+												mulps xmm0, xmm1
+
 												endm
 
 ;***** NormalizeVectorFromRegister *********************************************************************************************************

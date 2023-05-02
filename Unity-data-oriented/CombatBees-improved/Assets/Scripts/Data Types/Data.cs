@@ -4,14 +4,14 @@ using UnityEngine;
 
 public static class Data
 {
-    public const int MaxNumberOfBeesPerTeam = 15000;
+    public const int MaxNumberOfBeesPerTeam = 50000;
     public const int MaxNumberOfBees = MaxNumberOfBeesPerTeam * 2;
     public const float flightJitter = 200;
     public const float damping = 0.9f;
     public const float teamAttraction = 5;
     public const float teamRepulsion = 4;
     public const int beesPerBatch = 1023;
-    public const int beeStartCount = 20000;
+    public const int beeStartCount = 2000;
     public const float minBeeSize = 0.25f;
     public const float maxBeeSize = 0.5f;
     public const float attackDistance = 4;

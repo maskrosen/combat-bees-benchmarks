@@ -16,8 +16,8 @@ buffer_size 									equ 				1024  											;
 
 classStyle  									equ 				CS_VREDRAW OR CS_HREDRAW OR CS_DBLCLKS OR CS_OWNDC OR CS_PARENTDC
 
-client_height   								equ 				720   											;
-client_width									equ 				1280  											;
+client_height   								equ 				1080   											;
+client_width									equ 				1920  											;
 
 cmnd_x  										equ 				source_x  										; x
 cmnd_y  										equ 				( source_h + source_y ) - 5   					; y
@@ -70,7 +70,7 @@ max_path 										equ 				256
 main_style   									equ 				ws_visible or ws_popup  or ws_caption or ws_sysmenu 	; window mode
 
 
-max_number_of_bees   							equ 				15000 ;per team
+max_number_of_bees   							equ 				50000 ;per team
 max_number_of_bits								equ					max_number_of_bees / 64 + 1
 
 mem1_x   										equ 				source_w - 18 									; x
@@ -133,7 +133,7 @@ source_w 										equ 				810   											; width
 source_h 										equ 				795   											; height
 
 
-starting_bees_per_team							equ					10000
+starting_bees_per_team							equ					50000
 
 ;------[T]--------------------------------------------------------------------------------------------------------------
 

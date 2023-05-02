@@ -225,6 +225,7 @@ InitBees										macro
 												mov rsi, rdi 
 												add rsi, r11 ;end index 
 												xor rax, rax
+												mov r11d, randSeed
 Init_Bees_Loop:
 
 												
@@ -244,7 +245,9 @@ Init_Bees_Loop:
 												xorps xmm3, xmm3
 												mov rax, 100000
 												push rcx
+												mov rcx, r11
 												GetRandomNumberMacro
+												mov r11, rcx
 												pop rcx
 												cvtsi2ss xmm3, rax
 												mulss xmm3, xmm4 ;0.0 to 1.0
@@ -390,6 +393,7 @@ Movement_Loop:
 												mov rax, rsi ;number of alive bees in team
 												push rcx
 												mov rcx, r11
+												dec rax
 												GetRandomNumberMacro
 												mov r11, rcx
 												pop rcx
@@ -401,6 +405,7 @@ Movement_Loop:
 												mov rax, rsi ;number of alive bees in team
 												push rcx
 												mov rcx, r11
+												dec rax
 												GetRandomNumberMacro
 												mov r11, rcx
 												pop rcx
@@ -452,11 +457,11 @@ Movement_Loop:
 												;length is in xmm1, 
 												maxss xmm1, xmm14 ;0.1f
 												mov rax, team_attraction
-												cvtsi2ss xmm0, rax
-												mulss xmm0, xmm10 ;delta time
-												divss xmm0, xmm1 ;divide by distance
-												shufps xmm0, xmm0, 00h
-												mulps xmm2, xmm0 ;dist * attraction force
+												cvtsi2ss xmm3, rax
+												mulss xmm3, xmm10 ;delta time
+												divss xmm3, xmm1 ;divide by distance
+												shufps xmm3, xmm3, 00h
+												mulps xmm2, xmm3 ;dist * attraction force
 												addps xmm6, xmm2 ;add to velocity
 
 												;Move away from the other random ally												
@@ -486,24 +491,27 @@ Movement_Loop:
 												shufps xmm0, xmm0, 00h
 												mulps xmm2, xmm0 ;dist * repulsion force
 												subps xmm6, xmm2 ;sub from vel
-
+												
+												movaps xmm0, xmm6 ;store vel here for later
 												movsd qword ptr [rcx + r10 + movement.velocity], xmm6 ;write back vel to array x and y
 												shufps xmm6, xmm6, 39h
 												shufps xmm6, xmm6, 39h
-												movss real4 ptr [rcx + r10 + movement.velocity + sizeof(qword)], xmm6 ;write back vel to array x and y
+												movss real4 ptr [rcx + r10 + movement.velocity + sizeof(qword)], xmm6 ;write back vel to array z
 
-												movaps xmm0, xmm6
+												
 												andps xmm0, XMMask3
-												NormalizeVectorFromRegister
+												FastNormalizeVectorFromRegister
 												movups xmm2, xmmword ptr [r12 + r13]
 												subps xmm0, xmm2
 												mulps xmm0, xmm15 ;mul by delta time * 4
 												addps xmm0, xmm2
+												;movaps xmm0, XMRed
 
+												;write direction
 												movsd qword ptr [r12 + r13], xmm0
 												shufps xmm0, xmm0, 39h
 												shufps xmm0, xmm0, 39h
-												movss real4 ptr [rcx + r13 + Vector3.z], xmm0
+												movss real4 ptr [r12 + r13 + Vector3.z], xmm0
 
 												inc rdi
 												add r10, sizeof(movement)
@@ -680,7 +688,10 @@ GetNewEnemyTargets								proc                                                  
 												mov rbx, sizeof(dword)
 												mul rbx
 												lea rcx, team1AliveBees
-												mov r12d, dword ptr [rcx + rax] ;alive bees for enemy team														
+												mov r12d, dword ptr [rcx + rax] ;alive bees for enemy team		
+
+												cmp r12, 0
+												je GetTarget_No_Enemies_Alive												
 												
 												;rcx reserved for mask
 												;r8 hasTarget
@@ -709,6 +720,7 @@ GetTarget_Bit_Loop:
 												push rcx
 												mov rcx, r15 ;random seed
 												mov rax, r12 ;alive enemy bees
+												dec rax
 												GetRandomNumberMacro
 												mov r15, rcx ;keep random seed here
 												pop rcx
@@ -739,7 +751,7 @@ GetTarget_Continue:
 GetTarget_Loop_Mask_End:
 
 												mov randSeed, r15d ;store random seed that was kept in r15
-
+GetTarget_No_Enemies_Alive:
 ;-----[Zero final return]----------------------------------------------
 
 												xor                 rax, rax                                          ; Zero final return
@@ -775,8 +787,8 @@ Attack											proc                                                           
 												Save_Registers                                                        ; Save incoming registers
 
 												mov r8, rcx ;team index
-												movq xmm15, r8
 												mov r12, rdx ;enemy team index
+												movq xmm15, r12
 												;calc pointer offset to team
 												mov rax, r8
 												mov rbx, sizeof(dword)
@@ -820,7 +832,7 @@ Attack											proc                                                           
 												;r13 enemyMovements
 												;r14 bitmask array offset
 												;r15 movements
-												;xmm15 teamIndex
+												;xmm15 enemy teamIndex
 
 												;setup some local "variables" with registers 
 												mov rax, deltaTimeMicros
@@ -919,11 +931,12 @@ Target_Alive:
 												push rcx
 												push rdx
 												mov rcx, r11
-												movq rax, xmm15 ;team index
+												movq rax, xmm15 ;enemy team index
 												mov rdx, rax
 												LocalCall KillBee
 												pop rdx
 												pop rcx
+												dec r12
 
 Not_In_Range:												
 
