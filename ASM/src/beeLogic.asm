@@ -795,6 +795,7 @@ Attack											proc                                                           
 												mul rbx
 												lea rcx, team1AliveBees
 												mov esi, dword ptr [rcx + rax] ;alive bees for team
+												push rsi
 												sar esi, 6 ;divide by 64
 												inc esi ;we add by one to catch the rest part when not evenly divisible by 64	
 
@@ -861,6 +862,8 @@ AttackTarget_Bit_Loop:
 												mov rbx, 64 ;bits per qword
 												mul rbx
 												add rax, r11 ;bee index
+												cmp rax, qword ptr [rsp] ;alivebeesCount pushed on stack
+												jge AttackTarget_Loop_Mask_End
 												mov r11, rax
 												mov rbx, sizeof(dword)
 												mul rbx 
@@ -954,7 +957,7 @@ AttackTarget_Continue:
 												jmp AttackTarget_Mask_Loop
 AttackTarget_Loop_Mask_End:
 
-												
+												pop rsi ;pop pushed alive count from start
 ;-----[Zero final return]----------------------------------------------
 
 												xor                 rax, rax                                          ; Zero final return
@@ -1008,7 +1011,8 @@ KillBee											proc                                                          
 
 												lea r13, beeSizes
 												mov r13, qword ptr [r13 + rax]
-												;lea r15, beeRotation
+												lea r15, beeRotations
+												mov r15, qword ptr [r15 + rax]
 
 												mov rax, r8
 												mov rbx, sizeof(dword)
@@ -1025,31 +1029,55 @@ KillBee											proc                                                          
 												dec esi
 												mov dword ptr[r9], esi
 
+												;rcx, movement
+												;r13 size
+												;r15 rotation
+
 												;save position of current bee
 												GetArrayOffset rdi, sizeof(movement)
 												movups xmm0, xmmword ptr [rcx + rax]
 												mov r11, qword ptr [rcx + rax]
 												;save size 
-												movss xmm1, real4 ptr [r13 + rdi * 4]												
+												movss xmm1, real4 ptr [r13 + rdi * 4]	
+												;save rotation		
+												GetArrayOffset rdi, sizeof(Vector3)
+												movups xmm3, xmmword ptr [r15 + rax]										
 
 												;get data from last alive bee to copy
 												GetArrayOffset rsi, sizeof(movement)
 												movups xmm5, xmmword ptr [rcx + rax] ;position, and x of velocity
 												mov r10, qword ptr [rcx + rax + sizeof(xmmword)] ; y and z of velocity 
-												movss xmm2, real4 ptr [r13 + rsi * 4]
-
-												;write data to new dead bee
+												
+												;write movement to new dead bee
 												movups xmmword ptr [rcx + rax], xmm0
 												mov qword ptr[rcx + rax + sizeof(xmmword)], r11
+
+												movss xmm2, real4 ptr [r13 + rsi * 4] ;size
+
+												GetArrayOffset rsi, sizeof(Vector3)
+												movups xmm4, xmmword ptr [r15 + rax]	;rotation	
+												;write rotation to new dead bee
+												movsd qword ptr [r15 + rax], xmm3 
+												shufps xmm3, xmm3, 39h
+												shufps xmm3, xmm3, 39h
+												movss real4 ptr [r15 + rax + Vector3.z], xmm3
+
+												;write size to new dead bee
 												movss real4 ptr[r13 + rsi * 4], xmm1
 												
 												;write data of last alive bee to old bees index
 												GetArrayOffset rdi, sizeof(movement)
 												movups xmmword ptr [rcx + rax], xmm5
 												mov qword ptr [rcx + rax], r10
+												;size
 												movss real4 ptr[r13 + rdi * 4], xmm2
 
-												;todo add rotation here
+												;rotation
+												GetArrayOffset rdi, sizeof(Vector3)
+												movsd qword ptr [r15 + rax], xmm4
+												shufps xmm4, xmm4, 39h
+												shufps xmm4, xmm4, 39h
+												movss real4 ptr [r15 + rax + Vector3.z], xmm4
 												
 												;set dead timer of dead bee
 												mov rax, r8

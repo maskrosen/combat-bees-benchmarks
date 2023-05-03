@@ -414,15 +414,7 @@ layout_cars										label				d3d11_input_element_desc						;
 												dword				0												; InputSlot
 												dword				32												; AlignedByteOffset
 												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate
-												;-----------------------------------------------------------------------
-												qword				textcoord0_string								; SemanticName
-												dword				0												; SemanticIndex
-												dword				dxgi_format_r32g32_float						; Format
-												dword				0												; InputSlot
-												dword				48												; AlignedByteOffset
-												dword				D3D11_INPUT_PER_VERTEX_DATA					; InputSlotClass
-												dword				0												; InstanceDataStepRate												
+												dword				0												; InstanceDataStepRate						
 												;-----------------------------------------------------------------------
 												qword				instance_position_string						; SemanticName
 												dword				0												; SemanticIndex

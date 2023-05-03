@@ -51,18 +51,18 @@ real4 				0.0
 real4 				0.0
 real4 				0.0
 
-blueBeeIndices									 word 0
+blueBeeIndices								 word 0
 											 word 1
 											 word 2
 											 word 0
-											 word 1
 											 word 2
+											 word 1
 											 word 0
 											 word 3
 											 word 1
 											 word 0
-											 word 3
 											 word 1
+											 word 3
 blueBeeIndexBufferData 						 label 				 d3d11_subresource_data
 											 qword 				 blueBeeIndices
 											 qword 				 ?
