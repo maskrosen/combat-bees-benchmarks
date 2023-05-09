@@ -11,7 +11,7 @@ public static class Data
     public const float teamAttraction = 5;
     public const float teamRepulsion = 4;
     public const int beesPerBatch = 1023;
-    public const int beeStartCount = 2000;
+    public const int beeStartCount = 100000;
     public const float minBeeSize = 0.25f;
     public const float maxBeeSize = 0.5f;
     public const float attackDistance = 4;

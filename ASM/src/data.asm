@@ -43,4 +43,4 @@ hitDistanceSqr					real4				0.25
 beeMinSize						real4				0.25
 beeMaxSize						real4				0.5
 
-gravity							real4				-20.0
+gravity							real4				-200.0

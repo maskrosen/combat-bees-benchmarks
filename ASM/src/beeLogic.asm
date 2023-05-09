@@ -1,3 +1,18 @@
+
+;***** GetArrayOffset *********************************************************************************************************
+;
+; Return the offset to an array in rax
+; 
+; 
+
+GetArrayOffset									macro index:req, entrySize:req  
+
+												mov rax, index
+												mov rbx, entrySize
+												mul rbx												
+
+												endm
+
 ;-----------------------------------------------------------------------------------------------------------------------
 ;                                                      																-
 ; ClearBees                                        																-
@@ -166,7 +181,7 @@ GetBit 											macro dest:req, index:req
 												endm
 
 
-;***** InitBee *********************************************************************************************************
+;***** InitBees *********************************************************************************************************
 ;
 ; Does not restore registers!
 ;
@@ -224,7 +239,9 @@ InitBees										macro
 												mov rdi, r10 ;first bee index
 												mov rsi, rdi 
 												add rsi, r11 ;end index 
-												xor rax, rax
+												mov rax, sizeof(movement)
+												mov rbx, r10
+												mul rbx
 												mov r11d, randSeed
 Init_Bees_Loop:
 
@@ -295,13 +312,81 @@ SpawnBees										proc  																; Declare function
 												mov r9d, dword ptr [rcx + rax] ;alive bees for team
 												lea rcx, team1DeadBees
 												mov r10d, dword ptr [rcx + rax] ;dead bees for team
+												mov r12, r10 ; save dead bee count here
 												add r10, r9
+
+												lea rcx, beeMovements
+												mov rax, r8
+												mov rbx, sizeof(qword)
+												mul rbx
+												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team												
+											
+												lea r13, beeSizes
+												mov r13, qword ptr [r13 + rax]
+												lea r15, beeRotations
+												mov r15, qword ptr [r15 + rax]
+												
+												lea r14, beeDeadTimers
+												mov r14, qword ptr [r14 + rax]
+												
+
+												;r9 alive bees
 												;r10 now holds number of active bees
+												;r11 unused
+												;r12 deadbees
+												;r13 beeSizes
+												;r14 beeDeadTimers
+												;r15 beeRotations
+												;rcx beeMovements
+
+
 												mov rdi, starting_bees_per_team
 												sub rdi, r10 ;number of bees to spawn
 
-												;TODO move data from the start of the dead bees to make room for the new bees that should be spawned
+												cmp r12, 0
+												je No_Copy
 
+												cmp r12, rdi
+												jl Under_Limit
+												mov r12, rdi
+
+Under_Limit:												
+												xor rsi, rsi ;bee index
+												add rsi, r12
+												add rdi, r12
+Copy_Loop:
+												cmp rsi, rdi
+												jge No_Copy
+												
+												
+												GetArrayOffset rsi, sizeof(movement)
+												movups xmm5, xmmword ptr [rcx + rax] ;position, and x of velocity
+												mov r10, qword ptr [rcx + rax + sizeof(xmmword)] ; y and z of velocity 
+
+												movss xmm0, real4 ptr [r13 + rsi * 4] ;save size
+												GetArrayOffset rsi, sizeof(Vector3)
+												movups xmm1, xmmword ptr [r15 + rax] ;save rotation
+
+												movss xmm4, real4 ptr [r14 + rsi * 4]
+												
+												GetArrayOffset rdi, sizeof(movement)
+												movups xmmword ptr [rcx + rax], xmm5
+												mov qword ptr [rcx + rax + sizeof(xmmword)], r10
+
+												movss real4 ptr [r13 + rdi * 4], xmm0
+												GetArrayOffset rdi, sizeof(Vector3)
+												movsd qword ptr [r15 + rax], xmm1
+												shufps xmm1, xmm1, 39h
+												shufps xmm1, xmm1, 39h
+												movss real4 ptr [r15 + rax + Vector3.z], xmm1
+												
+												movss real4 ptr [r14 + rdi * 4], xmm4 
+
+												inc rsi
+												jmp Copy_Loop
+												
+No_Copy:												
+												sub rdi, r12
 												mov rcx, r9 ;start index (alive count)
 												mov rdx, rdi ;number of bees
 												;r8 already holds team index
@@ -374,6 +459,7 @@ UpdateMovements									proc																 ; Declare function
 												movss xmm12, r1
 												movaps xmm13, xmmword ptr XMMask3
 												movss xmm14, r01 
+												shufps xmm14, xmm14, 00h
 												movss xmm15, r4
 												mulss xmm15, xmm10
 												shufps xmm15, xmm15, 00h
@@ -393,22 +479,19 @@ Movement_Loop:
 												mov rax, rsi ;number of alive bees in team
 												push rcx
 												mov rcx, r11
-												dec rax
 												GetRandomNumberMacro
 												mov r11, rcx
-												pop rcx
+												mov rcx, qword ptr [rsp] ;keep rcx on stack
 												;rax now holds our random bee index
 												mov rbx, sizeof(movement)
 												mul rbx
 												movups xmm7, xmmword ptr [rcx + rax] ;position of ally bee
 
-												mov rax, rsi ;number of alive bees in team
-												push rcx
+												mov rax, rsi ;number of alive bees in team												
 												mov rcx, r11
-												dec rax
 												GetRandomNumberMacro
 												mov r11, rcx
-												pop rcx
+												mov rcx, qword ptr [rsp] ;keep rcx on stack
 												;rax now holds our random bee index
 												mov rbx, sizeof(movement)
 												mul rbx
@@ -418,7 +501,7 @@ Movement_Loop:
 												mov rcx, r11
 												GetRandomInsideUnitSphere
 												mov r11, rcx 
-												pop rcx
+												pop rcx ;now we pop rcx to remove it from the stack
 												;we now have a random point in a unit sphere in xmm0
 												mov rax, flight_jitter 
 												cvtsi2ss xmm6, rax
@@ -429,68 +512,44 @@ Movement_Loop:
 												movups xmm5, xmmword ptr [rcx + r10] ;position of current bee
 												vaddps xmm6, xmm6, xmmword ptr [rcx + r10 + movement.velocity] ; add jitter to velocity
 												;calc damping
-												movss xmm0, xmm11 ;0.9f
-												mulss xmm0, xmm10 ;delta time
+												movss xmm1, xmm11 ;0.9f
+												mulss xmm1, xmm10 ;delta time
 												movss xmm3, xmm12 ;1.0f
-												subss xmm3, xmm0
+												subss xmm3, xmm1
 												shufps xmm3, xmm3, 00h
 												mulps xmm6, xmm3 ;apply damping to velocity
 
-												;Move towards the first random ally												
-												;mov rax, rsi ;number of alive bees in team
-												;push rcx
-												;mov rcx, r11
-												;GetRandomNumberMacro
-												;mov r11, rcx
-												;pop rcx
-												;;rax now holds our random bee index
-												;mov rbx, sizeof(movement)
-												;mul rbx
-												;movups xmm7, xmmword ptr [rcx + rax] ;position of ally bee
-												
 												movaps xmm0, xmm7
 												subps xmm0, xmm5 ;diff between current bee and ally target bee
 												andps xmm0, xmm13; zero w component
-												movaps xmm2, xmm0
-												LengthOfVectorFromRegister
+												FastLengthOfVectorFromRegister
 
 												;length is in xmm1, 
-												maxss xmm1, xmm14 ;0.1f
+												movaps xmm1, xmm0
+												maxps xmm1, xmm14 ;0.1f
 												mov rax, team_attraction
 												cvtsi2ss xmm3, rax
 												mulss xmm3, xmm10 ;delta time
 												divss xmm3, xmm1 ;divide by distance
 												shufps xmm3, xmm3, 00h
-												mulps xmm2, xmm3 ;dist * attraction force
-												addps xmm6, xmm2 ;add to velocity
-
-												;Move away from the other random ally												
-												;mov rax, rsi ;number of alive bees in team
-												;push rcx
-												;mov rcx, r11
-												;GetRandomNumberMacro
-												;mov r11, rcx
-												;pop rcx
-												;;rax now holds our random bee index
-												;mov rbx, sizeof(movement)
-												;mul rbx
-												;movups xmm8, xmmword ptr [rcx + rax] ;position of ally bee
+												mulps xmm1, xmm3 ;dist * attraction force
+												addps xmm6, xmm1 ;add to velocity
 												
 												movaps xmm0, xmm8
 												subps xmm0, xmm5 ;diff between current bee and ally target bee
 												andps xmm0, xmm13; zero w component
-												movaps xmm2, xmm0
-												LengthOfVectorFromRegister
+												FastLengthOfVectorFromRegister
 
 												;length is in xmm1, 
-												maxss xmm1, xmm14 ;0.1f
+												movaps xmm1, xmm0
+												maxps xmm1, xmm14 ;0.1f
 												mov rax, team_repulsion
 												cvtsi2ss xmm0, rax
 												mulss xmm0, xmm10 ;delta time
 												divss xmm0, xmm1 ;divide by distance
 												shufps xmm0, xmm0, 00h
-												mulps xmm2, xmm0 ;dist * repulsion force
-												subps xmm6, xmm2 ;sub from vel
+												mulps xmm1, xmm0 ;dist * repulsion force
+												subps xmm6, xmm1 ;sub from vel
 												
 												movaps xmm0, xmm6 ;store vel here for later
 												movsd qword ptr [rcx + r10 + movement.velocity], xmm6 ;write back vel to array x and y
@@ -626,19 +685,6 @@ ret																	; Return to caller
 UpdatePositions									endp																 ; End function
 
 
-;***** GetArrayOffset *********************************************************************************************************
-;
-; Return the offset to an array in rax
-; 
-; 
-
-GetArrayOffset									macro index:req, entrySize:req  
-
-												mov rax, index
-												mov rbx, entrySize
-												mul rbx												
-
-												endm
 
 
 ;-----------------------------------------------------------------------------------------------------------------------
@@ -720,7 +766,6 @@ GetTarget_Bit_Loop:
 												push rcx
 												mov rcx, r15 ;random seed
 												mov rax, r12 ;alive enemy bees
-												dec rax
 												GetRandomNumberMacro
 												mov r15, rcx ;keep random seed here
 												pop rcx
@@ -905,7 +950,8 @@ Target_Alive:
 												andps xmm0, xmm11 ;clear w since that hold data outside out vector3
 												movaps xmm4, xmm0 ;save diff here 
 
-												LengthOfVectorFromRegisterSquared	;leaves length in xmm1
+												FastLengthOfVectorFromRegisterSquared	;leaves length in xmm0
+												movaps xmm1, xmm0
 												comiss xmm1, attackDistanceSqr 	
 												mov rax, attackForce
 												mov rbx, chaseForce
@@ -933,9 +979,8 @@ Target_Alive:
 												;we are in hit range, kill enemy bee
 												push rcx
 												push rdx
-												mov rcx, r11
-												movq rax, xmm15 ;enemy team index
-												mov rdx, rax
+												mov rcx, rdx ;target index
+												movq rdx, xmm15;enemy team index
 												LocalCall KillBee
 												pop rdx
 												pop rcx
@@ -992,8 +1037,6 @@ KillBee											proc                                                          
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 												Save_Registers                                                        ; Save incoming registers
 
-												;Need to copy over movement, no target bit, has target bit and more later
-
 												mov r8, rdx ;team index
 												mov rdi, rcx ; bee index
 
@@ -1036,7 +1079,7 @@ KillBee											proc                                                          
 												;save position of current bee
 												GetArrayOffset rdi, sizeof(movement)
 												movups xmm0, xmmword ptr [rcx + rax]
-												mov r11, qword ptr [rcx + rax]
+												mov r11, qword ptr [rcx + rax + sizeof(xmmword)]
 												;save size 
 												movss xmm1, real4 ptr [r13 + rdi * 4]	
 												;save rotation		
@@ -1068,7 +1111,7 @@ KillBee											proc                                                          
 												;write data of last alive bee to old bees index
 												GetArrayOffset rdi, sizeof(movement)
 												movups xmmword ptr [rcx + rax], xmm5
-												mov qword ptr [rcx + rax], r10
+												mov qword ptr [rcx + rax + sizeof(xmmword)], r10
 												;size
 												movss real4 ptr[r13 + rdi * 4], xmm2
 
@@ -1138,7 +1181,7 @@ DeleteBee										proc                                                         
 ;------[Save incoming registers]----------------------------------------------------------------------------------------
 												Save_Registers                                                        ; Save incoming registers
 
-												;TODO Need to copy over movement, no target bit, has target bit and more later
+												
 
 												mov r8, rdx ;team index
 												mov rdi, rcx ; bee index
@@ -1147,8 +1190,12 @@ DeleteBee										proc                                                         
 												mov rax, r8
 												mov rbx, sizeof(qword)
 												mul rbx
-												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team
-
+												mov rcx, qword ptr [rcx + rax] ;now holds a pointer to the movement array for the current team												
+											
+												lea r13, beeSizes
+												mov r13, qword ptr [r13 + rax]
+												lea r15, beeRotations
+												mov r15, qword ptr [r15 + rax]
 
 												mov rax, r8
 												mov rbx, sizeof(dword)
@@ -1167,10 +1214,21 @@ DeleteBee										proc                                                         
 												GetArrayOffset rsi, sizeof(movement)
 												movups xmm5, xmmword ptr [rcx + rax] ;position, and x of velocity
 												mov r10, qword ptr [rcx + rax + sizeof(xmmword)] ; y and z of velocity 
+
+												movss xmm0, real4 ptr [r13 + rsi * 4] ;save size
+												GetArrayOffset rsi, sizeof(Vector3)
+												movups xmm1, xmmword ptr [r15 + rax] ;save rotation
 												
 												GetArrayOffset rdi, sizeof(movement)
 												movups xmmword ptr [rcx + rax], xmm5
-												mov qword ptr [rcx + rax], r10
+												mov qword ptr [rcx + rax + sizeof(xmmword)], r10
+
+												movss real4 ptr [r13 + rdi * 4], xmm0
+												GetArrayOffset rdi, sizeof(Vector3)
+												movsd qword ptr [r15 + rax], xmm1
+												shufps xmm1, xmm1, 39h
+												shufps xmm1, xmm1, 39h
+												movss real4 ptr [r15 + rax + Vector3.z], xmm1
 
 Return:
 ;-----[Zero final return]----------------------------------------------
@@ -1384,13 +1442,14 @@ UpdateDead										proc																 ; Declare function
 												movss xmm14, xmm0 ;gravity in x pos
 												shufps xmm14, xmm14, 93h ;move gravity to y, rest contains 0
 
-												xor r10, r10 ;movement array offset
+												mov rax, sizeof(movement)
+												mul rdi
 
 For_Loop:
 												cmp rdi, rsi
 												jge For_Loop_End
 											
-												movups xmm6, xmmword ptr [rcx + r10 + movement.velocity] ;velocity of bee
+												movups xmm6, xmmword ptr [rcx + rax + movement.velocity] ;velocity of bee
 												addps xmm6, xmm14 ;add gravity to y part of velocity
 												;reduce dead timer
 												movss xmm0, real4 ptr [r9 + rdi * 4]
@@ -1406,11 +1465,11 @@ For_Loop:
 												pop rcx
 												jmp Continue
 Not_Dead:
-												movsd qword ptr [rcx + r10 + movement.velocity], xmm6 ;write back vel to array x and y
+												movsd qword ptr [rcx + rax + movement.velocity], xmm6 ;write back vel to array x and y
 												movss real4 ptr [r9 + rdi * 4], xmm0
 Continue:
 												inc rdi
-												add r10, sizeof(movement)
+												add rax, sizeof(movement)
 												jmp For_Loop
 For_Loop_End:
 

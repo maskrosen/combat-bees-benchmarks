@@ -13,7 +13,7 @@ public class Fps : MonoBehaviour
     float timePassed = 0;
     float totalTimePassed = 0;
     int frameCount = 0;
-    int framesAfter60Seconds = 0;
+    int framesAfter30Seconds = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,13 +27,13 @@ public class Fps : MonoBehaviour
         if (timePassed > 1)
         {
             var fps = frameCount / timePassed;
-            text.text = instructions + "Fps: " + fps + "\n Number of bees: " + GetBeeCount() + "\nTotal frame count after 60 seconds: " + framesAfter60Seconds;
+            text.text = instructions + "Fps: " + fps + "\n Number of bees: " + GetBeeCount() + "\nTotal frame count after 30 seconds: " + framesAfter30Seconds;
             frameCount = 0;
             timePassed = 0;
         }
-        if (totalTimePassed <= 60.0f)       
+        if (totalTimePassed <= 30.0f)       
         {
-            framesAfter60Seconds++;
+            framesAfter30Seconds++;
         }
         timePassed += Time.unscaledDeltaTime;
         totalTimePassed += Time.unscaledDeltaTime;

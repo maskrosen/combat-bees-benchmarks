@@ -1,0 +1,1 @@
+gcc -I../../src core_basic_window.c data.c gameUtils.c logic.c -lraylib -lopengl32 -lgdi32 -lwinmm -mwindows -O3 -o gcc-build/game.exe

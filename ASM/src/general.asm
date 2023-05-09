@@ -2105,16 +2105,16 @@ R_Not_Pressed:
 												mov rcx, 1
 												mov rdx, 0
 												LocalCall Attack	
+												
+												mov rcx, 0
+												LocalCall UpdateDead
+												mov rcx, 1
+												LocalCall UpdateDead		
 													
 												mov rcx, 0								
 												LocalCall CheckCollisionsWall
 												mov rcx, 1
-												LocalCall CheckCollisionsWall		
-
-												mov rcx, 0
-												LocalCall UpdateDead
-												mov rcx, 1
-												LocalCall UpdateDead						
+												LocalCall CheckCollisionsWall						
 
 												mov eax, team1AliveBees
 												add eax, team1DeadBees
@@ -2125,9 +2125,18 @@ R_Not_Pressed:
 												mov team2NumberOfBees, eax
 												
 												;Measure fps
+												mov rcx, deltaTimeMicros
+												mov rbx, totalTime
+												add rbx, rcx
+												mov totalTime, rbx
+												cmp rbx, 30000000 ;30 seconds in microseconds
+												jg Skip_30_Seconds_Measure
+												inc fpsMeasureFrameCountAfter30Sec
+
+Skip_30_Seconds_Measure:
 												inc fpsMeasureFrameCount
 												mov rax, fpsMeasureTimePassed
-												add rax, deltaTimeMicros
+												add rax, rcx
 												mov fpsMeasureTimePassed, rax
 												cmp rax, 1000000 ;1 second in microseconds
 												jl Skip_FPS_Update
@@ -2147,6 +2156,16 @@ R_Not_Pressed:
 												mov rdx, 24
 												LocalCall AddReal4VariableToDebugText
 
+												mov eax, fpsMeasureFrameCountAfter30Sec
+												cvtsi2ss xmm0, eax
+
+												movss xmm1, xmm3   
+												addss xmm1, r001	
+												movss xmm2, r08n
+												lea rcx, frame_count_30_seconds_str
+												mov rdx, textLength
+												LocalCall AddReal4VariableToDebugText
+
 												mov eax, team1NumberOfBees
 												add eax, team2NumberOfBees
 
@@ -2157,6 +2176,65 @@ R_Not_Pressed:
 												lea rcx, number_of_bees_string
 												mov rdx, textLength
 												LocalCall AddReal4VariableToDebugText
+
+												; mov eax, team1AliveBees
+												; cvtsi2ss xmm0, eax
+
+												; movss xmm1, xmm3   
+												; addss xmm1, r001	
+												; movss xmm2, r05n
+												; lea rcx, alive_bees_string
+												; mov rdx, textLength
+												; LocalCall AddReal4VariableToDebugText
+
+												; mov eax, team2AliveBees
+												; cvtsi2ss xmm0, eax
+
+												; movss xmm1, xmm3   
+												; movss xmm2, r05n
+												; lea rcx, comma_str
+												; mov rdx, textLength
+												; LocalCall AddReal4VariableToDebugText
+
+												; mov eax, team1DeadBees
+												; cvtsi2ss xmm0, eax
+
+												; movss xmm1, xmm3   
+												; addss xmm1, r001	
+												; movss xmm2, r05n
+												; lea rcx, dead_bees_string
+												; mov rdx, textLength
+												; LocalCall AddReal4VariableToDebugText
+
+												; mov eax, team2DeadBees
+												; cvtsi2ss xmm0, eax
+
+												; movss xmm1, xmm3   
+												; movss xmm2, r05n
+												; lea rcx, comma_str
+												; mov rdx, textLength
+												; LocalCall AddReal4VariableToDebugText
+
+												; mov eax, team1AliveBees
+												; lea rcx, team1DeadTimers
+												; movss xmm0, real4 ptr [rcx + rax * 4]
+
+												; movss xmm1, xmm3   
+												; addss xmm1, r001	
+												; movss xmm2, r05n
+												; lea rcx, death_timer_string
+												; mov rdx, textLength
+												; LocalCall AddReal4VariableToDebugText
+
+												; mov eax, team2AliveBees
+												; lea rcx, team2DeadTimers
+												; movss xmm0, real4 ptr [rcx + rax * 4]
+
+												; movss xmm1, xmm3   
+												; movss xmm2, r05n
+												; lea rcx, comma_str
+												; mov rdx, textLength
+												; LocalCall AddReal4VariableToDebugText
 
 
 Skip_FPS_Update:

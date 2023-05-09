@@ -1,1 +1,8 @@
 /[Bb]uilds/
+#Build folders
+**/builds
+**/builds-debug
+**/builds-web
+**/builds-*
+**/temp
+**/gcc-build

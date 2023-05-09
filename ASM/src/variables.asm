@@ -106,6 +106,7 @@ fwpr_index									qword			?												; FixWinDbg internal index
 
 fpsMeasureTimePassed						qword			?
 fpsMeasureFrameCount						dword			?
+fpsMeasureFrameCountAfter30Sec				dword			?
 
 ;-----[G]---------------------------------------------------------------------------------------------------------------
 
@@ -379,6 +380,8 @@ textNextCharPosition						real4			0.0												;Xpos of the next character
 
 
 timeToNextCarSpawn							real4			3.0
+
+totalTime									qword 			0.0
 
 beeInstanceBuffer							qword			?												; ID3D11Buffer
 team2BeeInstanceBuffer						qword			?												; ID3D11Buffer

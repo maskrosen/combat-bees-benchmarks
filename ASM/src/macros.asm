@@ -326,7 +326,22 @@ LengthOfVectorFromRegister  					macro
 																							
 												endm
 
-;***** LengthOfVectorFromRegister *********************************************************************************************************
+												
+;***** FastLengthOfVectorFromRegister *********************************************************************************************************
+;
+; Returns the length of a vector
+; vector goes in xmm0
+; length is left in xmm0, in all slots
+
+FastLengthOfVectorFromRegister  				macro			
+												         
+												dpps 		xmm0, xmm0, 0ffh
+												sqrtps 		xmm0, xmm0  								
+																							
+												endm
+
+
+;***** LengthOfVectorFromRegisterSquared *********************************************************************************************************
 ;
 ; Returns the length squared of a vector
 ; vector goes in xmm0
@@ -345,6 +360,18 @@ LengthOfVectorFromRegisterSquared   			macro
 																							
 												endm
 
+;***** FastLengthOfVectorFromRegisterSquared *********************************************************************************************************
+;
+; Returns the length squared of a vector
+; vector goes in xmm0
+; length is left in xmm0, in all slots
+
+FastLengthOfVectorFromRegisterSquared   		macro			
+												
+												dpps 		xmm0, xmm0, 0ffh
+																							
+												endm
+
 ;***** FastNormalizeVectorFromRegister *********************************************************************************************************
 ;
 ; uses a reciprocal estimate and
@@ -355,7 +382,10 @@ LengthOfVectorFromRegisterSquared   			macro
 FastNormalizeVectorFromRegister					macro  
 																								
 												movaps xmm1, xmm0
-												dpps xmm0, xmm0, 0ffh
+												;dpps xmm0, xmm0, 0ffh
+												mulps xmm0, xmm0
+												haddps xmm0, xmm0			
+												haddps xmm0, xmm0	
 												rsqrtps xmm0, xmm0
 												mulps xmm0, xmm1
 
