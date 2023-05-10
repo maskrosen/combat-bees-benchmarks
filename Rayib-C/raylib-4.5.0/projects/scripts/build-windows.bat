@@ -122,9 +122,9 @@ set "RAYLIB_SRC=!ROOT_DIR!\!RAYLIB_SRC!"
 
 REM Flags
 set OUTPUT_FLAG=/Fe: "!GAME_NAME!"
-set COMPILATION_FLAGS=/std:c11 /O2 /GL /Zi /favor:blend /utf-8 /validate-charset /EHsc
+set COMPILATION_FLAGS=/std:c11 /O2 /Zi /GL /favor:blend /utf-8 /validate-charset /EHsc
 set WARNING_FLAGS=/W3 /sdl
-set SUBSYSTEM_FLAGS=/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup
+set SUBSYSTEM_FLAGS=/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup /DEBUG
 set LINK_FLAGS=/link /LTCG kernel32.lib user32.lib shell32.lib winmm.lib gdi32.lib opengl32.lib
 set OUTPUT_DIR=builds\windows-msvc
 REM Debug changes to flags

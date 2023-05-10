@@ -1,40 +1,49 @@
 ﻿using System.Collections.Generic;
+using Unity.Burst;
+using Unity.Collections;
+using static Unity.Mathematics.math;
 using UnityEngine;
-public static class BeeMovementSystem
+using Random = UnityEngine.Random;
+using Unity.Mathematics;
+using System;
+
+[BurstCompile]
+public static class BeeMovementSystemBurst
 {
-    public static void Run(float deltaTime)
+    public unsafe static void Run(float deltaTime)
     {
         //var aliveBees = Data.Team1AliveBees;
-        var movements = Data.Team1BeeMovements;
-        UpdateMovements(Data.AliveCount[0], movements, Data.BeeDirections[0], deltaTime);
+        var movements = DataBurst.Team1BeeMovements;
+        UpdateMovements(DataBurst.AliveCount[0], (MovementBurst*)movements.GetPtr(), (float3*)DataBurst.BeeDirections[0].GetPtr(), deltaTime);
         //aliveBees = Data.Team2AliveBees;
-        movements = Data.Team2BeeMovements;
-        UpdateMovements(Data.AliveCount[1], movements, Data.BeeDirections[1], deltaTime);
+        movements = DataBurst.Team2BeeMovements;
+        UpdateMovements(DataBurst.AliveCount[1], (MovementBurst*)movements.GetPtr(), (float3*)DataBurst.BeeDirections[1].GetPtr(), deltaTime);
 
     }
 
-    static Vector3 GetRandomVectorInCube()
+
+    [BurstCompile]
+    static unsafe void UpdateMovements(int aliveBeesCount, MovementBurst* movements, float3* directions, float deltaTime)
     {
-        Vector3 res;
-        res.x = Random.value * 2.0f - 1.0f;
-        res.y = Random.value * 2.0f - 1.0f;
-        res.z = Random.value * 2.0f - 1.0f;
-        return res;
-    }
-    static void UpdateMovements(int aliveBeesCount, Movement[] movements, Vector3[] directions, float deltaTime)
-    {
+
         for (int i = 0; i < aliveBeesCount; i++)
         {
             int beeIndex = i;
             var movement = movements[beeIndex];
             var velocity = movement.Velocity;
-            velocity += GetRandomVectorInCube() * (Data.flightJitter * deltaTime);
+
+            float3 randomVector;
+            randomVector.x = Random.value * 2.0f - 1.0f;
+            randomVector.y = Random.value * 2.0f - 1.0f;
+            randomVector.z = Random.value * 2.0f - 1.0f;
+
+            velocity += randomVector * (Data.flightJitter * deltaTime);
             velocity *= (1f - Data.damping * deltaTime);
 
             //Move towards random ally
             int allyIndex = Random.Range(0, aliveBeesCount);
             var allyMovement = movements[allyIndex];
-            Vector3 delta = allyMovement.Position - movement.Position;
+            float3 delta = allyMovement.Position - movement.Position;
             float dist = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
             dist = Mathf.Max(0.01f, dist);
             velocity += delta * (Data.teamAttraction * deltaTime / dist);
@@ -81,7 +90,7 @@ public static class BeeMovementSystem
             movements[beeIndex] = movement;
 
             var direction = directions[beeIndex];
-            direction = Vector3.Lerp(direction, movement.Velocity.normalized, deltaTime * 4);
+            direction = lerp(direction, normalize(movement.Velocity), deltaTime * 4);
             directions[beeIndex] = direction;
 
         }

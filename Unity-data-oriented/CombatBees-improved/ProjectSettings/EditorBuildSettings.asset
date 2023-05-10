@@ -8,10 +8,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/_Scenes/combat bees.unity
     guid: 47fc35b2841674e4fa79dccc9efe0d30
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/combat bees improved.unity
     guid: 699c5b365d4ce334f8767ea920ea378c
   - enabled: 0
     path: Assets/_Scenes/combat bees gameobjects.unity
     guid: 286e092e6b17a4345a31c6033c2392f0
+  - enabled: 1
+    path: Assets/_Scenes/combat bees burst.unity
+    guid: b464a8e055055074780c189c75d1920b
   m_configObjects: {}

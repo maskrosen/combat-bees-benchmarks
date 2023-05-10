@@ -217,7 +217,7 @@ void GetNewEnemyTargets(__int64* noTargets, int aliveCount, int enemyTeamAliveCo
     
     for (int i = 0; i < aliveCount / 64 + 1; i++)
     {
-        int mask = noTargets[i];
+        __int64 mask = noTargets[i];
         if (mask == 0)
         {
             continue;
@@ -305,7 +305,7 @@ void Attack(int teamIndex, int enemyTeamIndex, float deltaTime)
 
     for (int i = 0; i < aliveCount / 64 + 1; i++)
     {
-        int mask = hasEnemyTarget[i];
+        __int64 mask = hasEnemyTarget[i];
         if (mask == 0)
         {
             continue;

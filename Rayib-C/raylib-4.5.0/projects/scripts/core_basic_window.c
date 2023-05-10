@@ -102,7 +102,7 @@ int main(void)
 
             BeginMode3D(camera);
 
-            //Render();
+            Render();
 
             EndMode3D();
            

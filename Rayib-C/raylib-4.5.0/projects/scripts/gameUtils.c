@@ -290,14 +290,14 @@ void DrawMeshInstancedNoAlloc(Mesh mesh, Material material, float16* instanceTra
 Vector3 RandomPointInSphere(float radius)
 {
     Vector3 res;
-    float u = (GetRandomValue(-10000, 10000) / 10000.0f);
+   // float u = (GetRandomValue(-10000, 10000) / 10000.0f);
     res.x = (GetRandomValue(-10000, 10000) / 10000.0f);
     res.y = (GetRandomValue(-10000, 10000) / 10000.0f);
     res.z = (GetRandomValue(-10000, 10000) / 10000.0f);
-    res = Vector3Normalize(res);
+   // res = Vector3Normalize(res);
 
-    u = cbrtf(u);
-    res = Vector3Scale(res, u);
+//    u = cbrtf(u);
+  //  res = Vector3Scale(res, u);
     return res;
 }
 

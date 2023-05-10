@@ -33,7 +33,6 @@ public static class Utils
         }
         
     }
-
     //Copies bee data in batch for the specified length starting at sourceIndex, overwriting the data in dest index and forward
     //Only used when spawning bees
     public static void CopyBeeData(int sourceIndex, int destIndex, int length, int teamIndex)
