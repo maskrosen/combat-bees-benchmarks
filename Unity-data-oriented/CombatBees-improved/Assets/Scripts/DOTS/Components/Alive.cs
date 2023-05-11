@@ -2,5 +2,5 @@
 
 public struct Alive : IComponentData
 {
-    
+     
 }

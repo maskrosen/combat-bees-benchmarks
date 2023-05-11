@@ -14,8 +14,6 @@ namespace DOTS
     [BurstCompile]
     public partial struct BeeMovementSystem : ISystem
     {
-        private EntityQuery team1Alive;
-        private EntityQuery team2Alive;
 
         private EntityQuery team1Bees;
         private EntityQuery team2Bees;
@@ -25,11 +23,8 @@ namespace DOTS
 
         public void OnCreate(ref SystemState state)
         {
-            team1Alive = state.EntityManager.CreateEntityQuery(typeof(Team1), typeof(Alive));
-            team2Alive = state.EntityManager.CreateEntityQuery(typeof(Team2), typeof(Alive));
-
-            team1Bees = state.EntityManager.CreateEntityQuery(typeof(Team1), typeof(LocalTransform), typeof(Velocity), typeof(RandomComponent));
-            team2Bees = state.EntityManager.CreateEntityQuery(typeof(Team2), typeof(LocalTransform), typeof(Velocity), typeof(RandomComponent));
+            team1Bees = state.EntityManager.CreateEntityQuery(typeof(Team1), typeof(LocalTransform), typeof(Velocity), typeof(RandomComponent), typeof(Alive));
+            team2Bees = state.EntityManager.CreateEntityQuery(typeof(Team2), typeof(LocalTransform), typeof(Velocity), typeof(RandomComponent), typeof(Alive));
 
             team1Positions = new NativeArray<float3>(Data.beeStartCount / 2, Allocator.Persistent);
             team2Positions = new NativeArray<float3>(Data.beeStartCount / 2, Allocator.Persistent);
@@ -42,8 +37,8 @@ namespace DOTS
         public void OnUpdate(ref SystemState state)
         {
             EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
-            int team1AliveCount = team1Alive.CalculateEntityCount();
-            int team2AliveCount = team2Alive.CalculateEntityCount();
+            int team1AliveCount = team1Bees.CalculateEntityCount();
+            int team2AliveCount = team2Bees.CalculateEntityCount();
 
             var team1Transforms = team1Bees.ToComponentDataArray<LocalTransform>(Allocator.Temp);
             for (int i = 0; i < team1Transforms.Length; i++)
