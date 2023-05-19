@@ -114,7 +114,7 @@ namespace DOTS
                 allyPosition = allyPositions[allyIndex];
                 delta = allyPosition - beePosition;
                 dist = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
-                dist = Mathf.Max(0.01f, dist);
+                dist = Mathf.Max(0.011f, dist);
                 velocity.Value -= delta * (Data.teamRepulsion * deltaTime / dist);
 
                 var rotation = transform.Rotation;

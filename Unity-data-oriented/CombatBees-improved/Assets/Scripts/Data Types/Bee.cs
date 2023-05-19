@@ -11,7 +11,6 @@ public class Bee {
 	public int team;
 	public float size;
 	public Bee enemyTarget;
-	public Resource resourceTarget;
 
 	public bool dead = false;
 	public float deathTimer = 1f;
@@ -36,6 +35,5 @@ public class Bee {
 		index = -1;
 
 		enemyTarget = null;
-		resourceTarget = null;
 	}
 }

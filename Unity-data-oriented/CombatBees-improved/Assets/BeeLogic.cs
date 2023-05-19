@@ -77,7 +77,7 @@ public class BeeLogic : MonoBehaviour
 						bee.velocity += delta * (beeSpawner.attackForce * deltaTime / Mathf.Sqrt(sqrDist));
 						if (sqrDist < beeSpawner.hitDistance * beeSpawner.hitDistance)
 						{
-							ParticleManager.SpawnParticle(bee.enemyTarget.position, ParticleType.Blood, bee.velocity * .35f, 2f, 6);
+							//ParticleManager.SpawnParticle(bee.enemyTarget.position, ParticleType.Blood, bee.velocity * .35f, 2f, 6);
 							bee.enemyTarget.dead = true;
 							bee.enemyTarget.velocity *= .5f;
 							bee.enemyTarget = null;
@@ -89,11 +89,7 @@ public class BeeLogic : MonoBehaviour
 		}
 		else
 		{
-			if (Random.value < (bee.deathTimer - .5f) * .5f)
-			{
-				ParticleManager.SpawnParticle(bee.position, ParticleType.Blood, Vector3.zero);
-			}
-
+			
 			bee.velocity.y += Field.gravity * deltaTime;
 			bee.deathTimer -= deltaTime / 10f;
 			if (bee.deathTimer < 0f)

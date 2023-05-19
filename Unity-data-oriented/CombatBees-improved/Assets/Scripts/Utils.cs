@@ -42,34 +42,7 @@ public static class Utils
         var sizes = Data.BeeSize[teamIndex];
         var targets = Data.BeeTargets[teamIndex];
         var deadTimers = Data.DeadTimers[teamIndex];
-        //var deadBees = Data.DeadBees[teamIndex];
 
-        var hasTargets = Data.HasEnemyTarget[teamIndex];
-        var hasNoTargets = Data.HasNoTarget[teamIndex];
-
-        /*
-        for (int i = 0; i < length; i++)
-        {
-            int beeSourceIndex = sourceIndex + i;
-            int beeDestIndex = destIndex + i;
-            if (hasTargets.Remove(beeSourceIndex) && !hasTargets.Contains(beeDestIndex))
-            {
-                hasTargets.Add(beeDestIndex);
-                hasNoTargets.Remove(beeDestIndex);
-            }
-            if (hasNoTargets.Remove(beeSourceIndex) && !hasNoTargets.Contains(beeDestIndex))
-            {
-                hasNoTargets.Add(beeDestIndex);
-                hasTargets.Remove(beeDestIndex);
-            }
-        }
-        */
-        /*
-        for (int i = 0; i < length; i++)
-        {
-            int beeSourceIndex = sourceIndex + i;
-            deadBees.Remove(beeSourceIndex);
-        }*/
         for (int i = 0; i < length; i++)
         {
             int beeSourceIndex = sourceIndex + i;
@@ -112,10 +85,8 @@ public static class Utils
         var spawnPos = Data.BeeSpawnPos[teamIndex];
         var movements = Data.BeeMovements[teamIndex];
         var sizes = Data.BeeSize[teamIndex];
-        //var alive = Data.AliveBees[teamIndex];
         var noTarget = Data.HasNoTarget[teamIndex];
         var hasEnemyTarget = Data.HasEnemyTarget[teamIndex];
-        //var inActive = Data.InactiveBees[teamIndex];
         for (int i = 0; i < length; i++)
         {
             int beeIndex = beeStartIndex + i;
@@ -123,12 +94,9 @@ public static class Utils
             sizes[beeIndex] = Random.Range(Data.minBeeSize, Data.maxBeeSize);
             movements[beeIndex] = m;
             Data.AliveCount[teamIndex]++;
-            //alive.Add(beeIndex);
             noTarget.Add(beeIndex);
-            hasEnemyTarget.Remove(beeIndex); //TODO should not bee needed here, we should have cleared this while the bee was set to dead
-            //inActive.Remove(beeIndex);
+            hasEnemyTarget.Remove(beeIndex); 
         }
-        //alive.Sort();
         noTarget.Sort();
         StateChecker.Run();
     }
@@ -143,8 +111,6 @@ public static class Utils
 
         var hasTargets = Data.HasEnemyTarget[teamIndex];
         var hasNoTargets = Data.HasNoTarget[teamIndex];
-        //var alive = Data.AliveBees[teamIndex];
-        //var dead = Data.DeadBees[teamIndex];
         int aliveCount = Data.AliveCount[teamIndex];
 
         int beeIndex1 = beeIndex;
@@ -198,17 +164,11 @@ public static class Utils
         var movements = Data.BeeMovements[teamIndex];
         var directions = Data.BeeDirections[teamIndex];
         var sizes = Data.BeeSize[teamIndex];
-        var targets = Data.BeeTargets[teamIndex];
         var deadTimers = Data.DeadTimers[teamIndex];
 
-        var hasTargets = Data.HasEnemyTarget[teamIndex];
-        var hasNoTargets = Data.HasNoTarget[teamIndex];
-        //var dead = Data.DeadBees[teamIndex];
-        //var inactive = Data.InactiveBees[teamIndex];
 
 
         int beeIndex1 = beeIndex;
-        //dead.Sort(); //We do a sort here so we can take the last index, this should hopefully be quite fast since we usually don't have that many bees in the dead list.
         int beeIndex2 = Data.AliveCount[teamIndex] + Data.DeadCount[teamIndex] - 1; //Last dead bee
         Data.DeadCount[teamIndex]--;
 

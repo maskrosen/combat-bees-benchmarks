@@ -4,8 +4,10 @@ public class GameHandlerBurst : MonoBehaviour
 {
     public Mesh beeMesh;
     public Material beeMaterial;
+    public Material beeMaterial2;
     public Color[] teamColors;
     MaterialPropertyBlock props;
+    private Material[] materials;
 
     // Mesh Properties struct to be read from the GPU.
     // Size() is a convenience funciton which returns the stride of the struct.
@@ -26,6 +28,9 @@ public class GameHandlerBurst : MonoBehaviour
     {
         props = new MaterialPropertyBlock();
         DataBurst.Init();
+        materials = new Material[2];
+        materials[0] = beeMaterial;
+        materials[1] = beeMaterial2;
     }
 
     private void Update()
@@ -39,7 +44,7 @@ public class GameHandlerBurst : MonoBehaviour
         AttackSystemBurst.Run(deltaTime);
         DeadBeesSystemBurst.Run(deltaTime);
         BeeWallCollisionSystemBurst.Run();
-        RenderSystemBurst.Run(beeMesh, beeMaterial, props, teamColors);
+        RenderSystemBurst.Run(beeMesh, materials, props);
 
 #if DEBUG && UNITY_EDITOR
         StateChecker.Run();

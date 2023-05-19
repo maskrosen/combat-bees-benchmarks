@@ -10,7 +10,7 @@ public static class RenderSystemBurst
     static readonly Vector4[] FullBatchColors = new Vector4[DataBurst.beesPerBatch];
     static readonly List<Vector4> RestBatchColors = new List<Vector4>(DataBurst.beesPerBatch);
 
-    public static void Run(Mesh mesh, Material material, MaterialPropertyBlock matProps, Color[] beeColors)
+    public static void Run(Mesh mesh, Material[] materials, MaterialPropertyBlock matProps)
     {
         int team1ActiveBees = DataBurst.AliveCount[0] + DataBurst.DeadCount[0];
         int numberOfBatches = team1ActiveBees / DataBurst.beesPerBatch;
@@ -18,7 +18,7 @@ public static class RenderSystemBurst
         var movements = DataBurst.Team1BeeMovements;
         var sizes = DataBurst.Team1Size;
         int teamIndex = 0;
-        RenderTeam(numberOfBatches, restNumber, sizes, movements, matProps, beeColors, teamIndex, mesh, material);
+        RenderTeam(numberOfBatches, restNumber, sizes, movements, matProps, teamIndex, mesh, materials);
 
         int team2ActiveBees = DataBurst.AliveCount[1] + DataBurst.DeadCount[1];
         numberOfBatches = team2ActiveBees / DataBurst.beesPerBatch;
@@ -26,10 +26,10 @@ public static class RenderSystemBurst
         movements = DataBurst.Team2BeeMovements;
         sizes = DataBurst.Team2Size;
         teamIndex = 1;
-        RenderTeam(numberOfBatches, restNumber, sizes, movements, matProps, beeColors, teamIndex, mesh, material);
+        RenderTeam(numberOfBatches, restNumber, sizes, movements, matProps, teamIndex, mesh, materials);
     }
 
-    static void RenderTeam(int numberOfBatches, int restNumber, NativeArray<float> sizes, NativeArray<MovementBurst> movements, MaterialPropertyBlock matProps, Color[] beeColors, int teamIndex, Mesh mesh, Material material)
+    static void RenderTeam(int numberOfBatches, int restNumber, NativeArray<float> sizes, NativeArray<MovementBurst> movements, MaterialPropertyBlock matProps, int teamIndex, Mesh mesh, Material[] materials)
     {
         var fullBatch = FullBatch;
         var restBatch = RestBatch;
@@ -39,7 +39,7 @@ public static class RenderSystemBurst
         restBatchColors.Clear();
         var directions = DataBurst.BeeDirections[teamIndex];
 
-        var color = beeColors[teamIndex]; 
+        var material = materials[teamIndex];
 
         int beeIndex = 0;
         for (int i = 0; i < numberOfBatches; i++)
@@ -52,7 +52,6 @@ public static class RenderSystemBurst
                 var scale = Vector3.one * size;
                 var movement = movements[beeIndex];
                 fullBatch[j] = Matrix4x4.TRS(movement.Position, rotation, scale);
-                fullBatchColors[j] = color;
                 beeIndex++;
             }
             matProps.SetVectorArray("_Color", fullBatchColors);
@@ -66,7 +65,6 @@ public static class RenderSystemBurst
             var scale = Vector3.one * size;
             var movement = movements[beeIndex];
             restBatch.Add(Matrix4x4.TRS(movement.Position, rotation, scale));
-            restBatchColors.Add(color);
             beeIndex++;
         }
         matProps.SetVectorArray("_Color", restBatchColors);

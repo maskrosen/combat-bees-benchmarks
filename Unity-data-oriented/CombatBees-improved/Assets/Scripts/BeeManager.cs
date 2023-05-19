@@ -142,19 +142,12 @@ public class BeeManager : MonoBehaviour {
 					bee.velocity -= delta * (teamRepulsion * deltaTime / dist);
 				}
 
-				if (bee.enemyTarget == null && bee.resourceTarget == null)
+				if (bee.enemyTarget == null)
 				{
-					if (Random.value < aggression)
+					List<Bee> enemyTeam = teamsOfBees[1 - bee.team];
+					if (enemyTeam.Count > 0)
 					{
-						List<Bee> enemyTeam = teamsOfBees[1 - bee.team];
-						if (enemyTeam.Count > 0)
-						{
-							bee.enemyTarget = enemyTeam[Random.Range(0, enemyTeam.Count)];
-						}
-					}
-					else
-					{
-						bee.resourceTarget = ResourceManager.TryGetRandomResource();
+						bee.enemyTarget = enemyTeam[Random.Range(0, enemyTeam.Count)];
 					}
 				}
 				else if (bee.enemyTarget != null)
@@ -184,59 +177,7 @@ public class BeeManager : MonoBehaviour {
 							}
 						}
 					}
-				}
-				else if (bee.resourceTarget != null)
-				{
-					Resource resource = bee.resourceTarget;
-					if (resource.holder == null)
-					{
-						if (resource.dead)
-						{
-							bee.resourceTarget = null;
-						}
-						else if (resource.stacked && ResourceManager.IsTopOfStack(resource) == false)
-						{
-							bee.resourceTarget = null;
-						}
-						else
-						{
-							delta = resource.position - bee.position;
-							float sqrDist = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-							if (sqrDist > grabDistance * grabDistance)
-							{
-								bee.velocity += delta * (chaseForce * deltaTime / Mathf.Sqrt(sqrDist));
-							}
-							else if (resource.stacked)
-							{
-								ResourceManager.GrabResource(bee, resource);
-							}
-						}
-					}
-					else if (resource.holder == bee)
-					{
-						Vector3 targetPos = new Vector3(-Field.size.x * .45f + Field.size.x * .9f * bee.team, 0f, bee.position.z);
-						delta = targetPos - bee.position;
-						dist = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
-						bee.velocity += (targetPos - bee.position) * (carryForce * deltaTime / dist);
-						if (dist < 1f)
-						{
-							resource.holder = null;
-							bee.resourceTarget = null;
-						}
-						else
-						{
-							bee.isHoldingResource = true;
-						}
-					}
-					else if (resource.holder.team != bee.team)
-					{
-						bee.enemyTarget = resource.holder;
-					}
-					else if (resource.holder.team == bee.team)
-					{
-						bee.resourceTarget = null;
-					}
-				}
+				}				
 				bee.direction = Vector3.Lerp(bee.direction, bee.velocity.normalized, deltaTime * 4);
 			}
 			else

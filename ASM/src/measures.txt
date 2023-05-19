@@ -1,6 +1,28 @@
 measures
 
 asm: 12857, 12849, 12772, 12829, 12886
-Unity: 1002, 996, 972, 966, 963
+Unity: 1002, 996, 972, 966, 963 (more expensive random direction)
 
-Unity DOTS: 3593
+Unity DOTS: 3593, 3716, 3753
+
+
+Measures after changing memory speed
+
+Unity mono, in render pipeline 2021: 397, 421, 421, 422, 418, 419
+Unity il2cpp built, in render pipeline 2021: 1294, 1265, 1296, 1303, 1274, 1283
+Unity Burst, in render pipeline 2021: 1596, 1561, 1543, 1547, 1554, 1551
+
+
+Unity Gameobjects mono: 169, 170, 183, 177, 182, 186
+
+Unity Gameobjects il2cpp: 277, 277, 279, 278, 277, 277
+
+Unity mono: 449, 448, 451, 444, 450, 445
+
+Unity il2cpp: 1652, 1672, 1690, 1689, 1672, 1695
+
+Unity Burst: 1958, 1973, 1921, 1952, 1945, 1918
+
+Unity DOTS: 4769, 4931, 4868, 4642, 4845, 4918
+
+asm: 13136, 13217, 13300, 13324, 13326, 13195
