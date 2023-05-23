@@ -11,6 +11,7 @@ namespace DOTS
 
     [BurstCompile]
     [UpdateBefore(typeof(TransformSystemGroup))]
+    [UpdateAfter(typeof(AttackSystem))]
     public partial struct BeeMovementSystem : ISystem
     {
 
@@ -33,7 +34,7 @@ namespace DOTS
             var team1Transforms = team1Bees.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
             var team2Transforms = team2Bees.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
 
-            state.Dependency = new PositionJob
+            state.Dependency = new MovementJob
             {
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
                 Team1Transforms = team1Transforms,
@@ -46,7 +47,7 @@ namespace DOTS
         }
 
         [BurstCompile]
-        public partial struct PositionJob : IJobEntity
+        public partial struct MovementJob : IJobEntity
         {
             public float deltaTime;
             [ReadOnly] public NativeArray<LocalToWorld> Team1Transforms;

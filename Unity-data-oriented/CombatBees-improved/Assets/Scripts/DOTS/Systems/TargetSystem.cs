@@ -11,6 +11,7 @@ namespace DOTS
 
     [BurstCompile]
     [UpdateBefore(typeof(AttackSystem))]
+    [UpdateAfter(typeof(BeeWallCollisionSystem))]
     public partial struct TargetSystem : ISystem
     {
         private EntityQuery team1Alive;
