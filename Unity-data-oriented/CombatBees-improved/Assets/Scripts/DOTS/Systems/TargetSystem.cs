@@ -13,26 +13,15 @@ namespace DOTS
     [UpdateBefore(typeof(AttackSystem))]
     public partial struct TargetSystem : ISystem
     {
-
-        private EntityQuery team1Bees;
-        private EntityQuery team2Bees; 
         private EntityQuery team1Alive;
         private EntityQuery team2Alive;
 
         public void OnCreate(ref SystemState state)
         {
-            team1Bees = new EntityQueryBuilder(Allocator.Temp)
-                        .WithAllRW<RandomComponent>()
-                        .WithAll<Team1, Alive>()
-                        .WithAllRW<Target>()
-                        .Build(ref state);
-            team2Bees = new EntityQueryBuilder(Allocator.Temp)
-                        .WithAllRW<RandomComponent>()
-                        .WithAll<Team2, Alive>()
-                        .WithAllRW<Target>()
-                        .Build(ref state);
-            team1Alive = state.EntityManager.CreateEntityQuery(typeof(Team1), typeof(Alive));
-            team2Alive = state.EntityManager.CreateEntityQuery(typeof(Team2), typeof(Alive));
+            team1Alive = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(Alive));
+            team1Alive.AddSharedComponentFilter<Team>(1);
+            team2Alive = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(Alive));
+            team2Alive.AddSharedComponentFilter<Team>(2);
         }
 
         public void OnDestroy(ref SystemState state) { }
@@ -40,25 +29,18 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var enemyEntities1 = team2Alive.ToEntityArray(Allocator.TempJob);
-            //team1 job
+            var team1Entities = team1Alive.ToEntityArray(Allocator.TempJob);
+            var team2Entities = team2Alive.ToEntityArray(Allocator.TempJob);
+
             state.Dependency = new TargetJob
             {
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                enemies = enemyEntities1
-            }.ScheduleParallel(team1Bees, state.Dependency);
+                team1Enemies = team2Entities,
+                team2Enemies = team1Entities
+            }.ScheduleParallel(state.Dependency);
 
-            var enemyEntities2 = team1Alive.ToEntityArray(Allocator.TempJob);
-
-            // team2 job
-            state.Dependency = new TargetJob
-            {
-                deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                enemies = enemyEntities2
-            }.ScheduleParallel(team2Bees, state.Dependency);
-
-            enemyEntities1.Dispose(state.Dependency);
-            enemyEntities2.Dispose(state.Dependency);
+            team1Entities.Dispose(state.Dependency);
+            team2Entities.Dispose(state.Dependency);
         }
 
 
@@ -66,17 +48,18 @@ namespace DOTS
         public partial struct TargetJob : IJobEntity
         {
             public float deltaTime;
-            [ReadOnly]public NativeArray<Entity> enemies;
+            [ReadOnly] public NativeArray<Entity> team1Enemies;
+            [ReadOnly] public NativeArray<Entity> team2Enemies;
 
-            private void Execute(ref RandomComponent random, ref Target target)
+            private void Execute(ref RandomComponent random, ref Target target, in Team team, in Alive _)
             {
                 if (target.enemyTarget == Entity.Null)
                 {
+                    var enemies = team == 1 ? team1Enemies : team2Enemies;
                     int newTarget = random.generator.NextInt(0, enemies.Length);
                     target.enemyTarget = enemies[newTarget];
                 }
             }
         }
-
     }
 }

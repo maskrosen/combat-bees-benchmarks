@@ -17,17 +17,12 @@ namespace DOTS
         private EntityQuery team1Bees;
         private EntityQuery team2Bees;
 
-        private NativeArray<float3> team1Positions;
-        private NativeArray<float3> team2Positions;
-
         public void OnCreate(ref SystemState state)
         {
-            team1Bees = state.EntityManager.CreateEntityQuery(typeof(Team1), typeof(LocalTransform), typeof(Velocity), typeof(RandomComponent), typeof(Alive));
-            team2Bees = state.EntityManager.CreateEntityQuery(typeof(Team2), typeof(LocalTransform), typeof(Velocity), typeof(RandomComponent), typeof(Alive));
-
-            team1Positions = new NativeArray<float3>(Data.beeStartCount / 2, Allocator.Persistent);
-            team2Positions = new NativeArray<float3>(Data.beeStartCount / 2, Allocator.Persistent);
-
+            team1Bees = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(LocalToWorld), typeof(Velocity), typeof(RandomComponent), typeof(Alive));
+            team1Bees.AddSharedComponentFilter<Team>(1);
+            team2Bees = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(LocalToWorld), typeof(Velocity), typeof(RandomComponent), typeof(Alive));
+            team2Bees.AddSharedComponentFilter<Team>(2);
         }
 
         public void OnDestroy(ref SystemState state) { }
@@ -35,51 +30,33 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            int team1AliveCount = team1Bees.CalculateEntityCount();
-            int team2AliveCount = team2Bees.CalculateEntityCount();
+            var team1Transforms = team1Bees.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
+            var team2Transforms = team2Bees.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
 
-            var team1Transforms = team1Bees.ToComponentDataArray<LocalTransform>(Allocator.Temp);
-            for (int i = 0; i < team1Transforms.Length; i++)
-            {
-                team1Positions[i] = team1Transforms[i].Position;
-            }
-            var team2Transforms = team2Bees.ToComponentDataArray<LocalTransform>(Allocator.Temp);
-            for (int i = 0; i < team2Transforms.Length; i++)
-            {
-                team2Positions[i] = team2Transforms[i].Position;
-            }
-
-            //team1 job
             state.Dependency = new PositionJob
             {
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                aliveBeesCount = team1AliveCount,
-                allyPositions = team1Positions,
+                Team1Transforms = team1Transforms,
+                Team2Transforms = team2Transforms,
 
-            }.ScheduleParallel(team1Bees, state.Dependency);
+            }.ScheduleParallel(state.Dependency);
 
-            // team2 job
-            state.Dependency = new PositionJob
-            {
-                deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                aliveBeesCount = team2AliveCount,
-                allyPositions = team2Positions
-
-            }.ScheduleParallel(team2Bees, state.Dependency);
+            team1Transforms.Dispose(state.Dependency);
+            team2Transforms.Dispose(state.Dependency);
         }
-               
+
         [BurstCompile]
         public partial struct PositionJob : IJobEntity
         {
             public float deltaTime;
-            public int aliveBeesCount;
-            [ReadOnly] public NativeArray<float3> allyPositions;
+            [ReadOnly] public NativeArray<LocalToWorld> Team1Transforms;
+            [ReadOnly] public NativeArray<LocalToWorld> Team2Transforms;
 
             // IJobEntity generates a component data query based on the parameters of its `Execute` method.
             // This example queries for all Spawner components and uses `ref` to specify that the operation
             // requires read and write access. Unity processes `Execute` for each entity that matches the
             // component data query.
-            private void Execute(ref LocalTransform transform, ref Velocity velocity, ref RandomComponent random)
+            private void Execute(ref LocalTransform transform, ref Velocity velocity, ref RandomComponent random, in Team team, in Alive _)
             {
                 float3 randomVector;
                 randomVector.x = random.generator.NextFloat() * 2.0f - 1.0f;
@@ -89,10 +66,13 @@ namespace DOTS
                 velocity.Value += randomVector * (Data.flightJitter * deltaTime);
                 velocity.Value *= (1f - Data.damping * deltaTime);
 
+                var aliveBeesCount = team == 1 ? Team1Transforms.Length : Team2Transforms.Length;
+                var allyPositions = team == 1 ? Team1Transforms : Team2Transforms;
+
                 //Move towards random ally
                 float3 beePosition = transform.Position;
                 int allyIndex = random.generator.NextInt(aliveBeesCount);
-                var allyPosition = allyPositions[allyIndex];
+                var allyPosition = allyPositions[allyIndex].Position;
                 float3 delta = allyPosition - beePosition;
                 float dist = math.sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
                 dist = math.max(0.01f, dist);
@@ -100,7 +80,7 @@ namespace DOTS
 
                 //Move away from random ally
                 allyIndex = random.generator.NextInt(aliveBeesCount);
-                allyPosition = allyPositions[allyIndex];
+                allyPosition = allyPositions[allyIndex].Position;
                 delta = allyPosition - beePosition;
                 dist = math.sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
                 dist = math.max(0.011f, dist);
@@ -110,9 +90,7 @@ namespace DOTS
                 var targetRotation = quaternion.LookRotation(math.normalize(velocity.Value), Vector3.up);
                 rotation = math.nlerp(rotation, targetRotation, deltaTime * 4);
                 transform.Rotation = rotation;
-
             }
         }
-
     }
 }

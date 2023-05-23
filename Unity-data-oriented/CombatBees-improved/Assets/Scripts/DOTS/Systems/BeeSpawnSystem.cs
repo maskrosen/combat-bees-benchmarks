@@ -14,11 +14,14 @@ public partial struct BeeSpawnSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
 
-        team1Alive = state.EntityManager.CreateEntityQuery(typeof(Team1), typeof(Alive));
-        team2Alive = state.EntityManager.CreateEntityQuery(typeof(Team2), typeof(Alive));
-        team1Dead = state.EntityManager.CreateEntityQuery(typeof(Team1), typeof(Dead));
-        team2Dead = state.EntityManager.CreateEntityQuery(typeof(Team2), typeof(Dead));
-
+        team1Alive = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(Alive));
+        team1Alive.AddSharedComponentFilter<Team>(1);
+        team2Alive = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(Alive));
+        team2Alive.AddSharedComponentFilter<Team>(2);
+        team1Dead = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(Dead));
+        team1Dead.AddSharedComponentFilter<Team>(1);
+        team2Dead = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(Dead));
+        team2Dead.AddSharedComponentFilter<Team>(2);
     }
 
     public void OnDestroy(ref SystemState state) { }
@@ -70,7 +73,7 @@ public partial struct BeeSpawnSystem : ISystem
         // component data query.
         private void Execute([ChunkIndexInQuery] int chunkIndex, ref Spawner spawner)
         {
-            
+
             int beesToSpawnTeam1 = Data.beeStartCount / 2 - team1BeeCount;
 
             for (int i = 0; i < beesToSpawnTeam1; i++)
@@ -83,9 +86,9 @@ public partial struct BeeSpawnSystem : ISystem
                 Ecb.SetComponent(chunkIndex, newEntity, transform);
                 Ecb.AddComponent(chunkIndex, newEntity, new Velocity());
                 Ecb.AddComponent(chunkIndex, newEntity, new Alive());
-                Ecb.AddComponent(chunkIndex, newEntity, new Team1());
                 Ecb.AddComponent(chunkIndex, newEntity, new Target());
                 Ecb.AddComponent(chunkIndex, newEntity, rand);
+                Ecb.AddSharedComponent(chunkIndex, newEntity, new Team { Value = 1 });
             }
 
 
@@ -101,11 +104,10 @@ public partial struct BeeSpawnSystem : ISystem
                 Ecb.SetComponent(chunkIndex, newEntity, transform);
                 Ecb.AddComponent(chunkIndex, newEntity, new Velocity());
                 Ecb.AddComponent(chunkIndex, newEntity, new Alive());
-                Ecb.AddComponent(chunkIndex, newEntity, new Team2());
                 Ecb.AddComponent(chunkIndex, newEntity, new Target());
                 Ecb.AddComponent(chunkIndex, newEntity, rand);
+                Ecb.AddSharedComponent(chunkIndex, newEntity, new Team { Value = 2 });
             }
         }
     }
-
 }

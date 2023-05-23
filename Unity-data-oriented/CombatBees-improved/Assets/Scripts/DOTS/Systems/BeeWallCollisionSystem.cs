@@ -49,7 +49,7 @@ namespace DOTS
             // This example queries for all Spawner components and uses `ref` to specify that the operation
             // requires read and write access. Unity processes `Execute` for each entity that matches the
             // component data query.
-            private void Execute([ChunkIndexInQuery] int chunkIndex, ref LocalTransform transform, ref Velocity velocity)
+            private void Execute(ref LocalTransform transform, ref Velocity velocity)
             {
                 var position = transform.Position;
                 if (Mathf.Abs(position.x) > DataBurst.FieldSize.x * .5f)
