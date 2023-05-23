@@ -4,7 +4,6 @@ using Unity.Burst;
 using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using Unity.Mathematics;
-using static Unity.Mathematics.math;
 using Unity.Collections;
 using Unity.Jobs;
 
@@ -105,21 +104,21 @@ namespace DOTS
                 int allyIndex = random.generator.NextInt(aliveBeesCount);
                 var allyPosition = allyPositions[allyIndex];
                 float3 delta = allyPosition - beePosition;
-                float dist = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
-                dist = Mathf.Max(0.01f, dist);
+                float dist = math.sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+                dist = math.max(0.01f, dist);
                 velocity.Value += delta * (Data.teamAttraction * deltaTime / dist);
 
                 //Move away from random ally
                 allyIndex = random.generator.NextInt(aliveBeesCount);
                 allyPosition = allyPositions[allyIndex];
                 delta = allyPosition - beePosition;
-                dist = Mathf.Sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
-                dist = Mathf.Max(0.011f, dist);
+                dist = math.sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+                dist = math.max(0.011f, dist);
                 velocity.Value -= delta * (Data.teamRepulsion * deltaTime / dist);
 
                 var rotation = transform.Rotation;
-                var targetRotation = Quaternion.LookRotation(normalize(velocity.Value), Vector3.up);
-                rotation = Quaternion.Lerp(rotation, targetRotation, deltaTime * 4);
+                var targetRotation = quaternion.LookRotation(math.normalize(velocity.Value), Vector3.up);
+                rotation = math.nlerp(rotation, targetRotation, deltaTime * 4);
                 transform.Rotation = rotation;
 
             }
