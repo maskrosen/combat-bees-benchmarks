@@ -8,6 +8,8 @@ namespace DOTS
 {
 
     [BurstCompile]
+    [UpdateBefore(typeof(TransformSystemGroup))]
+    [UpdateBefore(typeof(BeePositionUpdateSystem))]
     public partial struct BeeWallCollisionSystem : ISystem
     {
         public void OnCreate(ref SystemState state)

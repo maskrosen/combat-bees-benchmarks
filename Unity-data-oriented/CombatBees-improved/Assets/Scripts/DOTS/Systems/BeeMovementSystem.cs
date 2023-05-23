@@ -11,6 +11,7 @@ namespace DOTS
 {
 
     [BurstCompile]
+    [UpdateBefore(typeof(TransformSystemGroup))]
     public partial struct BeeMovementSystem : ISystem
     {
 

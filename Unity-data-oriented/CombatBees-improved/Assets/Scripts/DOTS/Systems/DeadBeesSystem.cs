@@ -1,9 +1,12 @@
 using Unity.Entities;
 using Unity.Burst;
+using Unity.Transforms;
+
 namespace DOTS
 {
 
     [BurstCompile]
+    [UpdateBefore(typeof(BeePositionUpdateSystem))]
     public partial struct DeadBeesSystem : ISystem
     {
         public void OnCreate(ref SystemState state)

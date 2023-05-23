@@ -9,6 +9,7 @@ namespace DOTS
 {
 
     [BurstCompile]
+    [UpdateBefore(typeof(AttackSystem))]
     public partial struct TargetSystem : ISystem
     {
 

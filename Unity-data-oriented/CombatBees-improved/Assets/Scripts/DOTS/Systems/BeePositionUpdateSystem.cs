@@ -5,6 +5,8 @@ namespace DOTS
 {
 
     [BurstCompile]
+    [UpdateBefore(typeof(TransformSystemGroup))]
+    [UpdateAfter(typeof(BeeMovementSystem))]
     public partial struct BeePositionUpdateSystem : ISystem
     {
         public void OnCreate(ref SystemState state)

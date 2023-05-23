@@ -8,6 +8,7 @@ namespace DOTS
 {
 
     [BurstCompile]
+    [UpdateBefore(typeof(BeePositionUpdateSystem))]
     public partial struct AttackSystem : ISystem
     {
 
