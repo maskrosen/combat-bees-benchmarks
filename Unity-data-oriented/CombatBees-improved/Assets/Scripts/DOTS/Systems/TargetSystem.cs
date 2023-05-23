@@ -4,6 +4,7 @@ using Unity.Burst;
 using UnityEngine;
 using Unity.Collections;
 using Unity.Mathematics;
+using Unity.Jobs;
 
 namespace DOTS
 {
@@ -39,27 +40,25 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var enemyEntities = team2Alive.ToEntityArray(Allocator.TempJob);
+            var enemyEntities1 = team2Alive.ToEntityArray(Allocator.TempJob);
             //team1 job
-            new TargetJob
+            state.Dependency = new TargetJob
             {
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                enemies = enemyEntities
+                enemies = enemyEntities1
+            }.ScheduleParallel(team1Bees, state.Dependency);
 
-            }.ScheduleParallel(team1Bees, state.Dependency).Complete();
-            enemyEntities.Dispose();
-
-            enemyEntities = team1Alive.ToEntityArray(Allocator.TempJob);
+            var enemyEntities2 = team1Alive.ToEntityArray(Allocator.TempJob);
 
             // team2 job
-            new TargetJob
+            state.Dependency = new TargetJob
             {
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                enemies = enemyEntities
+                enemies = enemyEntities2
+            }.ScheduleParallel(team2Bees, state.Dependency);
 
-
-            }.ScheduleParallel(team2Bees, state.Dependency).Complete();
-            enemyEntities.Dispose();
+            enemyEntities1.Dispose(state.Dependency);
+            enemyEntities2.Dispose(state.Dependency);
         }
 
 
@@ -69,7 +68,7 @@ namespace DOTS
             public float deltaTime;
             [ReadOnly]public NativeArray<Entity> enemies;
 
-            private void Execute(Entity e, [ChunkIndexInQuery] int chunkIndex, ref RandomComponent random, ref Target target)
+            private void Execute(ref RandomComponent random, ref Target target)
             {
                 if (target.enemyTarget == Entity.Null)
                 {

@@ -84,6 +84,7 @@ public partial struct BeeSpawnSystem : ISystem
                 Ecb.AddComponent(chunkIndex, newEntity, new Velocity());
                 Ecb.AddComponent(chunkIndex, newEntity, new Alive());
                 Ecb.AddComponent(chunkIndex, newEntity, new Team1());
+                Ecb.AddComponent(chunkIndex, newEntity, new Target());
                 Ecb.AddComponent(chunkIndex, newEntity, rand);
             }
 
@@ -101,6 +102,7 @@ public partial struct BeeSpawnSystem : ISystem
                 Ecb.AddComponent(chunkIndex, newEntity, new Velocity());
                 Ecb.AddComponent(chunkIndex, newEntity, new Alive());
                 Ecb.AddComponent(chunkIndex, newEntity, new Team2());
+                Ecb.AddComponent(chunkIndex, newEntity, new Target());
                 Ecb.AddComponent(chunkIndex, newEntity, rand);
             }
         }

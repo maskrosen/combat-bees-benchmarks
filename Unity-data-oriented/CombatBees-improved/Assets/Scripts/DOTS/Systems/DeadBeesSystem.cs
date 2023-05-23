@@ -20,12 +20,12 @@ namespace DOTS
         {
             EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
 
-            new BeeDeadJob
+            state.Dependency = new BeeDeadJob
             {
                 Ecb = ecb,
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime
 
-            }.ScheduleParallel(state.Dependency).Complete();
+            }.ScheduleParallel(state.Dependency);
         }
 
         private EntityCommandBuffer.ParallelWriter GetEntityCommandBuffer(ref SystemState state)

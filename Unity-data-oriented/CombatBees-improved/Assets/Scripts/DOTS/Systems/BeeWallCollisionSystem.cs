@@ -22,13 +22,13 @@ namespace DOTS
         public void OnUpdate(ref SystemState state)
         {
             EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
-           
-            new WallCollisionJob
+
+            state.Dependency = new WallCollisionJob
             {
                 Ecb = ecb,
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime
 
-            }.ScheduleParallel(state.Dependency).Complete();           
+            }.ScheduleParallel(state.Dependency);           
         }
 
         private EntityCommandBuffer.ParallelWriter GetEntityCommandBuffer(ref SystemState state)

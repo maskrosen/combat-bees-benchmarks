@@ -1,7 +1,6 @@
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Burst;
-using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using Unity.Mathematics;
 using Unity.Collections;
@@ -36,7 +35,6 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
             int team1AliveCount = team1Bees.CalculateEntityCount();
             int team2AliveCount = team2Bees.CalculateEntityCount();
 
@@ -45,43 +43,34 @@ namespace DOTS
             {
                 team1Positions[i] = team1Transforms[i].Position;
             }
-            //team1 job
-            new PositionJob
-            {
-                Ecb = ecb,
-                deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                aliveBeesCount = team1AliveCount,
-                allyPositions = team1Positions,
-
-            }.ScheduleParallel(team1Bees, state.Dependency).Complete();
-
             var team2Transforms = team2Bees.ToComponentDataArray<LocalTransform>(Allocator.Temp);
             for (int i = 0; i < team2Transforms.Length; i++)
             {
                 team2Positions[i] = team2Transforms[i].Position;
             }
-            // team2 job
-            new PositionJob
+
+            //team1 job
+            state.Dependency = new PositionJob
             {
-                Ecb = ecb,
+                deltaTime = state.WorldUnmanaged.Time.DeltaTime,
+                aliveBeesCount = team1AliveCount,
+                allyPositions = team1Positions,
+
+            }.ScheduleParallel(team1Bees, state.Dependency);
+
+            // team2 job
+            state.Dependency = new PositionJob
+            {
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
                 aliveBeesCount = team2AliveCount,
                 allyPositions = team2Positions
 
-            }.ScheduleParallel(team2Bees, state.Dependency).Complete();
-        }
-
-        private EntityCommandBuffer.ParallelWriter GetEntityCommandBuffer(ref SystemState state)
-        {
-            var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
-            var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
-            return ecb.AsParallelWriter();
+            }.ScheduleParallel(team2Bees, state.Dependency);
         }
                
         [BurstCompile]
         public partial struct PositionJob : IJobEntity
         {
-            public EntityCommandBuffer.ParallelWriter Ecb;
             public float deltaTime;
             public int aliveBeesCount;
             [ReadOnly] public NativeArray<float3> allyPositions;
@@ -90,7 +79,7 @@ namespace DOTS
             // This example queries for all Spawner components and uses `ref` to specify that the operation
             // requires read and write access. Unity processes `Execute` for each entity that matches the
             // component data query.
-            private void Execute([ChunkIndexInQuery] int chunkIndex, ref LocalTransform transform, ref Velocity velocity, ref RandomComponent random)
+            private void Execute(ref LocalTransform transform, ref Velocity velocity, ref RandomComponent random)
             {
                 float3 randomVector;
                 randomVector.x = random.generator.NextFloat() * 2.0f - 1.0f;
