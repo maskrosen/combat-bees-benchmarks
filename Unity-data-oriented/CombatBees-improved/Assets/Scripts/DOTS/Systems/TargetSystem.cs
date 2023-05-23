@@ -22,12 +22,12 @@ namespace DOTS
             team1Bees = new EntityQueryBuilder(Allocator.Temp)
                         .WithAllRW<RandomComponent>()
                         .WithAll<Team1, Alive>()
-                        .WithAbsent<Target>()
+                        .WithAllRW<Target>()
                         .Build(ref state);
             team2Bees = new EntityQueryBuilder(Allocator.Temp)
                         .WithAllRW<RandomComponent>()
                         .WithAll<Team2, Alive>()
-                        .WithAbsent<Target>()
+                        .WithAllRW<Target>()
                         .Build(ref state);
             team1Alive = state.EntityManager.CreateEntityQuery(typeof(Team1), typeof(Alive));
             team2Alive = state.EntityManager.CreateEntityQuery(typeof(Team2), typeof(Alive));
@@ -38,12 +38,10 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
             var enemyEntities = team2Alive.ToEntityArray(Allocator.TempJob);
             //team1 job
             new TargetJob
             {
-                Ecb = ecb,
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
                 enemies = enemyEntities
 
@@ -55,7 +53,6 @@ namespace DOTS
             // team2 job
             new TargetJob
             {
-                Ecb = ecb,
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
                 enemies = enemyEntities
 
@@ -64,26 +61,20 @@ namespace DOTS
             enemyEntities.Dispose();
         }
 
-        private EntityCommandBuffer.ParallelWriter GetEntityCommandBuffer(ref SystemState state)
-        {
-            var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
-            var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
-            return ecb.AsParallelWriter();
-        }
 
         [BurstCompile]
         public partial struct TargetJob : IJobEntity
         {
-            public EntityCommandBuffer.ParallelWriter Ecb;
             public float deltaTime;
             [ReadOnly]public NativeArray<Entity> enemies;
 
-            private void Execute(Entity e, [ChunkIndexInQuery] int chunkIndex, ref RandomComponent random)
+            private void Execute(Entity e, [ChunkIndexInQuery] int chunkIndex, ref RandomComponent random, ref Target target)
             {
-                int newTarget = random.generator.NextInt(0, enemies.Length);
-                Target target;
-                target.enemyTarget = enemies[newTarget];
-                Ecb.AddComponent(chunkIndex, e, target);
+                if (target.enemyTarget == Entity.Null)
+                {
+                    int newTarget = random.generator.NextInt(0, enemies.Length);
+                    target.enemyTarget = enemies[newTarget];
+                }
             }
         }
 

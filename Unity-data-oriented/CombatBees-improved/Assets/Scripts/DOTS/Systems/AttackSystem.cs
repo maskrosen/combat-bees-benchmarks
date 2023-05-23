@@ -70,17 +70,17 @@ namespace DOTS
             [ReadOnly] public ComponentLookup<Dead> DeadType;
             [ReadOnly] public ComponentLookup<LocalTransform> TransformLookup;
 
-            private void Execute(Entity e, [ChunkIndexInQuery] int chunkIndex, in LocalTransform transform, ref Velocity velocity, in Target targets)
+            private void Execute(Entity e, [ChunkIndexInQuery] int chunkIndex, in LocalTransform transform, ref Velocity velocity, ref Target target)
             {
-                if (DeadType.HasComponent(targets.enemyTarget))
+                if (DeadType.HasComponent(target.enemyTarget))
                 {
                     //the target is dead
-                    Ecb.RemoveComponent<Target>(chunkIndex, e);
+                    target.enemyTarget = Entity.Null;
                     return;
                 }
 
                 var beePosition = transform.Position;
-                var enmeyPosition = TransformLookup.GetRefRO(targets.enemyTarget).ValueRO.Position;
+                var enmeyPosition = TransformLookup.GetRefRO(target.enemyTarget).ValueRO.Position;
 
                 var delta = enmeyPosition - beePosition;
                 float sqrDist = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
@@ -93,9 +93,9 @@ namespace DOTS
                     velocity.Value += delta * (Data.attackForce * deltaTime / Mathf.Sqrt(sqrDist));
                     if (sqrDist < Data.hitDistance * Data.hitDistance)
                     {
-                        Ecb.AddComponent<Dead>(chunkIndex, targets.enemyTarget);
-                        Ecb.AddComponent(chunkIndex, targets.enemyTarget, new DeadTimer { time = 0.0f});
-                        Ecb.RemoveComponent<Alive>(chunkIndex, targets.enemyTarget);
+                        Ecb.AddComponent<Dead>(chunkIndex, target.enemyTarget);
+                        Ecb.AddComponent(chunkIndex, target.enemyTarget, new DeadTimer { time = 0.0f});
+                        Ecb.RemoveComponent<Alive>(chunkIndex, target.enemyTarget);
                     }
                 }
 
