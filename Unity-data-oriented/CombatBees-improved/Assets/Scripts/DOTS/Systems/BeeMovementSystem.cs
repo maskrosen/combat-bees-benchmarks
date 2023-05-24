@@ -31,16 +31,16 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var team1Transforms = team1Bees.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
-            var team2Transforms = team2Bees.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
+            var team1Transforms = team1Bees.ToComponentDataListAsync<LocalToWorld>(Allocator.TempJob, state.Dependency, out var dep1);
+            var team2Transforms = team2Bees.ToComponentDataListAsync<LocalToWorld>(Allocator.TempJob, state.Dependency, out var dep2);
 
             state.Dependency = new MovementJob
             {
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                Team1Transforms = team1Transforms,
-                Team2Transforms = team2Transforms,
+                Team1Transforms = team1Transforms.AsDeferredJobArray(),
+                Team2Transforms = team2Transforms.AsDeferredJobArray(),
 
-            }.ScheduleParallel(state.Dependency);
+            }.ScheduleParallel(JobHandle.CombineDependencies(dep1, dep2));
 
             team1Transforms.Dispose(state.Dependency);
             team2Transforms.Dispose(state.Dependency);

@@ -30,15 +30,15 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var team1Entities = team1Alive.ToEntityArray(Allocator.TempJob);
-            var team2Entities = team2Alive.ToEntityArray(Allocator.TempJob);
+            var team1Entities = team1Alive.ToEntityListAsync(Allocator.TempJob, state.Dependency, out var dep1);
+            var team2Entities = team2Alive.ToEntityListAsync(Allocator.TempJob, state.Dependency, out var dep2);
 
             state.Dependency = new TargetJob
             {
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                team1Enemies = team2Entities,
-                team2Enemies = team1Entities
-            }.ScheduleParallel(state.Dependency);
+                team1Enemies = team2Entities.AsDeferredJobArray(),
+                team2Enemies = team1Entities.AsDeferredJobArray()
+            }.ScheduleParallel(JobHandle.CombineDependencies(dep1, dep2));
 
             team1Entities.Dispose(state.Dependency);
             team2Entities.Dispose(state.Dependency);

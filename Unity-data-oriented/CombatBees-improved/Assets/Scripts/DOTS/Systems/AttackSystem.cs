@@ -2,6 +2,7 @@ using Unity.Entities;
 using Unity.Transforms;
 using Unity.Burst;
 using UnityEngine;
+using Unity.Mathematics;
 using Unity.Collections;
 
 namespace DOTS
@@ -17,7 +18,7 @@ namespace DOTS
         public void OnUpdate(ref SystemState state)
         {
             state.Dependency.Complete();
-            
+
             EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
             state.Dependency = new AttackJob
             {
@@ -60,15 +61,15 @@ namespace DOTS
                 float sqrDist = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
                 if (sqrDist > Data.attackDistance * Data.attackDistance)
                 {
-                    velocity.Value += delta * (Data.chaseForce * deltaTime / Mathf.Sqrt(sqrDist));
+                    velocity.Value += delta * (Data.chaseForce * deltaTime / math.sqrt(sqrDist));
                 }
                 else
                 {
-                    velocity.Value += delta * (Data.attackForce * deltaTime / Mathf.Sqrt(sqrDist));
+                    velocity.Value += delta * (Data.attackForce * deltaTime / math.sqrt(sqrDist));
                     if (sqrDist < Data.hitDistance * Data.hitDistance)
                     {
                         Ecb.AddComponent<Dead>(chunkIndex, target.enemyTarget);
-                        Ecb.AddComponent(chunkIndex, target.enemyTarget, new DeadTimer { time = 0.0f});
+                        Ecb.AddComponent(chunkIndex, target.enemyTarget, new DeadTimer { time = 0.0f });
                         Ecb.RemoveComponent<Alive>(chunkIndex, target.enemyTarget);
                     }
                 }

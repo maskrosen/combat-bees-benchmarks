@@ -1,7 +1,7 @@
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Burst;
-using Unity.Entities.UniversalDelegates;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace DOTS
@@ -52,24 +52,24 @@ namespace DOTS
             private void Execute(ref LocalTransform transform, ref Velocity velocity)
             {
                 var position = transform.Position;
-                if (Mathf.Abs(position.x) > DataBurst.FieldSize.x * .5f)
+                if (math.abs(position.x) > DataBurst.FieldSize.x * .5f)
                 {
-                    position.x = (DataBurst.FieldSize.x * .5f) * Mathf.Sign(position.x);
+                    position.x = (DataBurst.FieldSize.x * .5f) *  math.sign(position.x);
                     velocity.Value.x *= -.5f;
                     velocity.Value.y *= .8f;
                     velocity.Value.z *= .8f;
                 }
-                if (Mathf.Abs(position.z) > DataBurst.FieldSize.z * .5f)
+                if (math.abs(position.z) > DataBurst.FieldSize.z * .5f)
                 {
-                    position.z = (DataBurst.FieldSize.z * .5f) * Mathf.Sign(position.z);
+                    position.z = (DataBurst.FieldSize.z * .5f) * math.sign(position.z);
                     velocity.Value.z *= -.5f;
                     velocity.Value.x *= .8f;
                     velocity.Value.y *= .8f;
                 }
 
-                if (Mathf.Abs(position.y) > DataBurst.FieldSize.y * .5f)
+                if (math.abs(position.y) > DataBurst.FieldSize.y * .5f)
                 {
-                    position.y = (DataBurst.FieldSize.y * .5f) * Mathf.Sign(position.y);
+                    position.y = (DataBurst.FieldSize.y * .5f) * math.sign(position.y);
                     velocity.Value.y *= -.5f;
                     velocity.Value.z *= .8f;
                     velocity.Value.x *= .8f;
