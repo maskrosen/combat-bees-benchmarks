@@ -1,9 +1,12 @@
 using Unity.Entities;
 using Unity.Burst;
+using Unity.Transforms;
+
 namespace DOTS
 {
 
     [BurstCompile]
+    [UpdateBefore(typeof(BeePositionUpdateSystem))]
     public partial struct DeadBeesSystem : ISystem
     {
         public void OnCreate(ref SystemState state)
@@ -17,12 +20,12 @@ namespace DOTS
         {
             EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
 
-            new BeeDeadJob
+            state.Dependency = new BeeDeadJob
             {
                 Ecb = ecb,
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime
 
-            }.ScheduleParallel(state.Dependency).Complete();
+            }.ScheduleParallel(state.Dependency);
         }
 
         private EntityCommandBuffer.ParallelWriter GetEntityCommandBuffer(ref SystemState state)

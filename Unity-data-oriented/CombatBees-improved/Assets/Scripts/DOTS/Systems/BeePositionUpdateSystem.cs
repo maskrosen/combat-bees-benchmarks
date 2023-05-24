@@ -5,6 +5,8 @@ namespace DOTS
 {
 
     [BurstCompile]
+    [UpdateBefore(typeof(TransformSystemGroup))]
+    [UpdateAfter(typeof(BeeMovementSystem))]
     public partial struct BeePositionUpdateSystem : ISystem
     {
         public void OnCreate(ref SystemState state)
@@ -16,27 +18,16 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
-           
-            new BeeMovementJob
+            state.Dependency = new BeePositionUpdateJob
             {
-                Ecb = ecb,
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime
 
-            }.ScheduleParallel(state.Dependency).Complete();           
+            }.ScheduleParallel(state.Dependency);           
         } 
 
-        private EntityCommandBuffer.ParallelWriter GetEntityCommandBuffer(ref SystemState state)
-        {
-            var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
-            var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
-            return ecb.AsParallelWriter();
-        }
-
         [BurstCompile]
-        public partial struct BeeMovementJob : IJobEntity
+        public partial struct BeePositionUpdateJob : IJobEntity
         {
-            public EntityCommandBuffer.ParallelWriter Ecb;
             public float deltaTime;
 
 
@@ -44,11 +35,10 @@ namespace DOTS
             // This example queries for all Spawner components and uses `ref` to specify that the operation
             // requires read and write access. Unity processes `Execute` for each entity that matches the
             // component data query.
-            private void Execute([ChunkIndexInQuery] int chunkIndex, ref LocalTransform transform, in Velocity velocity)
+            private void Execute(ref LocalTransform transform, in Velocity velocity)
             {
                 transform.Position += velocity.Value * deltaTime;
             }
         }
-
     }
 }
