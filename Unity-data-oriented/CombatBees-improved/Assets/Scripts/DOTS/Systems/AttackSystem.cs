@@ -17,8 +17,6 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            state.Dependency.Complete();
-
             EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
             state.Dependency = new AttackJob
             {
