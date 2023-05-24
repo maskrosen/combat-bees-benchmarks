@@ -13,8 +13,6 @@ public static class Utils
 
     public static void SpawnBees(int count, int teamIndex)
     {
-        //var aliveBees = Data.AliveBees[teamIndex];
-        //var deadBees = Data.DeadBees[teamIndex];
         int aliveBeesCount = Data.AliveCount[teamIndex];
         int deadBeesStartIndex = aliveBeesCount;
         int deadBeesCount = Data.DeadCount[teamIndex];

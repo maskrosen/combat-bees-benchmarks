@@ -1,21 +1,17 @@
-﻿using System.Collections.Generic;
-using Unity.Burst;
-using Unity.Collections;
+﻿using Unity.Burst;
 using static Unity.Mathematics.math;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Unity.Mathematics;
-using System;
 
 [BurstCompile]
 public static class BeeMovementSystemBurst
 {
     public unsafe static void Run(float deltaTime)
     {
-        //var aliveBees = Data.Team1AliveBees;
         var movements = DataBurst.Team1BeeMovements;
         UpdateMovements(DataBurst.AliveCount[0], (MovementBurst*)movements.GetPtr(), (float3*)DataBurst.BeeDirections[0].GetPtr(), deltaTime);
-        //aliveBees = Data.Team2AliveBees;
+      
         movements = DataBurst.Team2BeeMovements;
         UpdateMovements(DataBurst.AliveCount[1], (MovementBurst*)movements.GetPtr(), (float3*)DataBurst.BeeDirections[1].GetPtr(), deltaTime);
 

@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bee {
 	public Vector3 position;
 	public Vector3 velocity;
-	//public Vector3 smoothPosition;
-	//public Vector3 smoothDirection;
 	public Vector3 direction;
 	public int team;
 	public float size;
@@ -22,8 +18,6 @@ public class Bee {
 		position = myPosition;
 		velocity = Vector3.zero;
 		direction = Vector3.forward;
-		//smoothPosition = position+Vector3.right*.01f;
-		//smoothDirection = Vector3.zero;
 		velocity = Vector3.zero;
 		team = myTeam;
 		size = mySize;

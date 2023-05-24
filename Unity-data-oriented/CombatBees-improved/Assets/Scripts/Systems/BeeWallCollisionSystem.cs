@@ -1,17 +1,12 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class BeeWallCollisionSystem
 {
     public static void Run()
     {
-		//var alive = Data.Team1AliveBees;
-		//var dead = Data.Team1DeadBees;
 		var movements = Data.Team1BeeMovements;
 		CheckCollisions(Data.AliveCount[0], Data.DeadCount[0], movements);
 
-		//alive = Data.Team2AliveBees;
-		//dead = Data.Team2DeadBees;
 		movements = Data.Team2BeeMovements;
 		CheckCollisions(Data.AliveCount[1], Data.DeadCount[1], movements);
 		

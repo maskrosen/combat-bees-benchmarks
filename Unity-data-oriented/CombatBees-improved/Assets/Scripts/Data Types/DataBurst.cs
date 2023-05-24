@@ -95,17 +95,6 @@ public static class DataBurst
     public static readonly float3 Team2BeeSpawnPos = Right * (-FieldSize.x * .4f + FieldSize.x * .8f * 1);
 
     public static NativeArray<float3> BeeSpawnPos;
-    /*
-    public static AliveHasTarget Team1HasTarget;
-    public static AliveHasTarget Team2HasTarget;
-    public static AliveNoTarget Team1NoTarget;
-    public static AliveNoTarget Team2NoTarget;
-    public static Dead Team1Dead;
-    public static Dead Team2Dead;
-
-    public static readonly AliveHasTarget[] AliveHasTargets = { Team1HasTarget, Team2HasTarget};
-    public static readonly AliveNoTarget[] AliveNoTargets = { Team1NoTarget, Team2NoTarget};
-    public static readonly Dead[] Deads = { Team1Dead, Team2Dead};*/
 
     //Render data
 
