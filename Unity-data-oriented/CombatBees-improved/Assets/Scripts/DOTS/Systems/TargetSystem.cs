@@ -4,33 +4,25 @@ using Unity.Burst;
 using UnityEngine;
 using Unity.Collections;
 using Unity.Mathematics;
+using Unity.Jobs;
 
 namespace DOTS
 {
 
     [BurstCompile]
+    [UpdateBefore(typeof(AttackSystem))]
+    [UpdateAfter(typeof(BeeWallCollisionSystem))]
     public partial struct TargetSystem : ISystem
     {
-
-        private EntityQuery team1Bees;
-        private EntityQuery team2Bees; 
         private EntityQuery team1Alive;
         private EntityQuery team2Alive;
 
         public void OnCreate(ref SystemState state)
         {
-            team1Bees = new EntityQueryBuilder(Allocator.Temp)
-                        .WithAllRW<RandomComponent>()
-                        .WithAll<Team1, Alive>()
-                        .WithAbsent<Target>()
-                        .Build(ref state);
-            team2Bees = new EntityQueryBuilder(Allocator.Temp)
-                        .WithAllRW<RandomComponent>()
-                        .WithAll<Team2, Alive>()
-                        .WithAbsent<Target>()
-                        .Build(ref state);
-            team1Alive = state.EntityManager.CreateEntityQuery(typeof(Team1), typeof(Alive));
-            team2Alive = state.EntityManager.CreateEntityQuery(typeof(Team2), typeof(Alive));
+            team1Alive = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(Alive));
+            team1Alive.AddSharedComponentFilter<Team>(1);
+            team2Alive = state.EntityManager.CreateEntityQuery(typeof(Team), typeof(Alive));
+            team2Alive.AddSharedComponentFilter<Team>(2);
         }
 
         public void OnDestroy(ref SystemState state) { }
@@ -38,54 +30,37 @@ namespace DOTS
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            EntityCommandBuffer.ParallelWriter ecb = GetEntityCommandBuffer(ref state);
-            var enemyEntities = team2Alive.ToEntityArray(Allocator.TempJob);
-            //team1 job
-            new TargetJob
+            var team1Entities = team1Alive.ToEntityListAsync(Allocator.TempJob, state.Dependency, out var dep1);
+            var team2Entities = team2Alive.ToEntityListAsync(Allocator.TempJob, state.Dependency, out var dep2);
+
+            state.Dependency = new TargetJob
             {
-                Ecb = ecb,
                 deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                enemies = enemyEntities
+                team1Enemies = team2Entities.AsDeferredJobArray(),
+                team2Enemies = team1Entities.AsDeferredJobArray()
+            }.ScheduleParallel(JobHandle.CombineDependencies(dep1, dep2));
 
-            }.ScheduleParallel(team1Bees, state.Dependency).Complete();
-            enemyEntities.Dispose();
-
-            enemyEntities = team1Alive.ToEntityArray(Allocator.TempJob);
-
-            // team2 job
-            new TargetJob
-            {
-                Ecb = ecb,
-                deltaTime = state.WorldUnmanaged.Time.DeltaTime,
-                enemies = enemyEntities
-
-
-            }.ScheduleParallel(team2Bees, state.Dependency).Complete();
-            enemyEntities.Dispose();
+            team1Entities.Dispose(state.Dependency);
+            team2Entities.Dispose(state.Dependency);
         }
 
-        private EntityCommandBuffer.ParallelWriter GetEntityCommandBuffer(ref SystemState state)
-        {
-            var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
-            var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
-            return ecb.AsParallelWriter();
-        }
 
         [BurstCompile]
         public partial struct TargetJob : IJobEntity
         {
-            public EntityCommandBuffer.ParallelWriter Ecb;
             public float deltaTime;
-            [ReadOnly]public NativeArray<Entity> enemies;
+            [ReadOnly] public NativeArray<Entity> team1Enemies;
+            [ReadOnly] public NativeArray<Entity> team2Enemies;
 
-            private void Execute(Entity e, [ChunkIndexInQuery] int chunkIndex, ref RandomComponent random)
+            private void Execute(ref RandomComponent random, ref Target target, in Team team, in Alive _)
             {
-                int newTarget = random.generator.NextInt(0, enemies.Length);
-                Target target;
-                target.enemyTarget = enemies[newTarget];
-                Ecb.AddComponent(chunkIndex, e, target);
+                if (target.enemyTarget == Entity.Null)
+                {
+                    var enemies = team == 1 ? team1Enemies : team2Enemies;
+                    int newTarget = random.generator.NextInt(0, enemies.Length);
+                    target.enemyTarget = enemies[newTarget];
+                }
             }
         }
-
     }
 }
