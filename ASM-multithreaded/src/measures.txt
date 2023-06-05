@@ -1,0 +1,82 @@
+measures
+
+asm: 12857, 12849, 12772, 12829, 12886
+Unity: 1002, 996, 972, 966, 963 (more expensive random direction)
+
+Unity DOTS: 3593, 3716, 3753
+
+
+Measures after changing memory speed
+
+Unity mono, in render pipeline 2021: 397, 421, 421, 422, 418, 419
+Unity il2cpp built, in render pipeline 2021: 1294, 1265, 1296, 1303, 1274, 1283
+Unity Burst, in render pipeline 2021: 1596, 1561, 1543, 1547, 1554, 1551
+
+
+Unity Gameobjects mono: 169, 170, 183, 177, 182, 186
+
+Unity Gameobjects il2cpp: 277, 277, 279, 278, 277, 277
+
+Unity mono: 449, 448, 451, 444, 450, 445
+
+Unity il2cpp: 1652, 1672, 1690, 1689, 1672, 1695
+
+Unity Burst: 1958, 1973, 1921, 1952, 1945, 1918
+
+Unity DOTS: 4769, 4931, 4868, 4642, 4845, 4918
+
+asm: 13136, 13217, 13300, 13324, 13326, 13195
+
+
+new round
+
+asm: 13389, 13388, 13442, 13279, 13296, 13363
+
+Unity DOTS original: 5087, 5133, 5076, 4993, 5003, 5078
+
+Unity DOTS first improvement: 7306, 7239, 7311, 7394, 7419, 7395
+
+Unity DOTS second improvement: 9113, 9208, 9122, 9166, 9201, 9176
+
+asm multi threaded: 52484, 52787, 51296, 52818, 52418, 52900
+
+
+Unity DOTS improved: 6707, 6690
+
+Unity DOTS improved v2: 8554, 8637, 8535
+
+
+asm 1k bees 252289 	8400fps 6.46
+
+asm 10k 126644 4220fps 4.33
+
+asm 50k 26645 888 1.6
+
+asm 500k 2362 79 fps 2 
+
+Unity DOTS 1k bees 38978 1300fps
+
+Unity DOTS 10k bees 30822 1020 fps
+
+Unity DOTS 50k 16552 552fps 
+
+Unity DOTS 500k 1138 38 fps
+
+
+
+asm 1k bees 265053
+
+asm 10k bees 128702
+
+asm 50k bees 27202
+
+asm 500k bees 2525
+
+Unity DOTS 1k bees 39403 
+
+Unity DOTS 10k bees 31603
+
+Unity DOTS 50k bees 17291
+
+Unity DOTS 500k bees 1272
+

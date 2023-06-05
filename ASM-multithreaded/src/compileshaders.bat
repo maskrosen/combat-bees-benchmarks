@@ -1,0 +1,10 @@
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T vs_4_0 /E VS /Fo VertexShader1.fxc effects.fx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T ps_4_0 /E PS /Fo PixelShader1.fxc effects.fx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T ps_4_0 /E PSRoad /Fo PixelShaderRoad.fxc effects.fx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T gs_4_0 /E GS_TerrainNormals /Fo GeometryShader1.fxc effects.fx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T vs_4_0 /E VSLines /Fo VertexShaderLines.fxc effects.fx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T ps_4_0 /E PSLines /Fo PixelShaderLines.fxc effects.fx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T vs_4_0 /E VSWater /Fo VertexShaderWater.fxc effects.fx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T vs_4_0 /E VSCars /Fo VertexShaderCars.fxc effects.fx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T gs_4_0 /E GS_Billboard /Fo GeometryShader2.fxc effects.fx
+"C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x64\fxc.exe" /T vs_4_0 /E VSTrafficLight /Fo VertexShaderTrafficLight.fxc effects.fx

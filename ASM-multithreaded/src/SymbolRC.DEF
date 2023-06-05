@@ -1,0 +1,562 @@
+
+//ีออออ Bitmap definitions 1xxx อออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_BITMAP1         0x00001001L
+
+//ีออออ Button definitions 5xxx อออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define WS_EX_ACCEPTFILES   0X00000010L
+
+#define IDCANCEL            0x00000002L
+#define IDOK                0x00000001L
+#define IDNO                0x00000007L
+
+#define IDC_BUTTON1         0x00005001L
+#define IDC_BUTTON2         0x00005002L
+#define IDC_BUTTON3         0x00005003L
+#define IDC_BUTTON4         0x00005004L
+#define IDC_BUTTON5         0x00005005L
+#define IDC_BUTTON6         0x00005006L
+#define IDC_BUTTON7         0x00005007L
+#define IDC_BUTTON8         0x00005008L
+#define IDC_BUTTON9         0x00005009L
+#define IDC_BUTTON10        0x0000500AL
+#define IDC_BUTTON11        0x0000500BL
+#define IDC_BUTTON12        0x0000500CL
+#define IDC_BUTTON13        0x0000500DL
+#define IDC_BUTTON14        0x0000500EL
+
+//ีออออ Checkbox constants 2xxx อออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+#define IDC_CHECK1          0x00002001L
+#define IDC_CHECK2          0x00002002L
+#define IDC_CHECK3          0x00002003L
+#define IDC_CHECK4          0x00002004L
+#define IDC_CHECK5          0x00002005L
+#define IDC_CHECK6          0x00002006L
+#define IDC_CHECK7          0x00002007L
+#define IDC_CHECK8          0x00002008L
+#define IDC_CHECK9          0x00002009L
+#define IDC_CHECK10         0x0000200AL
+#define IDC_CHECK11         0x0000200BL
+#define IDC_CHECK12         0x0000200CL
+#define IDC_CHECK13         0x0000200DL
+#define IDC_CHECK14         0x0000200EL
+#define IDC_CHECK15         0x0000200FL
+#define IDC_CHECK16         0x00002010L
+#define IDC_CHECK17         0x00002011L
+#define IDC_CHECK18         0x00002012L
+#define IDC_CHECK19         0x00002013L
+#define IDC_CHECK20         0x00002014L
+#define IDC_CHECK21         0x00002015L
+
+//ีออออ Date time picker constants 58xx อออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_DATETIMEPICKER1 0x00005801L
+#define IDC_DATETIMEPICKER2 0x00005802L
+
+//ีออออ Combo box constants 7xxx ออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_COMBO1          0x00007001L
+#define IDC_COMBO2          0x00007002L
+#define IDC_COMBO3          0x00007003L
+#define IDC_COMBO4          0x00007004L
+#define IDC_COMBO5          0x00007005L
+#define IDC_COMBO6          0x00007006L
+#define IDC_COMBO7          0x00007007L
+#define IDC_COMBO8          0x00007008L
+#define IDC_COMBO9          0x00007009L
+
+
+#define IDC_CUSTOM1         0x00007800L
+#define IDC_CUSTOM2         0x00007801L
+
+//ีออออ Edit box constants 6xxx อออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_EDIT1           0x00006001L
+#define IDC_EDIT2           0x00006002L
+#define IDC_EDIT3           0x00006003L
+#define IDC_EDIT4           0x00006004L
+#define IDC_EDIT5           0x00006005L
+#define IDC_EDIT6           0x00006006L
+#define IDC_EDIT7           0x00006007L
+#define IDC_EDIT8           0x00006008L
+#define IDC_EDIT9           0x00006009L
+#define IDC_EDIT10          0x0000600AL
+#define IDC_EDIT11          0x0000600BL
+#define IDC_EDIT12          0x0000600CL
+#define IDC_EDIT13          0x0000600DL
+#define IDC_EDIT14          0x0000600EL
+#define IDC_EDIT15          0x0000600FL
+#define IDC_EDIT16          0x00006010L
+
+//ีออออ Help constants xFxxออออออออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define HIDC_BUTTON1        0x00005F03L
+#define HIDC_BUTTON2        0x00005F04L
+#define HIDC_BUTTON3        0x00005F05L
+#define HIDC_BUTTON4        0x00005F06L
+#define HIDC_BUTTON5        0x00005F07L
+#define HIDC_BUTTON6        0x00005F08L
+#define HIDC_BUTTON7        0x00005F09L
+
+#define HIDC_CHECK1         0x00002F01L
+#define HIDC_CHECK2         0x00002F02L
+#define HIDC_CHECK3         0x00002F03L
+#define HIDC_CHECK4         0x00002F04L
+#define HIDC_CHECK5         0x00002F05L
+#define HIDC_CHECK6         0x00002F06L
+#define HIDC_CHECK7         0x00002F07L
+#define HIDC_CHECK8         0x00002F08L
+#define HIDC_CHECK9         0x00002F09L
+
+#define HIDC_COMBO1         0x00007F01L
+#define HIDC_COMBO2         0x00007F02L
+
+#define HIDC_EDIT1          0x00006F01h
+#define HIDC_EDIT2          0x00006F02h
+
+#define HIDC_LIST1          0x00004D01L
+#define HIDC_LIST2          0x00004D02L
+#define HIDC_LIST3          0x00004D03L
+#define HIDC_LIST4          0x00004D04L
+
+#define HIDC_STATIC1        0x00004E01L
+#define HIDC_STATIC2        0x00004E02L
+
+#define HIDCANCEL           0x00005F01L
+#define HIDOK               0x00005F02L
+
+//ีออออ Icon constants nts 8xxx อออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_ICON1           0x00008001L
+
+//ีออออ List box constants 4xxx อออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_LIST1           0x00004001L
+#define IDC_LIST2           0x00004002L
+#define IDC_LIST3           0x00004003L
+#define IDC_LIST4           0x00004004L
+
+//ีออออ List view constants ออออออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define LVS_ALIGNLEFT           000800
+#define LVS_ALIGNMASK           000C00
+#define LVS_ALIGNTOP            000000
+#define LVS_AUTOARRANGE         000100
+#define LVS_EDITLABELS          000200
+#define LVS_ICON                000000
+#define LVS_LIST                000003
+#define LVS_NOCOLUMNHEADER      004000
+#define LVS_NOLABELWRAP         000080
+#define LVS_NOSCROLL            002000
+#define LVS_NOSORTHEADER        008000
+#define LVS_OWNERDATA           001000
+#define LVS_OWNERDRAWFIXED      0x000400L
+#define LVS_REPORT              000001
+#define LVS_SHAREIMAGELISTS     000040
+#define LVS_SHOWSELALWAYS       000008
+#define LVS_SINGLESEL           000004
+#define LVS_SMALLICON           000002
+#define LVS_SORTASCENDING       000010
+#define LVS_SORTDESCENDING      000020
+#define LVS_TYPEMASK            000003
+#define LVS_TYPESTYLEMASK       00FC00
+
+//ีออออ Progress constants 3xxx อออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_PROGRESS1       0x00003001L
+#define IDC_PROGRESS2       0x00003002L
+
+//ีออออ Rich edit controls ออออออออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_RICHEDIT1       0x00005801L
+
+//ีออออ Static constants 0xxx อออออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_STATIC1         0x00004F01L
+#define IDC_STATIC2         0x00004F02L
+#define IDC_STATIC3         0x00004F03L
+#define IDC_STATIC4         0x00004F04L
+#define IDC_STATIC5         0x00004F05L
+#define IDC_STATIC6         0x00004F06L
+#define IDC_STATIC7         0x00004F07L
+#define IDC_STATIC8         0x00004F08L
+#define IDC_STATIC9         0x00004F09L
+#define IDC_STATIC10        0x00004F0AL
+#define IDC_STATIC11        0x00004F0BL
+#define IDC_STATIC12        0x00004F0CL
+#define IDC_STATIC13        0x00004F0DL
+#define IDC_STATIC14        0x00004F0EL
+#define IDC_STATIC15        0x00004F0FL
+#define IDC_STATIC16        0x00004F10L
+#define IDC_STATIC17        0x00004F11L
+#define IDC_STATIC18        0x00004F12L
+#define IDC_STATIC19        0x00004F13L
+#define IDC_STATIC20        0x00004F14L
+#define IDC_STATIC21        0x00004F15L
+#define IDC_STATIC22        0x00004F16L
+#define IDC_STATIC23        0x00004F17L
+#define IDC_STATIC24        0x00004F18L
+#define IDC_STATIC25        0x00004F19L
+#define IDC_STATIC26        0x00004F1AL
+#define IDC_STATIC27        0x00004F1BL
+#define IDC_STATIC28        0x00004F1CL
+#define IDC_STATIC29        0x00004F1DL
+#define IDC_STATIC30        0x00004F1EL
+#define IDC_STATIC31        0x00004F1FL
+#define IDC_STATIC32        0x00004F20L
+#define IDC_STATIC33        0x00004F21L
+#define IDC_STATIC34        0x00004F22L
+#define IDC_STATIC35        0x00004F23L
+#define IDC_STATIC36        0x00004F24L
+#define IDC_STATIC37        0x00004F25L
+#define IDC_STATIC38        0x00004F26L
+#define IDC_STATIC39        0x00004F27L
+
+//ีออออ Tree view definitions อออออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_TREE1           0x0000FD01L
+
+//ีออออ Slider constants 15xx อออออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_SLIDER1         0x00001501L
+#define IDC_SLIDER2         0x00001502L
+#define IDC_SLIDER3         0x00001503L
+
+//ีออออ Symbol definitions ออออออออออออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define BS_AUTOCHECKBOX     0x00000003L
+#define BS_BITMAP           0x00000080L
+#define BS_CENTER           0x00000300L
+#define BS_DEFPUSHBUTTON    0x00000001L
+#define BS_NOTIFY           0x00004000L
+#define BS_VCENTER          0x00000C00L
+
+#define CBS_AUTOHSCROLL     0x00000040L
+#define CBS_DROPDOWN        0x00000002L
+#define CBS_DROPDOWNLIST    0x00000003L
+#define CBS_NOINTEGRALHEIGHT 0x0000400L
+#define CBS_SORT            0x00000100L
+#define CBS_OWNERDRAWFIXED  0x00000010L
+#define CBS_OWNERDRAWVARIABLE 0x00000020L
+#define CBS_HASSTRINGS      0x00000200L
+#define CBS_UPPERCASE       0x00002000L
+
+#define DS_3DLOOK           0x00000004L
+#define DS_CENTER           0x00000800L
+#define DS_CENTERMOUSE      0x00001000L
+#define DS_CONTROL          0x00000400L
+#define DS_FIXEDSYS         0x00000008L
+#define DS_MODALFRAME       0x00000080L
+#define DS_NOFAILCREATE     0x00000010L
+#define DS_SETFONT          0x00000040L
+#define DS_SETFOREGROUND    0x00000200L
+#define DS_SYSMODAL         0x00000002L
+
+#define DTS_UPDOWN                     0x0001 // use UPDOWN instead of MONTHCAL
+#define DTS_SHOWNONE                   0x0002 // allow a NONE selection
+#define DTS_SHORTDATEFORMAT            0x0000 // use the short date format (app must forward WM_WININICHANGE messages)
+#define DTS_LONGDATEFORMAT             0x0004 // use the long date format (app must forward WM_WININICHANGE messages)
+#define DTS_SHORTDATECENTURYFORMAT     0x000C // short date format with century (app must forward WM_WININICHANGE messages)
+#define DTS_TIMEFORMAT                 0x0009 // use the time format (app must forward WM_WININICHANGE messages)
+#define DTS_APPCANPARSE                0x0010 // allow user entered strings (app MUST respond to DTN_USERSTRING)
+#define DTS_RIGHTALIGN                 0x0020 // right-align popup instead of left-align it
+
+#define ES_AUTOHSCROLL      0x00000080L
+#define ES_AUTOVSCROLL      0x00000040L
+#define ES_MULTILINE        0x00000004L
+#define ES_NUMBER           0x00002000L
+#define ES_READONLY         0x00000800L
+#define ES_UPPERCASE        0x00000008L
+#define ES_WANTRETURN       0x00001000L
+
+#define IDD_OK              0x00000001L
+#define IDD_CANCEL          0x00000002L
+#define IDD_FILE                   302
+#define IDD_TEXT            0x00000022L
+
+#define IDS_STRING1         0x0000FE01h
+#define IDS_STRING2         0x0000FE02h
+#define IDS_STRING3         0x0000FE03h
+
+#define LBS_EXTENDEDSEL     0x00000800L
+#define LBS_HASSTRINGS      0x00000040L
+#define LBS_MULTICOLUMN     0x00000200L
+#define LBS_MULTIPLESEL     0x00000008L
+#define LBS_NOINTEGRALHEIGHT 0x00000100L
+#define LBS_NOSEL           0x00004000L
+#define LBS_NOTIFY          0x00000001L
+#define LBS_OWNERDRAWFIXED  0x00000010L
+#define LBS_OWNERDRAWVARIABLE 0x00000020L
+#define LBS_SORT            0x00000002L
+#define LBS_USETABSTOPS     0X00000080L
+#define LBS_WANTKEYBOARDINPUT 0x00000400L
+
+#define SC_SIZE             0x00000F00L
+#define SC_MOVE             0x00000F01L
+#define SC_MINIMIZE         0x00000F02L
+#define SC_MAXIMIZE         0x00000F03L
+#define SC_CLOSE            0x00000F06L
+#define SC_RESTORE          0x00000F12L
+
+#define SS_BITMAP           0x0000000EL
+#define SS_BLACKFRAME       0x00000007L
+#define SS_CENTER           0x00000001L
+#define SS_OWNERDRAW        0x0000000DL
+#define SS_SIMPLE           0x0000000BL
+#define SS_SUNKEN           0x00001000L
+
+#define TVS_DISABLEDRAGDROP 0x00000010L
+#define TVS_EDITLABELS      0x00000008L
+#define TVS_HASBUTTONS      0x00000001L
+#define TVS_HASLINES        0x00000002L
+#define TVS_INFOTIP         0x00000800L
+#define TVS_LINESATROOT     0x00000004L
+#define TVS_NONEVENHEIGHT   0x00004000L
+#define TVS_SHOWSELALWAYS   0x00000020L
+
+#define WS_BORDER           0x00800000L
+#define WS_CAPTION          0x00C00000L
+#define WS_CHILD            0x40000000L
+#define WS_CLIPCHILDREN     0x02000000L
+#define WS_CLIPSIBLINGS     0x04000000L
+#define WS_DLGFRAME         0x00400000L
+#define WS_EX_CONTROLPARENT 0x00010000L
+#define WS_EX_DLGMODALFRAME 0x00000001L
+#define WS_EX_MDICHILD      0x00000040L
+#define WS_EX_NOPARENTNOTIFY 0x00000004L
+#define WS_EX_PALETTEWINDOW 0x00000188L
+#define WS_HSCROLL          0x00100000L
+#define WS_MINIMIZEBOX      0x00020000L
+#define WS_OVERLAPPED       0x00000000L
+#define WS_POPUP            0x80000000L
+#define WS_SYSMENU          0x00080000L
+#define WS_TABSTOP          0x00010000L
+#define WS_VISIBLE          0x10000000L
+#define WS_VSCROLL          0x00200000L
+
+#define WS_EX_CLIENTEDGE    0x00000200L
+#define WS_EX_CONTEXTHELP   0x00000400L
+#define WS_EX_STATICEDGE    0x00020000L
+#define WS_EX_TRANSPARENT   0x00000020L
+
+#define BS_AUTORADIOBUTTON  0x00000009L
+
+//#define HIDC_CANCEL         0x00005203L
+//#define HIDC_HELP           0x00005205L
+//#define HIDC_OK             0x00005201L
+//#define HIDC_SELECT         0x00005109L
+
+#define IDC_CANCEL          0x00005202L
+#define IDC_HELP            0x00005204L
+#define IDC_OK              0x00005200L
+
+#define IDC_RADIO1          0x00005201L
+#define IDC_RADIO10         0x0000520AL
+#define IDC_RADIO11         0x0000520BL
+#define IDC_RADIO12         0x0000520CL
+#define IDC_RADIO2          0x00005202L
+#define IDC_RADIO3          0x00005203L
+#define IDC_RADIO4          0x00005204L
+#define IDC_RADIO5          0x00005205L
+#define IDC_RADIO6          0x00005206L
+#define IDC_RADIO7          0x00005207L
+#define IDC_RADIO8          0x00005208L
+#define IDC_RADIO9          0x00005209L
+
+#define IDC_SELECT          0x00005F0AL
+#define IDC_STATIC          0xFFFFFFFFL
+//#define HIDC_RADIO1         0x00005207L
+//#define HIDC_RADIO2         0x00005209L
+//#define HIDC_RADIO3         0x0000520BL
+//#define HIDC_RADIO4         0x0000520DL
+//#define HIDC_RADIO5         0x0000520FL
+//#define HIDC_RADIO6         0x00005211L
+//#define HIDC_RADIO7         0x00005213L
+//#define HIDC_RADIO8         0x00005215L
+//#define HIDC_RADIO9         0x00005217L
+
+
+#define WS_DISABLED         0x08000000L
+#define IDC_RADIO3A         0x00001111L
+#define IDC_RADIO3B         0x00001112L
+#define IDC_OPTIONS         0x00001113L
+#define WS_GROUP            0x00020000L
+#define IDC_CALC            0x00002301L
+#define IDC_CALC2           0x00002302L
+#define IDC_CALC3           0x00002303L
+#define IDC_CALC4           0x00002304L
+#define IDC_MENUSEL         0x00002309L
+#define IDC_TBSEL           0x0000230AL
+#define IDC_HELP2           0x0000230BL
+#define IDD_MENU0A          0x00001381L
+#define IDD_MENU0B          0x00001382L
+#define IDD_MENU0C          0x00001383L
+#define IDD_MENU0D          0x00001384L
+#define IDD_MENU1A          0x00001390L
+#define IDD_MENU1B          0x00001391L
+#define IDD_MENU1C          0x00001392L
+#define IDD_MENU1D          0x00001393L
+#define IDD_MENU1E          0X00001394L
+#define IDD_MENU1F          0x00001395L
+#define IDD_MENU1G          0x00001396L
+#define IDD_MENU1H          0x00001397L
+#define IDD_MENU2A          0x00001385L
+#define IDD_MENU2B          0x00001386L
+#define IDD_MENU2C          0x00001387L
+#define IDD_MENU2D          0x00001388L
+#define IDD_MENU2E          0x08001389L
+#define IDD_MENU2F          0x0000138AL
+#define IDD_MENU2G          0x0000138BL
+#define IDD_MENU2H          0x0000138CL
+#define IDD_MENU2A1         0x0002138DL
+#define IDD_MENU2B1         0x0000138EL
+#define IDD_MENU2C1         0x0000138FL
+#define IDD_MENU2D1         0x00001390L
+#define IDD_MENU2E1         0x00001391L
+#define IDD_MENU2F1         0x00001392L
+
+#define ID_EDIT             0x0000FFFFL
+
+#define TBM_GETPOS          0x00000400L
+#define TBM_GETRANGEMIN     0x00000401L
+#define TBM_GETRANGEMAX     0x00000402L
+#define TBM_GETTIC          0x00000403L
+#define TBM_SETTIC          0x00000404L
+#define TBM_SETPOS          0x00000405L
+#define TBM_SETRANGE        0x00000406L
+#define TBM_SETRANGEMIN     0x00000407L
+#define TBM_SETRANGEMAX     0x00000408L
+#define TBM_CLEARTICS       0x00000409L
+#define TBM_SETSEL          0x0000040AL
+#define TBM_SETSELSTART     0x0000040BL
+#define TBM_SETSELEND       0x0000040CL
+#define TBM_GETPTICS        0x0000040EL
+#define TBM_GETTICPOS       0x0000040FL
+#define TBM_GETNUMTICS      0x00000410L
+#define TBM_GETSELSTART     0x00000411L
+#define TBM_GETSELEND       0x00000412L
+#define TBM_CLEARSEL        0x00000413L
+#define TBM_SETTICFREQ      0x00000414L
+#define TBM_SETPAGESIZE     0x00000415L
+#define TBM_GETPAGESIZE     0x00000416L
+#define TBM_SETLINESIZE     0x00000417L
+#define TBM_GETLINESIZE     0x00000418L
+#define TBM_GETTHUMBRECT    0x00000419L
+#define TBM_GETCHANNELRECT  0x0000041AL
+#define TBM_SETTHUMBLENGTH  0x0000041BL
+#define TBM_GETTHUMBLENGTH  0x0000041CL
+#define TBM_SETTOOLTIPS     0x0000041DL
+#define TBM_GETTOOLTIPS     0x0000041EL
+#define TBM_SETTIPSIDE      0x0000041FL
+#define TBM_SETBUDDY        0x00000420L
+#define TBM_GETBUDDY        0x00000421L
+
+#define TBS_AUTOTICKS       0x00000001L
+#define TBS_VERT            0x00000002L
+#define TBS_HORZ            0x00000000L
+#define TBS_TOP             0x00000004L
+#define TBS_BOTTOM          0x00000000L
+#define TBS_LEFT            0x00000004L
+#define TBS_RIGHT           0x00000000L
+#define TBS_BOTH            0x00000008L
+#define TBS_NOTICKS         0x00000010L
+#define TBS_ENABLESELRANGE  0x00000020L
+#define TBS_FIXEDLENGTH     0x00000040L
+#define TBS_NOTHUMB         0x00000080L
+#define TBS_TOOLTIPS        0x00000100L
+#define TBS_REVERSED        0x00000200L
+#define TBS_DOWNISLEFT      0x00000400L
+
+//ีออออ Spin control constants 88xx อออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define IDC_SPIN1           0x00008801L
+#define IDC_SPIN2           0x00008802L
+#define IDC_SPIN3           0x00008803L
+#define IDC_SPIN4           0x00008804L
+#define IDC_SPIN5           0x00008805L
+#define IDC_SPIN6           0x00008806L
+#define IDC_SPIN7           0x00008807L
+
+#define CREATEPROCESS_MANIFEST_RESOURCE_ID  1
+#define TBS_NOTIFYBEFOREMOVE    0x0800  // Trackbar should notify parent before repositioning the slider due to user action (enables snapping)
+#define TBS_TRANSPARENTBKGND    0x1000  // Background is painted by the parent via WM_PRINTCLIENT
+
+#define WS_EX_TOPMOST       0x00000008L
+
+//ีออออ ChooseColor dialog ID values ออออออออออออออออออออออออออออออออออออออออออธ
+//ิออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออพ
+
+#define DLG_COLOR            10
+
+#define COLOR_HUESCROLL      700            // color dialog
+#define COLOR_SATSCROLL      701
+#define COLOR_LUMSCROLL      702
+#define COLOR_HUE            703
+#define COLOR_SAT            704
+#define COLOR_LUM            705
+#define COLOR_RED            706
+#define COLOR_GREEN          707
+#define COLOR_BLUE           708
+#define COLOR_CURRENT        709
+#define COLOR_RAINBOW        710
+#define COLOR_SAVE           711
+#define COLOR_ADD            712
+#define COLOR_SOLID          713
+#define COLOR_TUNE           714
+#define COLOR_SCHEMES        715
+#define COLOR_ELEMENT        716
+#define COLOR_SAMPLES        717
+#define COLOR_PALETTE        718
+#define COLOR_MIX            719
+#define COLOR_BOX1           720
+#define COLOR_CUSTOM1        721
+
+#define COLOR_HUEACCEL       723
+#define COLOR_SATACCEL       724
+#define COLOR_LUMACCEL       725
+#define COLOR_REDACCEL       726
+#define COLOR_GREENACCEL     727
+#define COLOR_BLUEACCEL      728
+
+#define COLOR_SOLID_LEFT     730
+#define COLOR_SOLID_RIGHT    731
+
+#define NUM_BASIC_COLORS     48
+#define NUM_CUSTOM_COLORS    16
+
+#define psh15       0x040e
+#define pshHelp     psh15
+
+#define PBS_SMOOTH         0x00000001L
+#define PBS_MARQUEE        0x00000008L
+
+#define UDS_ALIGNLEFT      0x00000008L
+#define UDS_ALIGNRIGHT     0x00000004L
+#define UDS_ARROWKEYS      0x00000020L
+#define UDS_AUTOBUDDY      0x00000010L
+#define UDS_HORZ           0x00000040L
+#define UDS_HOTTRACK       0x00000100L
+#define UDS_NOTHOUSANDS    0x00000080L
+#define UDS_SETBUDDYINT    0x00000002L
+#define UDS_WRAP           0x00000001L
+
+#define RT_RCDATA          0x0000000AL

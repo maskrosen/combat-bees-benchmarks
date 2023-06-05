@@ -491,7 +491,7 @@ Movement_Loop:
 												mov rcx, r11
 												GetRandomNumberMacro
 												mov r11, rcx
-												mov rcx, qword ptr [rsp] ;keep rcx on stack
+												pop rcx
 												;rax now holds our random bee index
 												mov rbx, sizeof(movement)
 												mul rbx

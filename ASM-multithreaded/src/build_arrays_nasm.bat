@@ -1,0 +1,1 @@
+C:\Users\Jakob\Downloads\nasm-2.15.05-win64\nasm-2.15.05\nasm.exe -f win64 largeArrays_NASM.asm -o largeArrays.obj

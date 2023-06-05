@@ -1,0 +1,459 @@
+basicCar										 label 					 vertex
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.4705882
+real4 				1.0
+real4 				0.4431373
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				0.4705882
+real4 				1.0
+real4 				0.4431373
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.4705882
+real4 				1.0
+real4 				0.4431373
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				0.8784314
+real4 				1.0
+real4 				0.4941176
+real4 				1.0
+real4 				0.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				-1.0
+real4 				-1.0
+real4 				1.0
+real4 				0.8784314
+real4 				1.0
+real4 				0.4941176
+real4 				1.0
+real4 				0.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				-1.0
+real4 				-1.0
+real4 				1.0
+real4 				0.8784314
+real4 				1.0
+real4 				0.4941176
+real4 				1.0
+real4 				0.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				-1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				-1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.2352941
+real4 				0.2313726
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				-1.0
+real4 				-1.0
+real4 				1.0
+real4 				0.2352941
+real4 				0.2313726
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				1.0
+real4 				-1.0
+real4 				1.0
+real4 				0.2352941
+real4 				0.2313726
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				0.4705882
+real4 				1.0
+real4 				0.4431373
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				0.8784314
+real4 				1.0
+real4 				0.4941176
+real4 				1.0
+real4 				0.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				-1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				-1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				-1.0
+real4 				1.0
+real4 				1.0
+real4 				0.2352941
+real4 				0.2313726
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				1.0
+real4 				0.0
+real4 				1.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+real4 				0.0
+basicCarIndices									 word 0
+											 word 1
+											 word 2
+											 word 3
+											 word 4
+											 word 5
+											 word 6
+											 word 7
+											 word 8
+											 word 9
+											 word 10
+											 word 11
+											 word 12
+											 word 13
+											 word 14
+											 word 15
+											 word 16
+											 word 17
+											 word 0
+											 word 18
+											 word 1
+											 word 3
+											 word 19
+											 word 4
+											 word 6
+											 word 20
+											 word 7
+											 word 9
+											 word 21
+											 word 10
+											 word 12
+											 word 22
+											 word 13
+											 word 15
+											 word 23
+											 word 16
+basicCarIndexBufferData 						 label 				 d3d11_subresource_data
+											 qword 				 basicCarIndices
+											 qword 				 ?
+											 qword 				 ?
+basicCarIndexBufferDataE 						 label 				 byte
+basicCarIndexCount 				 equ 					 36
+basicCarVertexCount 				 equ 					 24
+basicCarIndexBufferDesc 				 label 					 d3d11_buffer_desc
+ 				 dword 					 sizeof(word) * basicCarIndexCount
+ 				 dword 					 D3D11_USAGE_DEFAULT
+ 				 dword 					 D3D11_BIND_INDEX_BUFFER
+ 				 dword 					 0
+ 				 dword 					 0
+ 				 dword 					 0

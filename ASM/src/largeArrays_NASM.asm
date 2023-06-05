@@ -1,7 +1,7 @@
 
 section .bss 																; Declare bss segment
 
-max_number_of_bees  							equ 				50000 ;Per team
+max_number_of_bees  							equ 				250000 ;Per team
 
 												align   			16
 global team1BeeMovementArray, team2BeeMovementArray, beeTransformDataArray, cbPerInst, team1BeeTargetsArray, team2BeeTargetsArray, team1BeeSizesArray, team2BeeSizesArray, team1BeeRotationArray, team2BeeRotationArray, team1DeadTimers, team2DeadTimers

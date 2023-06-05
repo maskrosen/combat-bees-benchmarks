@@ -84,7 +84,7 @@ namespace DOTS
                 allyPosition = allyPositions[allyIndex].Position;
                 delta = allyPosition - beePosition;
                 dist = math.sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
-                dist = math.max(0.011f, dist);
+                dist = math.max(0.01f, dist);
                 velocity.Value -= delta * (Data.teamRepulsion * deltaTime / dist);
 
                 var rotation = transform.Rotation;

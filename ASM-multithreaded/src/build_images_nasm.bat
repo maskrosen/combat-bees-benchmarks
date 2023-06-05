@@ -1,0 +1,2 @@
+C:\Users\Jakob\Downloads\nasm-2.15.05-win64\nasm-2.15.05\nasm.exe -f win64 font_nasm.asm -o font_nasm.obj
+C:\Users\Jakob\Downloads\nasm-2.15.05-win64\nasm-2.15.05\nasm.exe -f win64 testTexture_nasm.asm -o testTexture_nasm.obj
