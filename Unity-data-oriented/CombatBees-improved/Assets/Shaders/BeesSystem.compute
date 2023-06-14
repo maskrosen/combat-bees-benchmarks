@@ -1,0 +1,183 @@
+#pragma kernel BehaviourUpdate 
+
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+#include "Assets/Scripts/BeesGPUSystrem.cs.hlsl"
+#define KERNEL_SIZE 8
+
+#pragma enable_d3d11_debug_symbols
+
+RWStructuredBuffer<BeeData> _Bees;
+RWStructuredBuffer<float> _DeadBees;
+
+float _UpdateTime;
+float _DeltaTime;
+float3 _FieldSize;
+float _ResourceSize;
+float _FieldGravity;
+uint _DispatchSizeX;
+
+// Integer hash functions from https://www.shadertoy.com/view/llGSzw
+float hash1( uint n ) 
+{
+    // integer hash copied from Hugo Elias
+	n = (n << 13U) ^ n;
+    n = n * (n * n * 15731U + 789221U) + 1376312589U;
+    return float( n & uint(0x7fffffffU))/float(0x7fffffff);
+}
+
+// Return values between 0 and 1
+float3 hash3( uint n ) 
+{
+    // integer hash copied from Hugo Elias
+	n = (n << 13U) ^ n;
+    n = n * (n * n * 15731U + 789221U) + 1376312589U;
+    uint3 k = n * uint3(n,n*16807U,n*48271U);
+    return saturate(float3( k & 0x7fffffffU)/float(0x7fffffff));
+}
+
+// Not perfect but good enough for the random movement of bees
+float3 RandomInsideUnitSphere(uint seed)
+{
+    float3 r = hash3(seed) * 2.f - 1.f;
+    float d = r.x * r.x + r.y * r.y + r.z * r.z;
+
+    // Bring back random point in cube to surface of sphere
+    if (d > 1)
+        r = r / sqrt(d);
+ 
+    return r;
+}
+
+// Note: this can return dead bees, but I think it's like that in the original code
+// Random between 0 and startBeeCount
+int GetRandomBee(int teamIndex, int beeIndex)
+{
+    // TODO: check if this random is good with high startBeeCount values
+    int halfBeeCount = (uint)startBeeCount / 2; 
+    int randomBeeIndex = (saturate(hash1((uint)(beeIndex + _UpdateTime * 743))) * (float)halfBeeCount);
+
+    if (teamIndex == 0)
+        return randomBeeIndex;
+    else
+        return randomBeeIndex + halfBeeCount;
+}
+
+[numthreads(KERNEL_SIZE, KERNEL_SIZE, 1)]
+void BehaviourUpdate(uint3 id : SV_DispatchThreadID)
+{
+    // Find back the index from 2D dispatch
+    uint beeIndex = id.x + id.y * KERNEL_SIZE * _DispatchSizeX;
+
+    if ((int)beeIndex >= startBeeCount)
+        return;
+
+    BeeData bee = _Bees[beeIndex];
+    float beeDeadTime = _DeadBees[beeIndex];
+
+    bee.isAttacking = false;
+    bee.isHoldingResource = false;
+    if (beeDeadTime < _UpdateTime) // alive bees have dead time less than current time
+    {
+        uint seed =  beeIndex + _UpdateTime * 421;
+        bee.velocity += RandomInsideUnitSphere(seed) * (flightJitter * _DeltaTime);
+        bee.velocity *= (1.f - damping * _DeltaTime);
+        
+        int attractiveFriendIndex = GetRandomBee(bee.teamIndex, beeIndex);
+        float3 delta = _Bees[attractiveFriendIndex].position - bee.position;
+        float dist = length(delta);
+        if (dist > 0.f)
+        {
+            bee.velocity += delta * (teamAttraction * _DeltaTime / dist);
+        }
+
+        int repellentFriendIndex = GetRandomBee(bee.teamIndex, beeIndex);
+        delta = _Bees[repellentFriendIndex].position - bee.position;
+        dist = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+        if (dist > 0.f)
+        {
+            bee.velocity -= delta * (teamRepulsion * _DeltaTime / dist);
+        }
+
+        if (bee.enemyTargetIndex == -1)
+        {
+            int enemyBee = GetRandomBee(!bee.teamIndex, beeIndex);
+            if (enemyBee != -1)
+            {
+                bee.enemyTargetIndex = enemyBee;
+            }
+        }
+        else if (bee.enemyTargetIndex != -1)
+        {
+            BeeData enemyBee = _Bees[bee.enemyTargetIndex];
+            if (beeDeadTime > _UpdateTime)
+            {
+                bee.enemyTargetIndex = -1;
+            }
+            else
+            {
+                delta = enemyBee.position - bee.position;
+                float sqrDist = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+                if (sqrDist > attackDistance * attackDistance)
+                {
+                    bee.velocity += delta * (chaseForce * _DeltaTime / sqrt(sqrDist));
+                }
+                else
+                {
+                    bee.isAttacking = true;
+                    bee.velocity += delta * (attackForce * _DeltaTime / sqrt(sqrDist));
+                    if (sqrDist < hitDistance * hitDistance)
+                    {
+                        // Bees will automatically revive after the timer is up
+                        _DeadBees[bee.enemyTargetIndex] = _UpdateTime + 1; // 1 second dead time
+                        bee.enemyTargetIndex = -1;
+                    }
+                }
+            }
+        }
+        // TODO: remove direction, we can use velocity instead
+        // bee.direction = lerp(bee.direction, normalize(bee.velocity), _DeltaTime * 4);
+    }
+    else
+    {
+        // first frame of the death:
+        if (beeDeadTime > _UpdateTime + 1 - _DeltaTime * 1.1f) 
+            bee.velocity *= 0.5f;
+        bee.velocity.y += _FieldGravity * _DeltaTime;
+    }
+
+    bee.position += _DeltaTime * bee.velocity;
+
+    if (abs(bee.position.x) > _FieldSize.x * .5f)
+    {
+        bee.position.x = (_FieldSize.x * .5f) * sign(bee.position.x);
+        bee.velocity.x *= -.5f;
+        bee.velocity.y *= .8f;
+        bee.velocity.z *= .8f;
+    }
+    if (abs(bee.position.z) > _FieldSize.z * .5f)
+    {
+        bee.position.z = (_FieldSize.z * .5f) * sign(bee.position.z);
+        bee.velocity.z *= -.5f;
+        bee.velocity.x *= .8f;
+        bee.velocity.y *= .8f;
+    }
+    //  Seems that resources are not used in the original code
+    float resourceModifier = 0.f;
+    // if (bee.isHoldingResource)
+    // {
+    //     resourceModifier = _ResourceSize;
+    // }
+    if (abs(bee.position.y) > _FieldSize.y * .5f - resourceModifier)
+    {
+        bee.position.y = (_FieldSize.y * .5f - resourceModifier) * sign(bee.position.y);
+        bee.velocity.y *= -.5f;
+        bee.velocity.z *= .8f;
+        bee.velocity.x *= .8f;
+    }
+
+    // transform.localScale = new Vector3(bee.size, bee.size, bee.size);
+    // transform.SetPositionAndRotation(bee.position, Quaternion.LookRotation(bee.direction));
+
+    // Write back data to the bee buffer:
+    _Bees[beeIndex] = bee;
+}
