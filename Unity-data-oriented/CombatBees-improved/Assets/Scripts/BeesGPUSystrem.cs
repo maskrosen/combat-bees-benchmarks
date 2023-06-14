@@ -20,6 +20,7 @@ public class BeesGPUSystrem : MonoBehaviour
 
     public static BeesGPUSystrem instance;
 
+    // All constants are uploaded on the GPU using a constant buffer (fast access compared to regular buffers)
     [GenerateHLSL(needAccessors = false, generateCBuffer = true), StructLayout(LayoutKind.Sequential), Serializable]
     public struct BeesConstantData
     {
@@ -118,7 +119,6 @@ public class BeesGPUSystrem : MonoBehaviour
     // Buffers for rendering the bees (indirect indexed rendering)
     GraphicsBuffer beesIndirectArgumentBuffer;
     MaterialPropertyBlock beesPropertyBlock; 
-    CommandBuffer beesRenderingCommandBuffer; 
 
     uint threadGroupSizeX;
     uint threadGroupSizeY;
@@ -142,7 +142,6 @@ public class BeesGPUSystrem : MonoBehaviour
             initData.startBeeCount += 1;
  
         updateBeesCommandBuffer = new CommandBuffer{ name = "Update Bees"};
-        beesRenderingCommandBuffer = new CommandBuffer{ name = "Rendering Bees"};
         beesConstantBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Constant, 1, beesConstantBufferSize) { name = "Bees Constant" };
         beesIndirectArgumentBuffer = new GraphicsBuffer(GraphicsBuffer.Target.IndirectArguments, 2, GraphicsBuffer.IndirectDrawIndexedArgs.size) { name = "Bees Indirect Draw Args" };
         runtimeBeesBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, initData.startBeeCount, Marshal.SizeOf(typeof(BeeData))) { name = "Bees Data" };
@@ -182,11 +181,10 @@ public class BeesGPUSystrem : MonoBehaviour
         // Prepare meshes for rendering:
         team0BeeMesh = CreateBeeMesh(initData.team0Color);
         team1BeeMesh = CreateBeeMesh(initData.team1Color);
-
-        Camera.main.AddCommandBuffer(CameraEvent.AfterForwardOpaque, beesRenderingCommandBuffer);
     }
 
-    struct MeshVertexData    
+    // 12 bytes vertex data
+    struct MeshVertexData
     {
         public half4 position;
         public Color32 color;
@@ -234,8 +232,6 @@ public class BeesGPUSystrem : MonoBehaviour
     {
         // Update bees behavior for the frame
         updateBeesCommandBuffer.Clear();
-        // TODO: try async compute to keep the GPU at 100% occupancy 
-        // updateBeesCommandBuffer.SetExecutionFlags(CommandBufferExecutionFlags.AsyncCompute);
         updateBeesCommandBuffer.SetGlobalFloat("_UpdateTime", Time.time);
         updateBeesCommandBuffer.SetGlobalFloat("_DeltaTime", Time.deltaTime);
         updateBeesCommandBuffer.SetGlobalFloat("_FieldGravity", Field.gravity);
@@ -246,15 +242,17 @@ public class BeesGPUSystrem : MonoBehaviour
         DispatchCompute(initData.startBeeCount, behaviourUpdateKernel); 
         Graphics.ExecuteCommandBuffer(updateBeesCommandBuffer);
 
-        // Register rendering call to URP camera rendering
+        // Register rendering call to camera rendering using Graphics API (deferred call)
         beesPropertyBlock.SetBuffer("_Bees", runtimeBeesBuffer); 
         beesPropertyBlock.SetConstantBuffer("BeesConstantData", beesConstantBuffer, 0, beesConstantBufferSize); 
-
-        beesRenderingCommandBuffer.Clear();
         beesPropertyBlock.SetInteger("_StartInstance", 0); 
-        beesRenderingCommandBuffer.DrawMeshInstancedIndirect(team0BeeMesh, 0, beesMaterial, 0, beesIndirectArgumentBuffer, 0, beesPropertyBlock); 
+
+        RenderParams rp = new RenderParams(beesMaterial);
+        rp.worldBounds = new Bounds(Vector3.zero, 10000 * Vector3.one);
+        rp.matProps = beesPropertyBlock;
+        Graphics.RenderMeshIndirect(rp, team0BeeMesh, beesIndirectArgumentBuffer, 1, 0);
         beesPropertyBlock.SetInteger("_StartInstance", initData.startBeeCount / 2); 
-        beesRenderingCommandBuffer.DrawMeshInstancedIndirect(team1BeeMesh, 0, beesMaterial, 0, beesIndirectArgumentBuffer, GraphicsBuffer.IndirectDrawIndexedArgs.size, beesPropertyBlock); 
+        Graphics.RenderMeshIndirect(rp, team1BeeMesh, beesIndirectArgumentBuffer, 1, 1);
     }
 
     // Helper to do a 2D dispatch and bypass the 65k thread limit on X axis

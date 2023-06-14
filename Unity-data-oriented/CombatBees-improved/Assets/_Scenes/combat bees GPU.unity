@@ -460,7 +460,7 @@ MonoBehaviour:
     hitDistance: 0.5
     team1SpawnPosition: {x: 0, y: 0, z: 0}
     startBeeCount: 500000
-    deadTimeout: 4
+    deadTimeout: 2
     _padding0: 0
     _padding1: 0
     _padding2: 0

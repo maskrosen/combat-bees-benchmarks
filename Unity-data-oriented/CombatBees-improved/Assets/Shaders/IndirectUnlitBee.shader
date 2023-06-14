@@ -14,7 +14,7 @@ Shader "IndirectUnlitBee"
             #pragma vertex vert
             #pragma fragment frag
 
-            #pragma enable_d3d11_debug_symbols
+            // #pragma enable_d3d11_debug_symbols
 
             #include "UnityCG.cginc"
             #define UNITY_INDIRECT_DRAW_ARGS IndirectDrawIndexedArgs
@@ -36,16 +36,16 @@ Shader "IndirectUnlitBee"
                 float3 color : COLOR;
             };
 
-            float3x3 lookAtPoint(float3 fwd)
+            half3x3 lookAtPoint(half3 fwd)
             {
-                float3 localUp = float3(0, 1, 0); 
-                float3 right = normalize(cross(localUp, fwd));
+                half3 localUp = half3(0, 1, 0); 
+                half3 right = normalize(cross(localUp, fwd));
                 // Safeguard against degenerate cases (fwd == localUp or -fwd == localUp)
                 if (any(isnan(right)))
-                    return float3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
-                float3 up = normalize(cross(fwd, right));
+                    return half3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+                half3 up = normalize(cross(fwd, right));
 
-                return float3x3(fwd, up, right);
+                return half3x3(fwd, up, right);
             }
 
             // We can still optimize the input assembly stage by using primitive indirect draw instead
@@ -54,20 +54,20 @@ Shader "IndirectUnlitBee"
                 InitIndirectDrawArgs(0);
                 PackedBeeData bee = _Bees[instanceID + _StartInstance];
 
-                float3 beePosition;
-                float3 beeVelocity;
+                half3 beePosition;
+                half3 beeVelocity;
                 UnpackPositionAndVelocity(bee.packedBeeData.xyz, beePosition, beeVelocity);
 
                 // affect size with velocity for nicer effect:
-                float3 safeVelocity = any(abs(beeVelocity) > 0.001) ? normalize(beeVelocity) : float3(0, 0, 1);
-                float halfV = abs(safeVelocity.x) * 0.5;
-                float4 wpos = v.position * float4(1 + halfV, 1 - halfV, 1, 1);
+                half3 safeVelocity = any(abs(beeVelocity) > 0.001) ? normalize(beeVelocity) : half3(0, 0, 1);
+                half halfV = abs(safeVelocity.x) * 0.5;
+                half4 wpos = v.position * half4(1 + halfV, 1 - halfV, 1, 1);
                 
-                wpos = float4(mul(lookAtPoint(safeVelocity), wpos), 1); // rotate quad towards velocity
-                wpos += float4(beePosition, 0);
+                wpos = half4(mul(lookAtPoint(safeVelocity), wpos), 1); // rotate quad towards velocity
+                wpos += half4(beePosition, 0);
 
                 v2f o;
-                o.pos = mul(UNITY_MATRIX_VP, wpos);
+                o.pos = mul(UNITY_MATRIX_VP, float4(wpos));
                 o.color = float4(v.color, 1);
                 return o;
             }

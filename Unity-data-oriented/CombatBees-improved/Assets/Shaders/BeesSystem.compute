@@ -5,7 +5,7 @@
 #include "Assets/Shaders/BeesCommon.hlsl"
 #define KERNEL_SIZE 8
 
-#pragma enable_d3d11_debug_symbols
+// #pragma enable_d3d11_debug_symbols
 
 RWStructuredBuffer<PackedBeeData> _Bees;
 RWStructuredBuffer<float> _DeadBees;
@@ -74,10 +74,10 @@ void BehaviourUpdate(uint3 id : SV_DispatchThreadID)
             bee.enemyTargetIndex = -1;
         }
 
-        uint seed =  beeIndex + _UpdateTime * 421;
+        uint seed = beeIndex + _UpdateTime * 421;
         bee.velocity += RandomInsideUnitSphere(seed) * (flightJitter * _DeltaTime);
         bee.velocity *= (1.f - damping * _DeltaTime);
-        
+
         float3 attractiveFriendPos = GetRandomBeePosition(bee.teamIndex, beeIndex);
         float3 delta = attractiveFriendPos - bee.position;
         float dist = length(delta);
