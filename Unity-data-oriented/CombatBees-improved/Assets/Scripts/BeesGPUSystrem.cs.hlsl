@@ -21,22 +21,32 @@ CBUFFER_START(BeesConstantData)
     float grabDistance;
     float attackDistance;
     float attackForce;
+    float3 team0SpawnPosition;
     float hitDistance;
+    float3 team1SpawnPosition;
     int startBeeCount;
+    float deadTimeout;
+    float _padding0;
     float _padding1;
     float _padding2;
 CBUFFER_END
+
+// Generated from BeesGPUSystrem+PackedBeeData
+// PackingRules = Exact
+struct PackedBeeData
+{
+    uint4 packedBeeData;
+};
 
 // Generated from BeesGPUSystrem+BeeData
 // PackingRules = Exact
 struct BeeData
 {
     float3 position;
-    int teamIndex;
     float3 velocity;
-    int isAttacking;
-    int isHoldingResource;
-    int enemyTargetIndex;
+    uint isAttacking;
+    uint teamIndex;
+    uint enemyTargetIndex;
 };
 
 
