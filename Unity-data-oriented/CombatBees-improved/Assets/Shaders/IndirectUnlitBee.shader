@@ -43,7 +43,7 @@ Shader "IndirectUnlitBee"
                 // Safeguard against degenerate cases (fwd == localUp or -fwd == localUp)
                 if (any(isnan(right)))
                     return half3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
-                half3 up = normalize(cross(fwd, right));
+                half3 up = cross(fwd, right);
 
                 return half3x3(fwd, up, right);
             }

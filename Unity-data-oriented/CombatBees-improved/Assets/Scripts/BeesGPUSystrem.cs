@@ -16,7 +16,9 @@ public class BeesGPUSystrem : MonoBehaviour
     [Header("Others")] 
     public Mesh beeMesh;
     public Material beesMaterial;
+    public Material beesURPMaterial;
     public ComputeShader beesBehaviourComputeShader;
+    public bool disableURP = true;
 
     public static BeesGPUSystrem instance;
 
@@ -135,7 +137,8 @@ public class BeesGPUSystrem : MonoBehaviour
         // Disable entities in this scene as we don't need them
         World.DefaultGameObjectInjectionWorld.DestroyAllSystemsAndLogException();
         // Also disable URP as the C# side of the engine is pretty slow for rendering this particular scene.
-        GraphicsSettings.renderPipelineAsset = null;
+        if (disableURP)
+            GraphicsSettings.renderPipelineAsset = null;
 
         // odd number of bees is not supported
         if (initData.startBeeCount % 2 != 0)
@@ -247,7 +250,7 @@ public class BeesGPUSystrem : MonoBehaviour
         beesPropertyBlock.SetConstantBuffer("BeesConstantData", beesConstantBuffer, 0, beesConstantBufferSize); 
         beesPropertyBlock.SetInteger("_StartInstance", 0); 
 
-        RenderParams rp = new RenderParams(beesMaterial);
+        RenderParams rp = new RenderParams(disableURP ? beesMaterial : beesURPMaterial);
         rp.worldBounds = new Bounds(Vector3.zero, 10000 * Vector3.one);
         rp.matProps = beesPropertyBlock;
         Graphics.RenderMeshIndirect(rp, team0BeeMesh, beesIndirectArgumentBuffer, 1, 0);
