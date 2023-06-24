@@ -466,8 +466,10 @@ MonoBehaviour:
     _padding2: 0
   beeMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
   beesMaterial: {fileID: 2100000, guid: 1306164758a29cb479db70905a692541, type: 2}
+  beesURPMaterial: {fileID: 2100000, guid: 3b8e3059c6b6fbd4dbf296b85e10a0f7, type: 2}
   beesBehaviourComputeShader: {fileID: 7200000, guid: af8fcbd19d9ac5f48859a24ceaa0fc91,
     type: 3}
+  disableURP: 1
 --- !u!1 &1496960977
 GameObject:
   m_ObjectHideFlags: 0
