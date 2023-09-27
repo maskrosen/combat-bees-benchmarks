@@ -8,5 +8,6 @@ void UpdateCollisions();
 void UpdateTargets();
 void UpdateAttack(float deltaTime);
 void UpdateDead(float deltaTime);
+int UpdateMovementTask(unsigned char* data);
 
 #endif // !LOGIC_H

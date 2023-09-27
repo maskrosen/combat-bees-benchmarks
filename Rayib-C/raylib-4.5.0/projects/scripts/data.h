@@ -5,6 +5,7 @@
 #include "structs.h"
 #include "constants.h"
 #include "raymath.h"
+#include "taskRunner.h"
 
 
 extern Movement Team1BeeMovements[MaxNumberOfBeesPerTeam];
@@ -51,6 +52,13 @@ extern float16 team2Transforms[MaxNumberOfBeesPerTeam];
 extern Mesh beeMesh;
 extern Material yellowMat;
 extern Material blueMat;
+
+extern float lastFrameDelta;
+extern __int64 frameCounter;
+
+extern Task taskQueue[MAX_TASK_COUNT];
+extern int queuedTasks;
+extern int doneThreads;
 
 void Init();
 

@@ -4,6 +4,8 @@
 #include "gameUtils.h"
 #include "bitMaskUtils.h"
 #include <immintrin.h> 
+#include <memory.h>
+#include "taskRunner.h"
 
 
 void CopyBeeData(int sourceIndex, int destIndex, int length, int teamIndex)
@@ -106,6 +108,53 @@ void SpawnBeesUpdate()
     }
 }
 
+int SpawnBeesTask(unsigned char* data)
+{
+    SpawnBeesData spawnBeesData = { 0 };
+    memcpy(&spawnBeesData, data, sizeof(SpawnBeesData));
+
+    if (spawnBeesData.taskData.frameCounter < frameCounter)
+    {
+        return 0;
+    }
+
+    int teamBeeCount = *spawnBeesData.aliveBeesCount + *spawnBeesData.deadBeesCount;
+    int beesToSpawn = beeStartCount / 2 - teamBeeCount;
+    SpawnBees(beesToSpawn, spawnBeesData.teamIndex);
+
+    int threadCountForTeam = spawnBeesData.threadCount / 2;
+    int beesPerThread = *spawnBeesData.aliveBeesCount / threadCountForTeam; //half threads for this team and half for the other
+    int missedBees = *spawnBeesData.aliveBeesCount - beesPerThread * threadCountForTeam;
+
+    int teamIndex = spawnBeesData.teamIndex;
+    //Add tasks for alive bees
+
+    for (int i = 0; i < threadCountForTeam; i++)
+    {
+        int count = beesPerThread;
+        int startIndex = i * beesPerThread;
+        if (i == threadCountForTeam - 1)
+        {
+            count += missedBees / 2;
+        }
+        UpdateMovementData nextMovementData = { 0 };
+        nextMovementData.taskData.frameCounter = frameCounter;
+        nextMovementData.aliveBeesCount = &AliveCount[teamIndex];
+        nextMovementData.count = count;
+        nextMovementData.deltaTime = &lastFrameDelta;
+        nextMovementData.directions = BeeDirections[teamIndex];
+        nextMovementData.movements = BeeMovements[teamIndex];
+        nextMovementData.startIndex = startIndex;
+
+        Task nextMovementTask = { 0 };
+        memcpy(nextMovementTask.data, &nextMovementData, sizeof(UpdateMovementData));
+        nextMovementTask.function = &UpdateMovementTask;
+        AddTaskToQueue(nextMovementTask, taskQueue, &queuedTasks);
+    }
+
+    return 1;
+}
+
 void UpdateMovements(int aliveBeesCount, Movement* movements, Vector3* directions, float deltaTime)
 {
     for (int i = 0; i < aliveBeesCount; i++)
@@ -139,6 +188,60 @@ void UpdateMovements(int aliveBeesCount, Movement* movements, Vector3* direction
         direction = Vector3Lerp(direction, Vector3Normalize(movement.velocity), deltaTime * 4);
         directions[beeIndex] = direction;
     }
+}
+
+int UpdateMovementTask(unsigned char* data)
+{
+    UpdateMovementData movementData = { 0 };
+    memcpy(&movementData, data, sizeof(UpdateMovementData));
+
+    if (movementData.taskData.frameCounter < frameCounter)
+    {
+        return 0;
+    }
+
+    Movement* movements = movementData.movements;
+    float deltaTime = *movementData.deltaTime;
+
+    for (int i = movementData.startIndex; i < movementData.startIndex + movementData.count && movementData.startIndex + i < *movementData.aliveBeesCount; i++)
+    {
+        int beeIndex = i;
+        Movement movement = movements[beeIndex];
+        Vector3 velocity = movement.velocity;
+        velocity = Vector3Add(velocity, Vector3Scale(RandomPointInSphere(1.0f), (flightJitter * deltaTime)));
+        velocity = Vector3Scale(velocity, (1.0f - damping * deltaTime));
+
+        //Move towards random ally
+        int allyIndex = GetLargeRandomValue(0, *movementData.aliveBeesCount - 1);
+        Movement allyMovement = movements[allyIndex];
+        Vector3 delta = Vector3Subtract(allyMovement.position, movement.position);
+        float dist = sqrtf(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+        dist = max(0.01f, dist);
+        velocity = Vector3Add(velocity, Vector3Scale(delta, (teamAttraction * deltaTime / dist)));
+
+        //Move away from random ally
+        allyIndex = GetLargeRandomValue(0, *movementData.aliveBeesCount - 1);
+        allyMovement = movements[allyIndex];
+        delta = Vector3Subtract(allyMovement.position, movement.position);
+        dist = sqrtf(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+        dist = max(0.01f, dist);
+        velocity = Vector3Subtract(velocity, Vector3Scale(delta, (teamRepulsion * deltaTime / dist)));
+
+        movement.velocity = velocity;
+        movements[beeIndex] = movement;
+
+        Vector3 direction = movementData.directions[beeIndex];
+        direction = Vector3Lerp(direction, Vector3Normalize(movement.velocity), deltaTime * 4);
+        movementData.directions[beeIndex] = direction;
+    }
+    UpdateMovementData nextMovementData = movementData;
+    nextMovementData.taskData.frameCounter++; 
+
+    Task nextMovementTask = {0};
+    memcpy(nextMovementTask.data, &nextMovementData, sizeof(UpdateMovementData));
+    nextMovementTask.function = &UpdateMovementTask;
+    AddTaskToQueue(nextMovementTask, taskQueue, &queuedTasks);
+    return 1;
 }
 
 void UpdateMovement(float deltaTime)

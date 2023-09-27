@@ -29,6 +29,9 @@ __int64 team2HasTargets[MAX_NUMBER_OF_BITS];
 __int64 team1HasNoTargets[MAX_NUMBER_OF_BITS];
 __int64 team2HasNoTargets[MAX_NUMBER_OF_BITS];
 
+__int64 team1BeesKilledLastFrame[MAX_NUMBER_OF_BITS];
+__int64 team2BeesKilledLastFrame[MAX_NUMBER_OF_BITS];
+
 __int64* teamHasTargets[2] = { team1HasTargets , team2HasTargets };
 __int64* teamHasNoTargets[2] = { team1HasNoTargets , team2HasNoTargets };
 
@@ -40,6 +43,12 @@ float16 team2Transforms[MaxNumberOfBeesPerTeam];
 Mesh beeMesh;
 Material yellowMat;
 Material blueMat;
+
+float lastFrameDelta;
+__int64 frameCounter;
+Task taskQueue[MAX_TASK_COUNT];
+int queuedTasks;
+int doneThreads;
 
 void Init()
 {
