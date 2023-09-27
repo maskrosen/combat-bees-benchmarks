@@ -50,6 +50,10 @@ public class Fps : MonoBehaviour
         {
             return BeeSpawner.instance.teamsOfBees[0].Count + BeeSpawner.instance.teamsOfBees[1].Count;
         }
+        else if (BeesGPUSystrem.instance)
+        {
+            return BeesGPUSystrem.instance.initData.startBeeCount;
+        }
         else
         {
             return Data.AliveCount[0]+ Data.AliveCount[1]+ Data.DeadCount[0]+ Data.DeadCount[1];

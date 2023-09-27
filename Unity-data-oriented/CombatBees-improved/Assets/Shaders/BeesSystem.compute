@@ -1,0 +1,177 @@
+#pragma kernel InitBeeData 
+#pragma kernel BehaviourUpdate 
+
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+#include "Assets/Shaders/BeesCommon.hlsl"
+#define KERNEL_SIZE 8
+
+// #pragma enable_d3d11_debug_symbols
+
+RWStructuredBuffer<PackedBeeData> _Bees;
+RWStructuredBuffer<float> _DeadBees;
+
+float3 _FieldSize;
+float _ResourceSize;
+float _FieldGravity;
+uint _DispatchSizeX;
+
+float3 GetRandomBeePosition(int teamIndex, int beeIndex)
+{
+    int randomIndex = GetRandomBee(teamIndex, beeIndex);
+    PackedBeeData bee = _Bees[randomIndex];
+
+    float3 beePosition; 
+    float3 beeVelocity; 
+    UnpackPositionAndVelocity(bee.packedBeeData.xyz, beePosition, beeVelocity);
+    return beePosition;
+}
+
+[numthreads(KERNEL_SIZE, KERNEL_SIZE, 1)]
+void InitBeeData(uint3 id : SV_DispatchThreadID)
+{
+    // Find back the index from 2D dispatch
+    uint beeIndex = id.x + id.y * KERNEL_SIZE * _DispatchSizeX;
+
+    if ((int)beeIndex >= startBeeCount)
+        return;
+
+    int teamIndex = beeIndex < (uint)startBeeCount / 2 ? 0 : 1;
+
+    BeeData bee;
+    bee.teamIndex = teamIndex;
+    bee.position = teamIndex == 0 ? team0SpawnPosition : team1SpawnPosition;
+    bee.velocity = 0;
+    bee.isAttacking = false;
+    bee.enemyTargetIndex = -1; 
+
+    _Bees[beeIndex] = PackBeeData(bee);
+    _DeadBees[beeIndex] = -1.f;
+}
+
+[numthreads(KERNEL_SIZE, KERNEL_SIZE, 1)]
+void BehaviourUpdate(uint3 id : SV_DispatchThreadID)
+{
+    // Find back the index from 2D dispatch
+    uint beeIndex = id.x + id.y * KERNEL_SIZE * _DispatchSizeX;
+
+    if ((int)beeIndex >= startBeeCount)
+        return;
+
+    PackedBeeData packedBeeData = _Bees[beeIndex];
+    float beeDeadTime = _DeadBees[beeIndex];
+
+    BeeData bee = UnpackBeeData(packedBeeData);
+
+    bee.isAttacking = false;
+    // bee.isHoldingResource = false;
+    if (beeDeadTime < _UpdateTime) // alive bees have dead time less than current time
+    {
+        // Handle respawn:
+        if (beeDeadTime > _UpdateTime - _DeltaTime * 1.1f) // first frame of the respawn
+        {
+            bee.velocity = float3(0, 0, 0);
+            bee.position = bee.teamIndex == 0 ? team0SpawnPosition : team1SpawnPosition;
+            bee.enemyTargetIndex = -1;
+        }
+
+        uint seed = beeIndex + _UpdateTime * 421;
+        bee.velocity += RandomInsideUnitSphere(seed) * (flightJitter * _DeltaTime);
+        bee.velocity *= (1.f - damping * _DeltaTime);
+
+        float3 attractiveFriendPos = GetRandomBeePosition(bee.teamIndex, beeIndex);
+        float3 delta = attractiveFriendPos - bee.position;
+        float dist = length(delta);
+        if (dist > 0.f)
+        {
+            bee.velocity += delta * (teamAttraction * _DeltaTime / dist);
+        }
+
+        float3 repellentFriendPos = GetRandomBeePosition(bee.teamIndex, beeIndex);
+        delta = repellentFriendPos - bee.position;
+        dist = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+        if (dist > 0.f)
+        {
+            bee.velocity -= delta * (teamRepulsion * _DeltaTime / dist);
+        }
+
+        if (bee.enemyTargetIndex == -1)
+        {
+            int enemyBee = GetRandomBee(!bee.teamIndex, beeIndex);
+            if (enemyBee != -1)
+            {
+                bee.enemyTargetIndex = enemyBee;
+            }
+        }
+        else if (bee.enemyTargetIndex != -1)
+        {
+            PackedBeeData enemyBee = _Bees[bee.enemyTargetIndex];
+            if (beeDeadTime > _UpdateTime)
+            {
+                bee.enemyTargetIndex = -1;
+            }
+            else
+            {
+                float3 enemybeePosition; 
+                float3 enemyBeeVelocity;
+                UnpackPositionAndVelocity(enemyBee.packedBeeData.xyz, enemybeePosition, enemyBeeVelocity);
+                delta = enemybeePosition - bee.position;
+                float sqrDist = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+                if (sqrDist > attackDistance * attackDistance)
+                {
+                    bee.velocity += delta * (chaseForce * _DeltaTime / sqrt(sqrDist));
+                }
+                else
+                {
+                    bee.isAttacking = true;
+                    bee.velocity += delta * (attackForce * _DeltaTime / sqrt(sqrDist));
+                    if (sqrDist < hitDistance * hitDistance)
+                    {
+                        // Bees will automatically revive after the timer is up
+                        _DeadBees[bee.enemyTargetIndex] = _UpdateTime + deadTimeout; // setup the dead time
+                        bee.enemyTargetIndex = -1;
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        // first frames of the death:
+        if (beeDeadTime > _UpdateTime + deadTimeout - _DeltaTime * 1.1f) 
+            bee.velocity *= 0.2f;
+        bee.velocity.y += _FieldGravity * _DeltaTime;
+    }
+
+    bee.position += _DeltaTime * bee.velocity;
+
+    if (abs(bee.position.x) > _FieldSize.x * .5f)
+    {
+        bee.position.x = (_FieldSize.x * .5f) * sign(bee.position.x);
+        bee.velocity.x *= -.5f;
+        bee.velocity.y *= .8f;
+        bee.velocity.z *= .8f;
+    }
+    if (abs(bee.position.z) > _FieldSize.z * .5f)
+    {
+        bee.position.z = (_FieldSize.z * .5f) * sign(bee.position.z);
+        bee.velocity.z *= -.5f;
+        bee.velocity.x *= .8f;
+        bee.velocity.y *= .8f;
+    }
+    //  Seems that resources are not used in the original code
+    float resourceModifier = 0.f;
+    // if (bee.isHoldingResource)
+    // {
+    //     resourceModifier = _ResourceSize;
+    // }
+    if (abs(bee.position.y) > _FieldSize.y * .5f - resourceModifier)
+    {
+        bee.position.y = (_FieldSize.y * .5f - resourceModifier) * sign(bee.position.y);
+        bee.velocity.y *= -.5f;
+        bee.velocity.z *= .8f;
+        bee.velocity.x *= .8f;
+    }
+
+    // Write back packed data to the bee buffer:
+    _Bees[beeIndex] = PackBeeData(bee);
+}
